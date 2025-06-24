@@ -5,7 +5,14 @@
   "projects": {
     "front-v2": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:service": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -60,10 +67,12 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "front-v2:build:production"
+              "browserTarget": "front-v2:build:production",
+                "proxyConfig": "proxy.conf.json"
             },
             "development": {
-              "browserTarget": "front-v2:build:development"
+              "browserTarget": "front-v2:build:development",
+                "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
@@ -94,5 +103,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "606a679e-a00d-4341-ad2a-bde26942dfec"
   }
 }

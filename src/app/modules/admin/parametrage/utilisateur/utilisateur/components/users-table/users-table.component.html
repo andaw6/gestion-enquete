@@ -1,0 +1,86 @@
+<div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+  <div class="flex justify-between items-center p-6 border-b border-gray-200">
+    <h2 class="text-xl font-semibold text-dark-900">Liste des utilisateurs</h2>
+    <div class="flex items-center space-x-4">
+      <span class="text-sm text-gray-600">
+        Affichage: 1-{{ users.length }} sur {{ users.length }}
+      </span>
+      <div class="relative">
+        <select
+          [value]="pagination.totalItem"
+          (change)="onItemsPerPageChange(+$any($event.target).value)"
+          class="appearance-none bg-white border border-gray-300 rounded px-3 py-1 pr-8 text-sm focus:ring-2 focus:ring-primary-200 focus:border-primary">
+          <option [value]="10">10 par page</option>
+          <option [value]="25">25 par page</option>
+          <option [value]="50">50 par page</option>
+        </select>
+        <i class="fas fa-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organisation</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fonction</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dernière connexion</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+      </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let user of users" class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+              <span class="text-primary font-medium">{{ user.initials }}</span>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-900">{{ user.name }}</div>
+              <div class="text-sm text-gray-500">{{ user.email }}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4">
+          <span [class]="getRoleClass(user.role)">{{ user.role }}</span>
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-900">{{ user.organization }}</td>
+        <td class="px-6 py-4 text-sm text-gray-900">{{ user.position }}</td>
+        <td class="px-6 py-4">
+          <span [class]="getStatusClass(user.status)">{{ user.status }}</span>
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-900">{{ user.lastConnection }}</td>
+        <td class="px-6 py-4">
+          <div class="flex space-x-2">
+            <button
+              (click)="onUserAction('view', user)"
+              class="text-secondary hover:text-secondary-600 transition-colors">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button
+              (click)="onUserAction('edit', user)"
+              class="text-primary hover:text-primary-600 transition-colors">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button
+              (click)="onUserAction('delete', user)"
+              class="text-red-500 hover:text-red-600 transition-colors">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <app-pagination
+    [pagination]="pagination"
+    (pageChanged)="paginationChange.emit($event)">
+  </app-pagination>
+</div>

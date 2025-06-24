@@ -1,0 +1,72 @@
+<!-- Header de la page -->
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
+  <div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{{ config.pageTitle }}</h1>
+    <p class="text-gray-600">{{ config.pageDescription }}</p>
+  </div>
+  <div class="mt-4 lg:mt-0">
+    <button
+      class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 flex items-center space-x-2 transition-colors duration-200 shadow-sm"
+      (click)="onAddClick()">
+      <i [class]="config.addButtonIcon || 'fas fa-plus'"></i>
+      <span>{{ config.addButtonText }}</span>
+    </button>
+  </div>
+</div>
+
+<!-- Tableau -->
+<div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-8">
+  <!-- Header du tableau -->
+  <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+    <h2 class="text-lg font-semibold text-gray-900">{{ config.listTitle }}</h2>
+    <p class="text-sm text-gray-600 mt-1">{{ config.listDescription }}</p>
+  </div>
+
+  <!-- Contenu du tableau -->
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+      <tr>
+        <!-- Projection des headers depuis le parent -->
+        <ng-container *ngTemplateOutlet="tableHeaders"></ng-container>
+        <th class="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Actions</th>
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+      <tr *ngFor="let item of data$ | async"
+          class="hover:bg-gray-50 transition-colors duration-150">
+        <!-- Projection des lignes depuis le parent -->
+        <ng-container *ngTemplateOutlet="tableRow; context: { $implicit: item }"></ng-container>
+        <td class="py-4 px-6">
+          <div class="flex items-center space-x-2">
+            <button
+              class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-150"
+              (click)="onEditClick(item)" title="Modifier">
+              <i class="fas fa-edit text-sm"></i>
+            </button>
+            <button
+              class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors duration-150"
+              (click)="onDeleteClick(item)" title="Supprimer">
+              <i class="fas fa-trash text-sm"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <app-loader [show]="loading()"></app-loader>
+    <app-pagination *ngIf="!loading()" [pagination]="pagination"
+                    (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+
+<!-- Modal intégré -->
+<app-generic-form-modal
+  [isVisible]="openModal"
+  [item]="editingItem()"
+  [existingCodes]="existingCodes"
+  [config]="modalConfig"
+  [isSubmitting]="isSubmitting"
+  (close)="onModalClose()"
+  (save)="onItemSave($event)">
+</app-generic-form-modal>

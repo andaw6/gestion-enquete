@@ -1,0 +1,30 @@
+<div *ngIf="open"
+  class="fixed inset-0 bg-black/10 backdrop-blur-[1px] flex items-center justify-center z-50 p-4"
+>
+  <div
+    class="bg-white  rounded-xl shadow-2xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+  >
+    <div
+      class="flex justify-end items-center mb-6 border-b  pb-4"
+    >
+      <button (click)="closeModal()"
+        class="hover:text-red-800 text-red-600 transition-colors"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+    <ng-content></ng-content>
+  </div>
+</div>

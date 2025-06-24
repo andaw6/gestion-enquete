@@ -1,0 +1,34 @@
+<app-generic-crud
+  #crudComponent
+  [config]="config"
+  [data$]="data$"
+  [loading]="loading"
+  [pagination]="pagination"
+  [existingCodes]="existingCodes"
+  [isSubmitting]="isSubmitting"
+  (loadData)="loadData.emit($event)"
+  (createItem)="createItem.emit($event)"
+  (updateItem)="updateItem.emit($event)"
+  (deleteItem)="deleteItem.emit($event)"
+  (pageChanged)="pageChanged.emit($event)"
+>
+
+  <!-- En-têtes génériques -->
+  <ng-template #tableHeaders>
+    <th class="text-left py-4 px-6 font-semibold text-gray-900 text-sm hidden md:table-cell">Code</th>
+    <th class="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Référence</th>
+    <th class="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Libellé</th>
+  </ng-template>
+
+  <!-- Ligne générique -->
+  <ng-template #tableRow let-item>
+    <td class="py-4 px-6 text-sm text-gray-600 hidden md:table-cell">
+      <span class="px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+        {{ item.code }}
+      </span>
+    </td>
+    <td class="py-4 px-6 text-sm font-medium text-gray-900">{{ item.id }}</td>
+    <td class="py-4 px-6 text-sm text-gray-700">{{ item.libelle }}</td>
+  </ng-template>
+
+</app-generic-crud>

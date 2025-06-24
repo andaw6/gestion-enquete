@@ -1,0 +1,192 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" *ngIf="isVisible"
+     (click)="onOverlayClick($event)" [@fadeInOut]>
+
+  <div class="relative w-full max-w-lg mx-4 bg-white rounded-2xl shadow-2xl border border-gray-200"
+       (click)="$event.stopPropagation()" [@slideInOut]>
+
+    <!-- Header avec gradient subtil -->
+    <div class="relative px-8 pt-8 pb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-t-2xl border-b border-gray-100">
+      <div class="flex items-start justify-between">
+        <div class="flex items-start space-x-4">
+          <!-- Icône avec cercle coloré -->
+          <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full ring-4 ring-blue-50">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="iconPath" />
+            </svg>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-1">
+              {{ isEditMode ? config.editTitle : config.createTitle }}
+            </h3>
+            <p class="text-sm text-gray-600 leading-relaxed">
+              {{ isEditMode ? config.editDescription : config.createDescription }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Bouton fermer amélioré -->
+        <button type="button"
+                class="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                (click)="onClose()" [attr.aria-label]="'Fermer la modal'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="px-8 py-6">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+
+        <!-- Champ Code -->
+        <div class="space-y-2">
+          <label for="code" class="block text-sm font-medium text-gray-700">
+            {{ config.codeLabel }}
+            <span class="text-red-500 ml-1">*</span>
+          </label>
+
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              </svg>
+            </div>
+            <input type="text" id="code" formControlName="code"
+                   class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                   [class.border-red-300]="isFieldInvalid('code')"
+                   [class.focus:ring-red-500]="isFieldInvalid('code')"
+                   [class.focus:border-red-500]="isFieldInvalid('code')"
+                   [placeholder]="config.codePlaceholder"
+                   [maxlength]="config.codeMaxLength || 20"
+                   autocomplete="off">
+          </div>
+
+          <!-- Messages d'erreur -->
+          <div class="space-y-1" *ngIf="isFieldInvalid('code')">
+            <div class="flex items-center space-x-2 text-sm text-red-600"
+                 *ngIf="form.get('code')?.errors?.['required']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span>Le code est obligatoire</span>
+            </div>
+
+            <div class="flex items-center space-x-2 text-sm text-red-600"
+                 *ngIf="form.get('code')?.errors?.['minlength']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span>Le code doit contenir au moins {{ config.codeMinLength || 3 }} caractères</span>
+            </div>
+
+            <div class="flex items-center space-x-2 text-sm text-red-600"
+                 *ngIf="form.get('code')?.errors?.['pattern']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span>Le code ne peut contenir que des lettres, chiffres et tirets</span>
+            </div>
+
+            <div class="flex items-center space-x-2 text-sm text-red-600"
+                 *ngIf="form.get('code')?.errors?.['codeExists']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span>Ce code existe déjà</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Champ Libellé -->
+        <div class="space-y-2">
+          <label for="label" class="block text-sm font-medium text-gray-700">
+            {{ config.labelLabel }}
+            <span class="text-red-500 ml-1">*</span>
+          </label>
+
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+              </svg>
+            </div>
+            <input type="text" id="label" formControlName="label"
+                   class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                   [class.border-red-300]="isFieldInvalid('label')"
+                   [class.focus:ring-red-500]="isFieldInvalid('label')"
+                   [class.focus:border-red-500]="isFieldInvalid('label')"
+                   [placeholder]="config.labelPlaceholder"
+                   [maxlength]="config.labelMaxLength || 100"
+                   autocomplete="off">
+          </div>
+
+          <!-- Messages d'erreur -->
+          <div class="space-y-1" *ngIf="isFieldInvalid('label')">
+            <div class="flex items-center space-x-2 text-sm text-red-600"
+                 *ngIf="form.get('label')?.errors?.['required']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span>Le libellé est obligatoire</span>
+            </div>
+
+            <div class="flex items-center space-x-2 text-sm text-red-600"
+                 *ngIf="form.get('label')?.errors?.['minlength']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd" />
+              </svg>
+              <span>Le libellé doit contenir au moins {{ config.labelMinLength || 3 }} caractères</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions dans le formulaire -->
+        <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200">
+          <button type="button"
+                  class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  (click)="onClose()" [disabled]="isSubmitting">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            {{ config.cancelButtonText }}
+          </button>
+
+          <button type="submit"
+                  class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                  [disabled]="form.invalid || isSubmitting">
+
+            <!-- Icône normale -->
+            <svg class="w-4 h-4 mr-2" *ngIf="!isSubmitting" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+
+            <!-- Icône de chargement -->
+            <svg class="w-4 h-4 mr-2 animate-spin" *ngIf="isSubmitting" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+
+            {{ isSubmitting ? 'Traitement...' : (isEditMode ? config.editButtonText : config.createButtonText) }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>

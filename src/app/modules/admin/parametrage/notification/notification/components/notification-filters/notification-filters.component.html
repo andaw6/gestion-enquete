@@ -1,0 +1,55 @@
+<div class="bg-white  rounded-xl shadow-sm border border-gray-200  p-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+        <div class="flex flex-wrap items-center gap-3">
+            <button (click)="setStatusFilter('all')" [class]="getFilterButtonClass('all')"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors">
+                Toutes
+            </button>
+            <button (click)="setStatusFilter('unread')" [class]="getFilterButtonClass('unread')"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors">
+                Non lues
+            </button>
+            <button (click)="setStatusFilter('read')" [class]="getFilterButtonClass('read')"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors">
+                Lues
+            </button>
+            <button (click)="setStatusFilter('urgent')" [class]="getFilterButtonClass('urgent')"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors">
+                Urgentes
+            </button>
+
+            <div class="flex items-center space-x-2 ml-4">
+                <label class="text-sm font-medium text-gray-700 d">Type :</label>
+                <select [(ngModel)]="filter.type" (ngModelChange)="onFilterChange()"
+                    class="text-sm border border-gray-300  rounded-lg px-3 py-2 bg-white  text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Tous les types</option>
+                    <option value="ENQUETE">Enquête</option>
+                    <option value="DOCUMENT">Document</option>
+                    <option value="SYSTEME">Système</option>
+                    <option value="RAPPEL">Rappel</option>
+                    <option value="ALERTE">Alerte</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <button (click)="deleteSelected.emit()" [disabled]="!hasSelection"
+                class="px-4 py-2 text-sm font-medium text-red-700  bg-red-50  hover:bg-red-100  rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                </svg>
+                <span>Supprimer</span>
+            </button>
+            <button (click)="markSelectedRead.emit()" [disabled]="!hasSelection"
+                class="px-4 py-2 text-sm font-medium text-green-700  bg-green-50  hover:bg-green-100  rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Marquer comme lues</span>
+            </button>
+        </div>
+    </div>
+</div>

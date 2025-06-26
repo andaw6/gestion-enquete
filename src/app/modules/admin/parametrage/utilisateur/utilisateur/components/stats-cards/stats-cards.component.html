@@ -1,0 +1,37 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="flex items-center">
+      <div class="bg-primary-50 p-3 rounded-full">
+        <i class="fas fa-users text-primary text-xl"></i>
+      </div>
+      <div class="ml-4">
+        <p class="text-3xl font-bold text-dark-900">{{ stats.total }}</p>
+        <p class="text-gray-600">Total utilisateurs</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="flex items-center">
+      <div class="bg-secondary-50 p-3 rounded-full">
+        <i class="fas fa-user-check text-secondary text-xl"></i>
+      </div>
+      <div class="ml-4">
+        <p class="text-3xl font-bold text-dark-900">{{ stats.active }}</p>
+        <p class="text-gray-600">Actifs</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="flex items-center">
+      <div class="bg-orange-50 p-3 rounded-full">
+        <i class="fas fa-user-clock text-orange-500 text-xl"></i>
+      </div>
+      <div class="ml-4">
+        <p class="text-3xl font-bold text-dark-900">{{ stats.newUsers }}</p>
+        <p class="text-gray-600">Nouveaux (7j)</p>
+      </div>
+    </div>
+  </div>
+</div>

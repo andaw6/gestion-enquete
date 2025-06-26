@@ -1,0 +1,96 @@
+<div class="space-y-4">
+    <div *ngIf="(notifications | async)?.length === 0" class="text-center py-12">
+        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+            </path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900  mb-2">Aucune notification</h3>
+        <p class="text-gray-500">Aucune notification ne correspond à vos critères de recherche.</p>
+    </div>
+
+    <div *ngFor="let notification of notifications | async" (click)="openModal.emit(notification)"
+        [class]="getNotificationClass(notification)"
+        class="notification-card bg-white  rounded-xl shadow-sm border border-gray-200  p-6 hover:shadow-lg transition-all cursor-pointer">
+
+        <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0">
+                <input type="checkbox" [checked]="selectedNotifications.has(notification.id)"
+                    (click)="$event.stopPropagation()" (change)="toggleSelection.emit(notification.id)"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+            </div>
+
+            <div class="flex-shrink-0">
+                <div [class]="getIconClass(notification)" class="w-10 h-10 rounded-lg flex items-center justify-center">
+<!--                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"-->
+<!--                        [innerHTML]="getNotificationIcon(notification.typeNotification)">-->
+<!--                    </svg>-->
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <g [innerHTML]="getNotificationIcon(notification.typeNotification)"></g>
+                  </svg>
+                </div>
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <span [class]="getTypeBadgeClass(notification)"
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                            {{getTypeLabel(notification.typeNotification)}}
+                        </span>
+                        <span *ngIf="!notification.lu" class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                    </div>
+                    <span class="text-sm text-gray-500 ">{{formatDate(notification.dateEnvoi!)}}</span>
+                </div>
+
+                <p [class]="notification.lu ? 'text-gray-900  font-medium' : 'text-gray-900  font-semibold'"
+                    class="mb-2">
+                    {{notification.message}}
+                </p>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 ">
+                        <span *ngIf="notification.lu" class="flex items-center text-green-600 ">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Lu le {{formatDate(notification.dateLu!)}}
+                        </span>
+                        <span *ngIf="!notification.lu"
+                            class="flex items-center text-blue-600  font-medium">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Non lu
+                        </span>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <button *ngIf="!notification.lu"
+                            (click)="$event.stopPropagation(); markAsRead.emit(notification.id)"
+                            class="text-gray-400 hover:text-green-600  p-1 rounded transition-colors"
+                            title="Marquer comme lu">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </button>
+                        <button (click)="$event.stopPropagation(); deleteNotification.emit(notification.id)"
+                            class="text-gray-400 hover:text-red-600  p-1 rounded transition-colors"
+                            title="Supprimer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

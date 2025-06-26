@@ -1,0 +1,167 @@
+
+/* // Animation pour l'overlay avec un effet de backdrop-filter progressif */
+.modal-overlay {
+    animation: backdropFadeIn 0.3s ease-out;
+}
+
+@keyframes backdropFadeIn {
+    from {
+        backdrop-filter: blur(0px);
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    to {
+        backdrop-filter: blur(4px);
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+}
+
+/* // Animation pour la modal container avec un effet de rebond subtil */
+.modal-container {
+    animation: modalBounceIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+@keyframes modalBounceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(0) scale(1.05);
+    }
+
+    70% {
+        transform: translateY(0) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* // Animation pour l'alerte qui glisse de la gauche */
+.alert-slide-in {
+    animation: slideInFromLeft 0.4s ease-out 0.2s both;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* // Animation pour l'icône avec un effet de pulsation continue */
+.icon-pulse {
+    animation: gentlePulse 2s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* // Effet hover pour le bouton de confirmation */
+.confirm-button {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    &:hover::before {
+        left: 100%;
+    }
+}
+
+/* // Animation de chargement pour les boutons */
+.button-loading {
+    &::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 1s ease infinite;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* // Styles globaux pour améliorer l'apparence */
+::ng-deep .custom-modal-overlay {
+    .cdk-overlay-pane {
+        padding: 0 !important;
+    }
+
+    .mat-dialog-container {
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+}
+
+/* // Animation de focus pour l'accessibilité */
+button:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    animation: focusPulse 0.3s ease;
+}
+
+@keyframes focusPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0);
+    }
+}
+
+/* // Media queries pour le responsive */
+@media (max-width: 640px) {
+    .modal-container {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+}

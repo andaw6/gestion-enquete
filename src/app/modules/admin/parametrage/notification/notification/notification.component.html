@@ -1,0 +1,31 @@
+<!-- Contenu Principal -->
+<main class="space-y-6 flex flex-col">
+    <!-- Statistiques -->
+    <app-notification-stats [stats]="stats"></app-notification-stats>
+
+    <!-- Filtres et Actions -->
+    <app-notification-filters [filter]="filter" [hasSelection]="selectedNotifications.size > 0"
+        (filterChange)="onFilterChange($event)" (deleteSelected)="onDeleteSelected()"
+        (markSelectedRead)="onMarkSelectedAsRead()">
+    </app-notification-filters>
+
+    <!-- Liste des Notifications -->
+    <app-notification-list *ngIf="!loading()" [notifications]="notifications$" [selectedNotifications]="selectedNotifications"
+        (openModal)="onOpenModal($event)" (toggleSelection)="onToggleSelection($event)"
+        (markAsRead)="onMarkAsRead($event)" (deleteNotification)="onDeleteNotification($event)"
+        (paginationChange)="setPagination($event)" [pagination]="pagination"
+        >
+    </app-notification-list>
+
+    <app-loader [show]="loading()"></app-loader>
+
+    <app-pagination *ngIf="!loading() && (notifications$ | async)?.length" [pagination]="pagination" (pageChanged)="setPagination($event)"></app-pagination>
+
+</main>
+
+
+
+<!-- Modal Détails Notification -->
+<app-notification-modal [isOpen]="modalOpen" [notification]="selectedNotification" (close)="onCloseModal()"
+    (deleteNotification)="onDeleteNotification($event)">
+</app-notification-modal>

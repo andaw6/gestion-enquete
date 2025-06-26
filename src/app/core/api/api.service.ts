@@ -5,6 +5,7 @@ import { tap, catchError, map } from 'rxjs/operators';
 import { environment } from '@env/environment.development';
 import { HttpOptions, IParams } from '@core/interfaces/http-options.interface';
 import { Pagination } from '@core/interfaces/pagination.interface';
+import {ApiResponse} from "@core/interfaces/api-response.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -116,7 +117,7 @@ export class ApiService {
     return httpParams.toString();
   }
 
-  protected responseGetMany<T>(params?: IParams, url?: string): Observable<{ data: T[]; pagination: Pagination }> {
+  protected responseGetMany<T>(params?: IParams, url?: string): Observable<ApiResponse<T>> {
     const springParams = { ...params };
 
     if (params?.["page"] !== undefined && params?.["limit"] !== undefined) {

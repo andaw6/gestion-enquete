@@ -3,6 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NavigationItem, NavigationSection } from '@core/interfaces/navigation.interface';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {AppModule} from "../../../../app.module";
+import {SidebarItemComponent} from "@layout/admin/components/sidebar-item/sidebar-item.component";
 
 
 export interface User {
@@ -18,7 +20,7 @@ export interface User {
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, SidebarItemComponent],
 })
 export class SidebarComponent {
   @Input() isOpen = false
@@ -34,7 +36,7 @@ export class SidebarComponent {
 
 
   constructor(private route:Router){}
-  
+
 
   onCloseSidebar(): void {
     this.closeSidebar.emit()

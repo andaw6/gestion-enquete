@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {TypeDocumentService} from "@modules/admin/parametrage/type-document/type-document.service";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {SessionService} from "@core/services/session.service";
 import {TypeDocument} from "@modules/admin/parametrage/type-document/type-document";

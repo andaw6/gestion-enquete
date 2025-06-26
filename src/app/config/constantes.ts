@@ -4,15 +4,27 @@ export const ADMIN_NAVIGATION: NavigationSection[] = [
   {
     title: "PRINCIPAL",
     items: [
-      {label: "Tableau de bord", icon: "fas fa-chart-bar"},
-      {label: "Gestion utilisateurs", icon: "fas fa-users"},
+      {
+        label: "Tableau de bord",
+        icon: "fas fa-chart-bar"
+      },
+      {
+        label: "Gestion utilisateurs",
+        icon: "fas fa-users"
+      },
     ],
   },
   {
     title: "ORGANISATION",
     items: [
-      {label: "Organigramme", icon: "fas fa-sitemap"},
-      {label: "Départements", icon: "fas fa-building"},
+      {
+        label: "Organigramme",
+        icon: "fas fa-sitemap"
+      },
+      {
+        label: "Départements",
+        icon: "fas fa-building"
+      },
     ],
   },
   {
@@ -24,11 +36,38 @@ export const ADMIN_NAVIGATION: NavigationSection[] = [
         active: false,
         route: "/admin/parametrage/systeme",
         children: [
-          {label: "Notifications", icon: "fas fa-bell", route: "/admin/parametrage/systeme/notification"},
-          {label: "Types de documents", icon: "fas fa-file-alt", route: "/admin/parametrage/systeme/type-document"},
-          {label: "États de demande", icon: "fas fa-tasks", route: "/admin/parametrage/systeme/etat-demande"},
-          {label: "États d'enquête", icon: "fas fa-poll", route: "/admin/parametrage/systeme/etat-enquete"},
-          {label: "Sources d'information", icon: "fas fa-stream", route: "/admin/parametrage/systeme/type-source"},
+          {
+            label: "Notifications",
+            icon: "fas fa-bell",
+            route: "/admin/parametrage/systeme/notification"
+          },
+          {
+            label: "Types de documents",
+            icon: "fas fa-file-alt",
+            route: "/admin/parametrage/systeme/type-document"
+          },
+          {
+            label: "États de demande",
+            icon: "fas fa-tasks",
+            route: "/admin/parametrage/systeme/etat-demande"
+          },
+          {
+            label: "États d'enquête",
+            icon: "fas fa-poll",
+            route: "/admin/parametrage/systeme/etat-enquete"
+          },
+          {
+            label: "Sources d'information",
+            icon: "fas fa-stream",
+            route: "/admin/parametrage/systeme/type-source",
+            // children: [
+            //   {
+            //     label: "Teste",
+            //     icon: "fas fa-key",
+            //     route: "/admin/parametrage/systeme/type-source"
+            //   },
+            // ]
+          },
         ],
       },
       {
@@ -42,8 +81,16 @@ export const ADMIN_NAVIGATION: NavigationSection[] = [
             icon: "fas fa-user-shield",
             route: "/admin/parametrage/securite/roles-permissions"
           },
-          {label: "Journaux d'activité", icon: "fas fa-history", route: "/admin/parametrage/securite/journaux"},
-          {label: "Accès système", icon: "fas fa-key", route: "/admin/parametrage/securite/acces"},
+          {
+            label: "Journaux d'activité",
+            icon: "fas fa-history",
+            route: "/admin/parametrage/securite/journaux"
+          },
+          {
+            label: "Accès système",
+            icon: "fas fa-key",
+            route: "/admin/parametrage/securite/acces"
+          },
         ],
       },
       {
@@ -52,8 +99,16 @@ export const ADMIN_NAVIGATION: NavigationSection[] = [
         active: false,
         route: "/admin/preference",
         children: [
-          {label: "Profil utilisateur", icon: "fas fa-user", route: "/admin/preference/profil"},
-          {label: "Préférences personnelles", icon: "fas fa-cog", route: "/admin/preference/personnelles"},
+          {
+            label: "Profil utilisateur",
+            icon: "fas fa-user",
+            route: "/admin/preference/profil"
+          },
+          {
+            label: "Préférences personnelles",
+            icon: "fas fa-cog",
+            route: "/admin/preference/personnelles"
+          },
         ],
       },
     ],

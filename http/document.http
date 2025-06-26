@@ -1,0 +1,36 @@
+### GET request to example server
+GET /v1/api/documents/all HTTP/1.1
+Host: localhost:2000
+Accept: application/json
+
+###
+POST /v1/api/documents HTTP/1.1
+Host: localhost:2000
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Accept: */*
+Content-Length: 514
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="/C:/Users/ehac6/Pictures/cours2_poly_4.pdf"
+Content-Type: application/pdf
+
+(data)
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="nom"
+
+test docuemnt
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="typeId"
+
+45
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+this is a test
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+GET /v1/api/documents/1/view?download=false HTTP/1.1
+Host: localhost:2000
+Accept: */*

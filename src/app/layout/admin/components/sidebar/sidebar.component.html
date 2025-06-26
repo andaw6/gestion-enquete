@@ -31,53 +31,57 @@
         </h3>
         <ul class="space-y-2">
           <li *ngFor="let item of section.items">
-            <!-- Menu principal -->
-            <div>
-              <a
-                class="flex items-center cursor-pointer justify-between rounded-lg px-3 py-3 transition-all duration-200 group"
-                [class]="item.active ?
-                                'text-white bg-white/20 backdrop-blur-sm shadow-lg ring-1 ring-white/30' :
-                                'text-primary-100 hover:bg-white/10 hover:text-white'"
-                (click)="onNavigationClick(item, $event)">
-                <div class="flex items-center space-x-3">
-                  <i [class]="item.icon + ' w-5'"
-                     [class.text-secondary-300]="item.active"
-                     [class.text-primary-200]="!item.active"
-                     [class.group-hover:text-secondary-300]="!item.active"></i>
-                  <span class="text-sm"
-                        [class.font-semibold]="item.active"
-                        [class.font-medium]="!item.active">
-                                        {{ item.label }}
-                                    </span>
-                </div>
-                <!-- Icône de déroulement pour les menus avec enfants -->
-                <i *ngIf="item.children"
-                   class="fas fa-chevron-down text-xs text-primary-200 transition-transform duration-200"
-                   [class.rotate-180]="item.expanded"
-                   [class.text-secondary-300]="item.active"></i>
-              </a>
-
-              <!-- Sous-menu -->
-              <div *ngIf="item.children" class="submenu-container" [class.expanded]="item.expanded">
-                <ul class="mt-2 ml-8 space-y-1 border-l-2 border-primary-300/30 pl-4">
-                  <li *ngFor="let child of item.children">
-                    <a
-                      class="flex items-center cursor-pointer space-x-3 hover:bg-white/10 rounded-lg px-3 py-2 transition-all duration-200 text-sm group"
-                      [class]="child.active ?
-                                            'text-white bg-white/15 backdrop-blur-sm' :
-                                            'text-primary-100 hover:text-white'"
-                      (click)="onNavigationClick(child, $event)">
-                      <i [class]="child.icon + ' w-4'"
-                         [class.text-secondary-300]="child.active"
-                         [class.text-primary-200]="!child.active"
-                         [class.group-hover:text-secondary-300]="!child.active"></i>
-                      <span class="font-medium">{{ child.label }}</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <app-sidebar-item [item]="item"></app-sidebar-item>
           </li>
+
+          <!--          <li *ngFor="let item of section.items">-->
+<!--           -->
+<!--            <div>-->
+<!--              <a-->
+<!--                class="flex items-center cursor-pointer justify-between rounded-lg px-3 py-3 transition-all duration-200 group"-->
+<!--                [class]="item.active ?-->
+<!--                                'text-white bg-white/20 backdrop-blur-sm shadow-lg ring-1 ring-white/30' :-->
+<!--                                'text-primary-100 hover:bg-white/10 hover:text-white'"-->
+<!--                (click)="onNavigationClick(item, $event)">-->
+<!--                <div class="flex items-center space-x-3">-->
+<!--                  <i [class]="item.icon + ' w-5'"-->
+<!--                     [class.text-secondary-300]="item.active"-->
+<!--                     [class.text-primary-200]="!item.active"-->
+<!--                     [class.group-hover:text-secondary-300]="!item.active"></i>-->
+<!--                  <span class="text-sm"-->
+<!--                        [class.font-semibold]="item.active"-->
+<!--                        [class.font-medium]="!item.active">-->
+<!--                                        {{ item.label }}-->
+<!--                                    </span>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; Icône de déroulement pour les menus avec enfants &ndash;&gt;-->
+<!--                <i *ngIf="item.children"-->
+<!--                   class="fas fa-chevron-down text-xs text-primary-200 transition-transform duration-200"-->
+<!--                   [class.rotate-180]="item.expanded"-->
+<!--                   [class.text-secondary-300]="item.active"></i>-->
+<!--              </a>-->
+
+<!--             -->
+<!--              <div *ngIf="item.children" class="submenu-container" [class.expanded]="item.expanded">-->
+<!--                <ul class="mt-2 ml-8 space-y-1 border-l-2 border-primary-300/30 pl-4">-->
+<!--                  <li *ngFor="let child of item.children">-->
+<!--                    <a-->
+<!--                      class="flex items-center cursor-pointer space-x-3 hover:bg-white/10 rounded-lg px-3 py-2 transition-all duration-200 text-sm group"-->
+<!--                      [class]="child.active ?-->
+<!--                                            'text-white bg-white/15 backdrop-blur-sm' :-->
+<!--                                            'text-primary-100 hover:text-white'"-->
+<!--                      (click)="onNavigationClick(child, $event)">-->
+<!--                      <i [class]="child.icon + ' w-4'"-->
+<!--                         [class.text-secondary-300]="child.active"-->
+<!--                         [class.text-primary-200]="!child.active"-->
+<!--                         [class.group-hover:text-secondary-300]="!child.active"></i>-->
+<!--                      <span class="font-medium">{{ child.label }}</span>-->
+<!--                    </a>-->
+<!--                  </li>-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </li>-->
         </ul>
       </div>
     </div>

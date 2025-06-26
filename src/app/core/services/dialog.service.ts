@@ -12,11 +12,27 @@ export class DialogService {
     constructor(private dialog: MatDialog) { }
 
     /**
-     * Ouvre une modal de confirmation de suppression avec des animations professionnelles
+     * Ouvre une modal de confirmation de suppression
      * @param title Titre de la modal
      * @param message Message de confirmation
      * @param config Configuration optionnelle du dialog
      * @returns Observable<boolean> - true si confirmé, false si annulé
+     * @example
+     * constructor(private dialogService: DialogService) {}
+     *
+     * confirmDelete() {
+     *   this.dialogService.openConfirmDialog(
+     *     'Confirmer la suppression',
+     *     'Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.'
+     *   ).subscribe(result => {
+     *     if (result) {
+     *       // Logique de suppression
+     *       console.log('Suppression confirmée');
+     *     } else {
+     *       console.log('Suppression annulée');
+     *     }
+     *   });
+     * }
      */
     openConfirmDialog(
         title: string,
@@ -49,6 +65,8 @@ export class DialogService {
      * Ouvre une modal de confirmation avec options avancées
      * @param options Options de configuration complètes
      * @returns Observable<boolean>
+     * @example
+     *
      */
     openAdvancedConfirmDialog(options: {
         title: string;
@@ -86,21 +104,3 @@ export class DialogService {
     }
 }
 
-// Exemple d'utilisation dans un composant :
-/*
-constructor(private dialogService: DialogService) {}
-
-confirmDelete() {
-  this.dialogService.openConfirmDialog(
-    'Confirmer la suppression',
-    'Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.'
-  ).subscribe(result => {
-    if (result) {
-      // Logique de suppression
-      console.log('Suppression confirmée');
-    } else {
-      console.log('Suppression annulée');
-    }
-  });
-}
-*/

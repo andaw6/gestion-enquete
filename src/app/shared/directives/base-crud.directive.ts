@@ -7,11 +7,12 @@ import {SessionService} from "@core/services/session.service";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {map} from "rxjs/operators";
 import {ResponseError} from "@core/interfaces/response-error.interface";
+import {ApiResponse} from "@core/interfaces/api-response.interface";
 
 @Directive({
-  selector: '[appBaseCrud]'
+  // selector: '[appBaseCrud]'
 })
-export abstract class BaseCrudDirective  <T extends EntityType> {
+export abstract class BaseCrudDirective<T extends EntityType> {
 
   @ViewChild('crudComponent') crudComponent!: GenericCrudComponent<T>;
 
@@ -112,13 +113,14 @@ export abstract class BaseCrudDirective  <T extends EntityType> {
     this.service
       .getAll({ ...this.pagination, sort: ['libelle'] })
       .subscribe({
-        next: (response: { data: T[]; pagination: Pagination }) => {
+        next: (response: ApiResponse<T>) => {
           this.data$ = of(response.data);
           this.pagination = response.pagination;
           this.existingCodes = response.data.map((item) => item.code);
           this.loading.set(false);
         },
         error: (err: ResponseError) => {
+          console.log(err);
           this.notificationService.showNotification('Erreur de chargement', 'error');
           this.loading.set(false);
         },

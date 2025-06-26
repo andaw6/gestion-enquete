@@ -115,7 +115,6 @@ export class GenericFormModalComponent <T extends GenericFormData> implements On
   }
 
   private setupFormWatchers() {
-    // Solution 4: Utiliser le service DestroyService
     const codeControl = this.form.get("code")
     if (codeControl) {
       codeControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: string) => {

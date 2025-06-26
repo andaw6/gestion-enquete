@@ -139,6 +139,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   onFilterChange(filter: NotificationFilter): void {
     this.filter = {...filter};
     this.pagination.page = 1;
+    this.selectedNotifications.clear();
     this.loadData();
   }
 
@@ -153,6 +154,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
             notifs.map(notif => (notif.id === result.id ? result : notif))
           )
         );
+
+        if(this.filter.status === 'unread') {
+          this.notifications$ = this.notifications$.pipe(
+            map(notifs => notifs.filter(notif => notif.id !== id)),
+          )
+        }
+        this.toastService.showNotification("Notification lu", "success");
         this.stats.read++;
         this.stats.unread--;
       },
@@ -172,6 +180,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
         this.notifications$ = this.notifications$.pipe(
           map(notifs => notifs.filter(notif => notif.id !== id))
         );
+        this.toastService.showNotification("Notification supprimer", "success");
       },
       error: (err: ResponseError) => {
         this.toastService.showNotification(

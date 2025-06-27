@@ -1,7 +1,9 @@
 import { Component, EventEmitter,Output } from '@angular/core';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-export interface User {
+
+
+interface User {
   name: string
   role: string
   initials: string
@@ -11,7 +13,7 @@ export interface User {
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [FontAwesomeModule],
+  imports: [ FontAwesomeModule],
   standalone: true,
 })
 export class HeaderComponent {

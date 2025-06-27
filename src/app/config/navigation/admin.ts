@@ -1,6 +1,6 @@
 import {NavigationSection} from "@core/interfaces/navigation.interface";
 
-export const ADMIN_NAVIGATION: NavigationSection[] = [
+export const  ADMIN_NAVIGATION: NavigationSection[] = [
   {
     title: "PRINCIPAL",
     items: [

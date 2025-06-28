@@ -37,7 +37,7 @@
             <span class="font-medium">{{ doc.type.libelle }} • </span>
             <span class="bg-primary-50 text-primary-700 px-2 py-1 rounded-full font-medium">v{{ doc.version }}</span>
           </div>
-          <p class="text-xs text-dark-300 mt-2">{{ doc.createdAt }}</p>
+          <p class="text-xs text-dark-300 mt-2">Téléchargé le : {{ doc.createdAt | date: "dd MMM YYYY" }}</p>
         </div>
 
         <div class="flex space-x-2">
@@ -146,7 +146,7 @@
     </div>
   </div>
 
-  <div *ngIf="(documents | async)?.length">
+  <div *ngIf="(documents | async)?.length && !loading">
     <app-pagination [pagination]="pagination"></app-pagination>
   </div>
 

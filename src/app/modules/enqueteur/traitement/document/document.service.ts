@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IParams} from "@core/interfaces/http-options.interface";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
-import {Document, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
+import {Document, DocumentData, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +30,13 @@ export class DocumentService extends ApiService {
     return this.responseGetOne<Document>(`/${id}`);
   }
 
-  create(data: any): Observable<Document> {
-    return this.responsePostOne<Document>('', data);
+  create(data: DocumentData): Observable<Document> {
+    const formData = new FormData();
+    formData.append("nom", data.nom);
+    formData.append("description", data.description);
+    formData.append("typeId", data.typeId.toString());
+    formData.append("file", data.file);
+    return this.responsePostOne<Document>('', formData);
   }
 
   update(id: number, data: any): Observable<Document> {

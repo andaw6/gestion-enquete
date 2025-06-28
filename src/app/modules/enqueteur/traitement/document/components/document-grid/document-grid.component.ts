@@ -17,6 +17,7 @@ export class DocumentGridComponent {
   @Output() previewClick = new EventEmitter<Document>()
   @Output() downloadClick = new EventEmitter<Document>()
   @Output() deleteClick = new EventEmitter<Document>()
+  @Input() loading: boolean = false;
 
   showMenu: null | number = null
 

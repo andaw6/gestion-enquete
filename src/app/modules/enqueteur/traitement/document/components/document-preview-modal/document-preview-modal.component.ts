@@ -48,6 +48,7 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
   private loadAndEmbed() {
     this.isLoading = true;
     this.hasError = false;
+    this.embedUrl = "";
     this.documentService.getUrl(this.documentId).subscribe({
       next: (url: DocumentUrl | null) => {
         if (url) {

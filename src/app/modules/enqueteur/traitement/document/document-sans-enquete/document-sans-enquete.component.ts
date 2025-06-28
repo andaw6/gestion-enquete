@@ -1,13 +1,15 @@
-import {Component, OnDestroy, OnInit, Renderer2, signal, WritableSignal} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2, signal, ViewChild, WritableSignal} from '@angular/core';
 import {DocumentService} from "@modules/enqueteur/traitement/document/document.service";
-import {Document, DocumentStats, FilterOptions} from "@modules/enqueteur/traitement/document/document";
-import {Observable, of, Subject} from "rxjs";
+import {Document, DocumentData, DocumentUpload, FilterOptions} from "@modules/enqueteur/traitement/document/document";
+import {map, Observable, of, Subject} from "rxjs";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {Pagination} from "@core/interfaces/pagination.interface";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
 import {ResponseError} from "@core/interfaces/response-error.interface";
-import {TypeDocument} from "@modules/admin/parametrage/type-document/type-document";
 import {TypeDocumentService} from "@modules/admin/parametrage/type-document/type-document.service";
+import {
+  DocumentUploadModalComponent
+} from "@modules/enqueteur/traitement/document/components/document-upload-modal/document-upload-modal.component";
 
 @Component({
   selector: 'app-document-sans-enquete',
@@ -18,7 +20,6 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   documents$: Observable<Document[]> = of([]);
-  typeDocument$: Observable<TypeDocument[]> = of([]);
   pagination: Pagination = {
     page: 1,
     limit: 10,
@@ -33,8 +34,10 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   }
   isUploadModalOpen = false
   isPreviewModalOpen = false
-  selectedDocument: Document | null = null
+  selectedDocument: Document | null = null;
+  loading: WritableSignal<boolean> = signal(false);
 
+  @ViewChild(DocumentUploadModalComponent) uploadModal!: DocumentUploadModalComponent;
 
   constructor(
     private documentService: DocumentService,
@@ -45,7 +48,6 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadTypeDocument();
     this.loadData();
   }
 
@@ -55,28 +57,16 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   }
 
   loadData(): void {
+    this.loading.set(true);
     this.documentService.getAll({...this.pagination}).subscribe({
       next: (response: ApiResponse<Document>) => {
         this.documents$ = of(response.data);
         this.pagination = response.pagination;
+        this.loading.set(false);
       },
       error: (err: ResponseError) => {
-        this.notificationService.showNotification(
-          err.message || 'Erreur lors du chargement des documents',
-          'error'
-        );
-      }
-    })
-  }
-
-  loadTypeDocument(): void {
-    this.typeDocumentService.getAll().subscribe({
-      next: (response: ApiResponse<TypeDocument>) => {
-        this.typeDocument$ = of(response.data);
-      },
-      error: (err: ResponseError) => {
-        this.notificationService.showNotification(
-          err.message || 'Erreur lors du chargement des types de documents',
+        this.loading.set(false);
+        this.notificationService.showNotification('Erreur lors du chargement des documents',
           'error'
         );
       }
@@ -131,30 +121,52 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
     this.isUploadModalOpen = false
   }
 
-  onUpload(data: { files: File[]; investigation: string; documentType: string }): void {
-    // console.log("Upload files:", data)
-    // // Here you would typically upload the files to your backend
-    // // For now, we'll just add mock documents
-    // data.files.forEach((file, index) => {
-    //   const newDoc: Document = {
-    //     id: Date.now().toString() + index,
-    //     name: file.name,
-    //     type: file.name.split(".").pop()?.toUpperCase() || "UNKNOWN",
-    //     size: this.formatFileSize(file.size),
-    //     dateAdded: new Date().toLocaleDateString("fr-FR"),
-    //     fileType: this.getFileTypeFromExtension(file.name),
-    //   }
-    //   this.documentService.addDocument(newDoc)
-    // })
+  onUpload(data: DocumentUpload): void {
+    if (!data?.file) {
+      this.notificationService.showNotification("Aucun fichier sélectionné.", "warning");
+      return;
+    }
+
+    const payload: DocumentData = {
+      nom: data.documentName?.trim() ?? "N/A",
+      description: data.documentDescription?.trim() ?? "N/A",
+      typeId: Number(data.documentType) || 0,
+      file: data.file,
+    };
+
+    this.documentService.create(payload).subscribe({
+      next: (document: Document) => {
+        console.log("Document successfully uploaded", document);
+
+        // Met à jour le flux documents$
+        this.documents$ = this.documents$.pipe(
+          map((docs) => [document, ...docs])
+        );
+
+        this.notificationService.showNotification("Document téléchargé avec succès !", "success");
+
+        this.uploadModal.reset();
+        this.uploadModal.close.emit();
+      },
+      error: (err: ResponseError) => {
+        console.error("Erreur d'upload:", err);
+        this.notificationService.showNotification(
+          err?.message || "Erreur lors du téléchargement du document.",
+          "error"
+        );
+      }
+    });
   }
+
 
   onPreviewClick(document: Document): void {
     this.selectedDocument = document
     this.isPreviewModalOpen = true
   }
+
   onDownloadClick(document: Document): void {
     console.log("Download document:", document);
-    this.documentService.getView(document.id, { download: true }).subscribe({
+    this.documentService.getView(document.id, {download: true}).subscribe({
       next: (blob: Blob) => {
         const fileName = `${document.nom}.${document.extension}`;
         const url = URL.createObjectURL(blob);

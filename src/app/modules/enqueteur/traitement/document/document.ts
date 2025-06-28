@@ -22,12 +22,6 @@ export interface DocumentUrl {
   canPreview: boolean;
 }
 
-export interface DocumentData {
-  nom: string
-  description?: string
-  typeId: number;
-}
-
 export interface FilterOptions {
   searchTerm: string
   filterType: string
@@ -35,9 +29,18 @@ export interface FilterOptions {
   viewMode: "grid" | "list"
 }
 
-export interface DocumentStats {
-  totalDocuments: number
-  fileTypes: number
-  addedThisMonth: number
-  totalSize: string
+export interface DocumentUpload {
+  file: File;
+  investigation: string;
+  documentType: string;
+  documentName: string;
+  documentDescription: string;
+}
+
+
+export interface DocumentData {
+  nom: string;
+  description: string;
+  typeId: number;
+  file: File
 }

@@ -21,7 +21,6 @@
   <app-document-grid
     [documents]="documents$"
     [viewMode]="currentFilters.viewMode"
-    (documentClick)="onDocumentClick($event)"
     (previewClick)="onPreviewClick($event)"
     (downloadClick)="onDownloadClick($event)"
     (deleteClick)="onDeleteClick($event)"
@@ -36,7 +35,9 @@
   ></app-document-upload-modal>
 
   <!-- Preview Modal -->
-<app-document-preview-modal [isModalOpen]="true">
-
-</app-document-preview-modal>
+  <app-document-preview-modal
+    [isModalOpen]="isPreviewModalOpen"
+    [document]="selectedDocument"
+    (modalClosed)="isPreviewModalOpen=false"
+  ></app-document-preview-modal>
 </div>

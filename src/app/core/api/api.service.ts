@@ -1,22 +1,27 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
-import { environment } from '@env/environment.development';
-import { HttpOptions, IParams } from '@core/interfaces/http-options.interface';
-import { Pagination } from '@core/interfaces/pagination.interface';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Observable, of, throwError} from 'rxjs';
+import {tap, catchError, map} from 'rxjs/operators';
+import {environment} from '@env/environment.development';
+import {HttpOptions, IParams} from '@core/interfaces/http-options.interface';
+import {Pagination} from '@core/interfaces/pagination.interface';
 import {ApiResponse} from "@core/interfaces/api-response.interface";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  protected baseUrl = environment.apiUrl;
+  private _baseUrl = environment.apiUrl;
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient) {
+  }
 
   protected setBaseUrl(url: string) {
-    this.baseUrl = environment.apiUrl + url;
+    this._baseUrl = environment.apiUrl + url;
+  }
+
+  protected get baseUrl(): string {
+    return this._baseUrl;
   }
 
   private getToken(): string | null {
@@ -33,7 +38,7 @@ export class ApiService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     headers = headers.set('Accept', 'application/json');
-    return { ...options, headers, withCredentials: true };
+    return {...options, headers, withCredentials: true};
   }
 
   protected get<T>(endpoint: string, params?: { [key: string]: any }, options?: HttpOptions): Observable<T> {
@@ -118,7 +123,7 @@ export class ApiService {
   }
 
   protected responseGetMany<T>(params?: IParams, url?: string): Observable<ApiResponse<T>> {
-    const springParams = { ...params };
+    const springParams = {...params};
 
     if (params?.["page"] !== undefined && params?.["limit"] !== undefined) {
       springParams['page'] = Math.max(0, params["page"] - 1);
@@ -150,8 +155,8 @@ export class ApiService {
     );
   }
 
-  protected responseGetOne<T>(url: string): Observable<T | null> {
-    return this.get<T>(url).pipe(
+  protected responseGetOne<T>(url: string, params: IParams = {}): Observable<T | null> {
+    return this.get<T>(url, params).pipe(
       map(response => response ?? null),
       catchError((error) => {
         console.error("Erreur de récupération", error);

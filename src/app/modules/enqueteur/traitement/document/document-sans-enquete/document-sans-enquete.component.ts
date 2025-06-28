@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2, signal, WritableSignal} from '@angular/core';
 import {DocumentService} from "@modules/enqueteur/traitement/document/document.service";
 import {Document, DocumentStats, FilterOptions} from "@modules/enqueteur/traitement/document/document";
 import {Observable, of, Subject} from "rxjs";
@@ -15,46 +15,32 @@ import {TypeDocumentService} from "@modules/admin/parametrage/type-document/type
   styleUrls: ['./document-sans-enquete.component.css'],
 })
 export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>()
+  private destroy$ = new Subject<void>();
+
   documents$: Observable<Document[]> = of([]);
   typeDocument$: Observable<TypeDocument[]> = of([]);
-
   pagination: Pagination = {
     page: 1,
     limit: 10,
     totalItem: 0,
     totalPage: 0,
   };
-
-  stats: DocumentStats = {
-    totalDocuments: 0,
-    fileTypes: 0,
-    addedThisMonth: 0,
-    totalSize: "0 MB",
-  }
-
   currentFilters: FilterOptions = {
     searchTerm: "",
     filterType: "all",
     sortBy: "date",
     viewMode: "grid",
   }
-
   isUploadModalOpen = false
   isPreviewModalOpen = false
   selectedDocument: Document | null = null
 
-  showPreviewModal = false;
-
-  onPreviewModalClose() {
-    this.showPreviewModal = false
-    this.selectedDocument = null
-  }
 
   constructor(
     private documentService: DocumentService,
     private typeDocumentService: TypeDocumentService,
     private notificationService: NotificationAlertService,
+    private renderer: Renderer2,
   ) {
   }
 
@@ -162,57 +148,32 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
     // })
   }
 
-  onDocumentClick(document: Document): void {
+  onPreviewClick(document: Document): void {
     this.selectedDocument = document
     this.isPreviewModalOpen = true
   }
-
-  onPreviewClick(document: Document): void {
-    this.isPreviewModalOpen = true
-  }
-
-
-
   onDownloadClick(document: Document): void {
-    console.log("Download document:", document)
-    // Here you would typically trigger the download
+    console.log("Download document:", document);
+    this.documentService.getView(document.id, { download: true }).subscribe({
+      next: (blob: Blob) => {
+        const fileName = `${document.nom}.${document.extension}`;
+        const url = URL.createObjectURL(blob);
+        const link = this.renderer.createElement('a');
+        this.renderer.setAttribute(link, 'href', url);
+        this.renderer.setAttribute(link, 'download', fileName);
+        link.click();
+        URL.revokeObjectURL(url);
+        this.notificationService.showNotification("Téléchargement du document effectué", "success");
+      },
+      error: (err) => {
+        console.error(err);
+        this.notificationService.showNotification("Erreur lors du téléchargement du document", "error");
+      }
+    });
   }
+
 
   onDeleteClick(document: Document): void {
-    // if (confirm(`Êtes-vous sûr de vouloir supprimer "${document.name}" ?`)) {
-    //   this.documentService.deleteDocument(document.id)
-    // }
+    console.log("Delete document:", document)
   }
-
-  // private formatFileSize(bytes: number): string {
-  //   if (bytes === 0) return "0 B"
-  //   const k = 1024
-  //   const sizes = ["B", "KB", "MB", "GB"]
-  //   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  //   return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
-  // }
-  //
-  // private getFileTypeFromExtension(filename: string): Document["fileType"] {
-  //   const ext = filename.split(".").pop()?.toLowerCase()
-  //   switch (ext) {
-  //     case "pdf":
-  //       return "pdf"
-  //     case "xls":
-  //     case "xlsx":
-  //       return "excel"
-  //     case "jpg":
-  //     case "jpeg":
-  //     case "png":
-  //     case "gif":
-  //       return "image"
-  //     case "mp3":
-  //     case "wav":
-  //       return "audio"
-  //     case "doc":
-  //     case "docx":
-  //       return "word"
-  //     default:
-  //       return "other"
-  //   }
-  // }
 }

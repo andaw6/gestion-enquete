@@ -16,6 +16,12 @@ export class DocumentService extends ApiService {
     this.setBaseUrl("/documents")
   }
 
+  getBlob(documentId: number): Observable<Blob> {
+    return this.http.get(`/api/documents/${documentId}/view`, {
+      responseType: 'blob'
+    });
+  }
+
   getAll(params?: IParams): Observable<ApiResponse<Document>> {
     return this.responseGetMany<Document>(params, "/all");
   }
@@ -40,7 +46,13 @@ export class DocumentService extends ApiService {
     return this.responseGetOne<DocumentUrl>(`/${id}/url`);
   }
 
-  getView(id: number): Observable<any> {
-    return this.responseGetOne<any>(`/${id}/view`);
+  getView(id: number, params: IParams = {}): Observable<any> {
+    let fullUrl = `${this.baseUrl}/${id}/view`;
+    if (params) {
+      fullUrl += `?${this.formatQueryParams(params)}`;
+    }
+    return this.http.get(fullUrl, {
+      responseType: 'blob'
+    });
   }
 }

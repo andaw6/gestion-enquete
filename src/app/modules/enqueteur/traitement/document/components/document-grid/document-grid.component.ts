@@ -14,7 +14,6 @@ export class DocumentGridComponent {
   @Input() documents!: Observable<Document[]>;
   @Input() viewMode: "grid" | "list" = "grid"
   @Input() pagination!: Pagination;
-  @Output() documentClick = new EventEmitter<Document>()
   @Output() previewClick = new EventEmitter<Document>()
   @Output() downloadClick = new EventEmitter<Document>()
   @Output() deleteClick = new EventEmitter<Document>()
@@ -30,15 +29,6 @@ export class DocumentGridComponent {
   }
 
 
-
-
-
-  onView(): void {
-  }
-
-  onDownload(): void {
-  }
-
   getActionLabel(document: Document): string {
     return document.extension === "mp3" ? "Écouter" : "Voir"
   }
@@ -46,32 +36,10 @@ export class DocumentGridComponent {
   getActionIcon(document:Document): string {
     return document.extension === "mp3" ? "fas fa-play" : "fas fa-eye"
   }
-  getFileIcon(fileType: string): string {
-    const icons = {
-      pdf: "fas fa-file-pdf text-red-500",
-      excel: "fas fa-file-excel text-green-500",
-      image: "fas fa-image text-blue-500",
-      audio: "fas fa-file-audio text-purple-500",
-      word: "fas fa-file-word text-orange-500",
-      other: "fas fa-file text-gray-500",
-    }
-    return icons[fileType as keyof typeof icons] || icons.other
-  }
 
-  getFileIconBg(fileType: string): string {
-    const backgrounds = {
-      pdf: "bg-red-500 dark:bg-red-800",
-      excel: "bg-green-100 dark:bg-green-900",
-      jpg: "bg-blue-100 dark:bg-blue-900",
-      audio: "bg-purple-100 dark:bg-purple-900",
-      word: "bg-orange-100 dark:bg-orange-900",
-      other: "bg-gray-100 dark:bg-gray-900",
-    }
-    return backgrounds[fileType as keyof typeof backgrounds] || backgrounds.other
-  }
 
   onDocumentClick(doc: Document): void {
-    this.documentClick.emit(doc)
+    // this.documentClick.emit(doc)
   }
 
   onMenuClick(event: Event, doc: Document): void {
@@ -88,10 +56,10 @@ export class DocumentGridComponent {
     this.previewClick.emit(doc)
   }
 
-  // onDownload(doc: Document): void {
-  //   this.closeMenu()
-  //   this.downloadClick.emit(doc)
-  // }
+  onDownload(doc: Document): void {
+    this.closeMenu()
+    this.downloadClick.emit(doc)
+  }
 
   onClassify(doc: Document): void {
     this.closeMenu()

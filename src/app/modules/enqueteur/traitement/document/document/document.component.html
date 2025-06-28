@@ -1,0 +1,55 @@
+<!-- Header Section -->
+<div class="mb-8">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-dark-900 mb-2">Mes Documents</h1>
+      <p class="text-dark-500">Gérez tous vos documents d'enquêtes de manière efficace</p>
+    </div>
+  </div>
+</div>
+
+
+<!--&lt;!&ndash; Filters and Search &ndash;&gt;-->
+<!--<app-document-filters-->
+<!--  (searchChange)="onSearchChange($event)"-->
+<!--  (investigationFilter)="onInvestigationFilter($event)"-->
+<!--  (typeFilter)="onTypeFilter($event)"-->
+<!--  (sortChange)="onSortChange($event)"-->
+<!--  (viewModeChange)="onViewModeChange($event)">-->
+<!--</app-document-filters>-->
+
+<!--&lt;!&ndash; Documents par Enquête &ndash;&gt;-->
+<!--<div class="space-y-6">-->
+<!--  <app-investigation-folder-->
+<!--    *ngFor="let investigation of investigations$ | async"-->
+<!--    [investigation]="investigation">-->
+<!--  </app-investigation-folder>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Pagination &ndash;&gt;-->
+<!--<div class="mt-10 flex items-center justify-between bg-white rounded-xl shadow-soft p-4">-->
+<!--  <div class="text-sm text-dark-600">-->
+<!--    Affichage de <span class="font-semibold text-dark-900">3</span> dossiers sur <span-->
+<!--    class="font-semibold text-dark-900">5</span>-->
+<!--  </div>-->
+<!--  <div class="flex space-x-2">-->
+<!--    <button-->
+<!--      (click)="onPreviousPage()"-->
+<!--      [disabled]="currentPage === 1"-->
+<!--      class="px-4 py-2 bg-gray-100 text-dark-600 border border-gray-200 rounded-lg disabled:opacity-50 hover:bg-gray-200 transition-all duration-200">-->
+<!--      <i class="fas fa-chevron-left mr-2"></i>Précédent-->
+<!--    </button>-->
+<!--    <button-->
+<!--      *ngFor="let page of [1, 2]"-->
+<!--      (click)="onPageChange(page)"-->
+<!--      [class]="'px-4 py-2 border rounded-lg font-medium transition-all duration-200 ' + (currentPage === page ? 'bg-primary-500 text-white border-primary-500 shadow-lg' : 'bg-white text-dark-600 border-gray-200 hover:bg-gray-50')">-->
+<!--      {{ page }}-->
+<!--    </button>-->
+<!--    <button-->
+<!--      (click)="onNextPage()"-->
+<!--      [disabled]="currentPage === totalPages"-->
+<!--      class="px-4 py-2 bg-gray-100 text-dark-600 border border-gray-200 rounded-lg disabled:opacity-50 hover:bg-gray-200 transition-all duration-200">-->
+<!--      Suivant<i class="fas fa-chevron-right ml-2"></i>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</div>-->

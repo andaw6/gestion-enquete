@@ -27,7 +27,7 @@ export class PaginationComponent implements OnInit {
   @Input() totalItem!: number;
 
   ngOnInit(): void {
-    console.log(this.pagination);
+    // console.log(this.pagination);
     this.calculateVisiblePages();
   }
 

@@ -9,8 +9,9 @@ export class UtilService {
   updateActiveLink(navigation: NavigationSection[], url: string) {
 
     const updateItem = (item: NavigationItem): boolean => {
-      // Active si l'URL correspond à la route
-      item.active = !!item.route && url.includes(item.route);
+
+
+      item.active = !!(item.route && url.includes(item.route)); // Active si l'URL correspond à la route
 
       let childActive = false;
 

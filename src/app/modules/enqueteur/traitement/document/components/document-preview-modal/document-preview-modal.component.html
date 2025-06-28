@@ -1,0 +1,140 @@
+<!-- Modal Backdrop -->
+<div
+  *ngIf="isModalOpen"
+  (click)="onBackdropClick($event)"
+  (keydown)="onKeyDown($event)"
+  tabindex="0"
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 transition-all duration-300"
+  [class.opacity-100]="isModalOpen"
+  [class.opacity-0]="!isModalOpen">
+
+  <!-- Modal Content -->
+  <div
+    (click)="$event.stopPropagation()"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[85vh] max-w-6xl bg-white rounded-xl shadow-2xl z-51 overflow-hidden transition-all duration-300"
+    [class.scale-100]="isModalOpen"
+    [class.opacity-100]="isModalOpen"
+    [class.scale-95]="!isModalOpen"
+    [class.opacity-0]="!isModalOpen">
+
+    <!-- Modal Header -->
+    <div class="flex justify-between items-center p-6 border-b border-gray-200 bg-white">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800">Visionneuse de Documents</h2>
+        <p class="text-sm text-gray-500 mt-1" *ngIf="documentData">
+          {{ getDocumentType() }} • {{ getFileName() }}
+        </p>
+      </div>
+      <button
+        (click)="closeModal()"
+        class="flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors duration-200">
+        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="h-[calc(100%-80px)] flex flex-col">
+
+      <div
+        class="flex justify-between items-center p-4 bg-white border-b border-gray-200 flex-wrap gap-4 md:flex-nowrap">
+        <div class="flex items-center gap-2">
+          <button
+            (click)="downloadDocument()"
+            class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-md text-sm font-medium text-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+            </svg>
+            Télécharger
+          </button>
+        </div>
+
+        <div class="flex items-center text-sm text-gray-600">
+          <span>{{ getFileName() }}</span>
+          <span class="mx-2">•</span>
+          <span>{{ getFileSize() }}</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            (click)="reloadDocument()"
+            class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-md text-sm font-medium text-gray-700 transition-colors duration-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            Actualiser
+          </button>
+        </div>
+      </div>
+
+
+      <!-- Conteneur Document -->
+      <div class="flex-1 relative bg-gray-50 overflow-hidden">
+
+        <!-- Overlay de chargement -->
+        <div
+          *ngIf="isLoading"
+          class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center z-10">
+          <div class="text-center">
+            <div
+              class="w-8 h-8 border-3 border-gray-300 border-t-blue-600 rounded-full animate-spin mb-4 mx-auto"></div>
+            <p class="text-gray-600 font-medium">Chargement du document...</p>
+            <p class="text-sm text-gray-500 mt-2">Veuillez patienter</p>
+          </div>
+        </div>
+
+        <!-- Document Embed - PDF -->
+        <embed
+          #documentEmbed
+          *ngIf="embedUrl"
+          [src]="embedUrl"
+          [type]="contentType"
+          class="w-full h-full border-none"
+          (load)="onPdfLoad()"
+          (error)="onPdfError()">
+
+
+        <!-- Les documents qu'on peut pas afficher -->
+        <div
+          *ngIf="documentUrl && !documentUrl.canPreview"
+          class="w-full h-full flex items-center justify-center p-8">
+          <div class="text-center">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ getDocumentType() }}</h3>
+            <p class="text-gray-600 mb-4">Ce type de document ne peut pas être prévisualisé directement.</p>
+            <button
+              (click)="downloadDocument()"
+              class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors duration-200">
+              Télécharger le document
+            </button>
+          </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div
+          *ngIf="hasError"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+          <svg class="w-16 h-16 mx-auto mb-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="text-xl font-semibold mb-2 text-gray-800">Impossible de charger le document</h3>
+          <p class="text-gray-600 mb-4 max-w-md">Le document n'a pas pu être chargé. Vérifiez que le document existe et
+            est accessible.</p>
+          <button
+            (click)="retryLoad()"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors duration-200">
+            Réessayer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

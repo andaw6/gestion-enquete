@@ -39,6 +39,9 @@
       "@env/*": [
         "src/environments/*"
       ],
+      "@config/*":[
+        "src/app/config/*"
+      ]
     },
   },
   "angularCompilerOptions": {

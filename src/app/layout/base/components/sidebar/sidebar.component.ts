@@ -3,8 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NavigationItem, NavigationSection } from '@core/interfaces/navigation.interface';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {AppModule} from "../../../../app.module";
-import {SidebarItemComponent} from "@layout/admin/components/sidebar-item/sidebar-item.component";
+import {SidebarItemComponent} from "@layout/base/components/sidebar-item/sidebar-item.component";
 
 
 export interface User {
@@ -12,7 +11,6 @@ export interface User {
   role: string
   initials: string
 }
-
 
 
 @Component({
@@ -49,20 +47,6 @@ export class SidebarComponent {
     }
   }
 
-  // Modifier la méthode onNavigationClick
-  onNavigationClick(item: NavigationItem, event?: Event): void {
-    if (event) {
-      event.preventDefault()
-    }
-
-    if (item.children) {
-      this.toggleSubmenu(item)
-    } else {
-      this.route.navigate([item.route])
-      // Logique de navigation pour les éléments sans enfants
-      console.log("Navigate to:", item.label, item.route)
-    }
-  }
 
   onLogout(): void {
     // Logique de déconnexion

@@ -14,20 +14,23 @@ import {UTILISATEUR_ROUTES} from "@modules/admin/parametrage/utilisateur/utilisa
 
 
 @NgModule({
-  declarations: [
-    UtilisateurComponent,
-    DetailUtilisateurComponent,
-    SearchFiltersComponent,
-    StatsCardsComponent,
-    UsersTableComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    PaginationComponent,
-    LoaderComponent,
-    RouterModule.forChild(UTILISATEUR_ROUTES),
-  ]
+    declarations: [
+        UtilisateurComponent,
+        DetailUtilisateurComponent,
+        SearchFiltersComponent,
+        StatsCardsComponent,
+        UsersTableComponent
+    ],
+    exports: [
+        StatsCardsComponent
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        PaginationComponent,
+        LoaderComponent,
+        RouterModule.forChild(UTILISATEUR_ROUTES),
+    ]
 })
 export class UtilisateurModule { }

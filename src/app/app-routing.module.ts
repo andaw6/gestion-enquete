@@ -1,6 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AdminComponent as AdminLayoutComponent } from '@layout/admin/admin.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AdminComponent as AdminLayoutComponent} from '@layout/admin/admin.component';
+import {EnqueteurComponent as EnqueteurLayoutComponent} from "@layout/enqueteur/enqueteur.component";
 
 const routes: Routes = [
   {
@@ -12,14 +13,30 @@ const routes: Routes = [
         loadChildren: () => import("@modules/admin/parametrage/parametrage.module").then(m => m.ParametrageModule)
       },
       {
-        path: "utilisateur",
-        loadChildren: ()=>import("@modules/admin/parametrage/utilisateur/utilisateur.module").then(m => m.UtilisateurModule),
+        path: '**',
+        redirectTo: 'parametrage',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'enqueteur',
+    component: EnqueteurLayoutComponent,
+    children: [
+      {
+        path: "traitement",
+        loadChildren: () => import("@modules/enqueteur/traitement/traitement.module").then(m => m.TraitementModule)
       },
+      {
+        path: '**',
+        redirectTo: 'traitement',
+        pathMatch: 'full'
+      }
     ]
   },
   {
     path: '',
-    redirectTo: 'admin/parametrage',
+    redirectTo: 'enqueteur',
     pathMatch: 'full'
   }
 ];
@@ -28,4 +45,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

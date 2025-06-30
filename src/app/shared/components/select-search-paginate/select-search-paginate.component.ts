@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { OptionSelect } from "@core/interfaces/option-select.interface";
+import { OptionSelect } from "@core/interfaces/option.interface";
 import { Pagination } from "@core/interfaces/pagination.interface";
 import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
 

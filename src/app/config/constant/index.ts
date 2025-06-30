@@ -1,3 +1,5 @@
+import {Option} from "@core/interfaces/option.interface";
+
 export const FILE_ICON_CLASS_MAP: Record<string, string> = {
   'pdf': 'fas fa-file-pdf text-red-500',
   'doc': 'fas fa-file-word text-blue-600',
@@ -77,3 +79,51 @@ export const FILE_BG_CLASS_MAP: Record<string, string> = {
   'iso': 'bg-gray-50',
   'default': 'bg-gray-50'
 };
+
+
+export const FILE_TYPE_CATEGORY_MAP: Record<string, string[]> = {
+  "document": [
+    "pdf", "doc", "docx", "odt", "xls", "xlsx", "csv", "ppt", "pptx", "txt", "md"
+  ],
+  "image": [
+    "jpg", "jpeg", "png", "gif", "svg"
+  ],
+  "audio": [
+    "mp3", "wav", "flac"
+  ],
+  "video": [
+    "mp4", "avi", "mov", "wmv", "mkv"
+  ],
+  "archive": [
+    "zip", "rar", "7z"
+  ],
+  "code": [
+    "json", "xml", "html", "htm", "css", "js", "ts"
+  ],
+  "executable": [
+    "exe", "apk", "iso"
+  ],
+  "default": [
+    "autre"
+  ]
+};
+
+
+export const FILE_CATEGORIES: Option[] = [
+  {label: '🖼️ Images', value: 'image'},
+  {label: '🎵 Audios', value: 'audio'},
+  {label: '🎬 Vidéos', value: 'video'},
+  {label: '📄 Documents', value: 'document'},
+  {label: '🧳 Archives', value: 'archive'},
+  {label: '💻 Code', value: 'code'},
+  {label: '⚙️ Exécutables', value: 'executable'},
+  // {label: '🧩 Autres', value: 'autre'}
+];
+
+
+export const FILE_TRI: Option[] = [
+  {value: "date", label: "Trier par date"},
+  {value: "name", label: "Trier par nom"},
+  {value: "size", label: "Trier par taille"},
+  {value: "type", label: "Trier par type"},
+];

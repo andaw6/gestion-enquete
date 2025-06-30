@@ -4,3 +4,9 @@ export interface OptionSelect {
     value: string;
     description: string;
 }
+
+
+export interface Option {
+  value: string;
+  label: string;
+}

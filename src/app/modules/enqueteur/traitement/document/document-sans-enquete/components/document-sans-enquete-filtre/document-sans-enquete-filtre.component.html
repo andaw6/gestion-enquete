@@ -5,17 +5,17 @@
         <input
           type="text"
           placeholder="Rechercher un document..."
-          [(ngModel)]="filters.searchTerm"
-          (ngModelChange)="onFiltersChange()"
-          class="pl-10 pr-4 py-2 border border-gray-300  rounded-md text-sm bg-white  text-gray-900  w-80"
-        >
+          [formControl]="searchControl"
+          class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 w-80"
+        />
+
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <i class="fas fa-search text-gray-400"></i>
         </div>
       </div>
       <button
         (click)="onUploadClick()"
-        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+        class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors"
       >
         <i class="fas fa-upload mr-2"></i>Télécharger
       </button>
@@ -28,11 +28,7 @@
         class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white  text-gray-900 "
       >
         <option value="all">Tous les types</option>
-        <option value="pdf">PDF</option>
-        <option value="docx">Word</option>
-        <option value="xlsx">Excel</option>
-        <option value="jpg">Images</option>
-        <option value="mp3">Audio</option>
+        <option *ngFor="let opt of filterCategories" [value]="opt.value">{{ opt.label }}</option>
       </select>
 
       <select
@@ -40,22 +36,19 @@
         (ngModelChange)="onFiltersChange()"
         class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white  text-gray-900 "
       >
-        <option value="date">Trier par date</option>
-        <option value="name">Trier par nom</option>
-        <option value="size">Trier par taille</option>
-        <option value="type">Trier par type</option>
+        <option *ngFor="let tri of filterTries" [value]="tri.value">{{ tri.label }}</option>
       </select>
 
       <button
         (click)="setViewMode('grid')"
-        [class]="'px-3 py-2 rounded-md transition-colors ' + (filters.viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-100  text-gray-700 hover:bg-gray-200 ')"
+        [class]="'px-3 py-2 rounded-md transition-colors ' + (filters.viewMode === 'grid' ? 'bg-primary-500 text-white' : 'bg-gray-100  text-gray-700 hover:bg-gray-200 ')"
       >
         <i class="fas fa-th-large"></i>
       </button>
 
       <button
         (click)="setViewMode('list')"
-        [class]="'px-3 py-2 rounded-md transition-colors ' + (filters.viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-100  text-gray-700 hover:bg-gray-200 ')"
+        [class]="'px-3 py-2 rounded-md transition-colors ' + (filters.viewMode === 'list' ? 'bg-primary-500 text-white' : 'bg-gray-100  text-gray-700 hover:bg-gray-200 ')"
       >
         <i class="fas fa-list"></i>
       </button>

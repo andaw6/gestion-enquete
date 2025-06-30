@@ -21,11 +21,12 @@
   <app-document-grid
     [documents]="documents$"
     [viewMode]="currentFilters.viewMode"
+    [pagination]="pagination"
+    [loading]="loading()"
     (previewClick)="onPreviewClick($event)"
     (downloadClick)="onDownloadClick($event)"
     (deleteClick)="onDeleteClick($event)"
-    [pagination]="pagination"
-    [loading]="loading()"
+    (paginationChange)="setPagination($event)"
   ></app-document-grid>
 
   <!-- Upload Modal -->
@@ -41,4 +42,12 @@
     [document]="selectedDocument"
     (modalClosed)="isPreviewModalOpen=false"
   ></app-document-preview-modal>
+
+  <app-delete-modal
+    [isOpen]="showDeleteModal"
+      [itemName]="selectedItem"
+    [isDeleting]="isDeleting"
+    (confirm)="handleDelete()"
+    (cancel)="showDeleteModal = false"
+  ></app-delete-modal>
 </div>

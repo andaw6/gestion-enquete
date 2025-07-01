@@ -1,0 +1,58 @@
+<div class="bg-white rounded-lg shadow border border-gray-200 p-4 mb-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center space-x-2">
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="Rechercher une source..."
+          class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 w-80"
+          [(ngModel)]="filters.searchTerm"
+          (ngModelChange)="onFilterChange()"
+        >
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <i class="fas fa-search text-gray-400"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="filters.etatCode"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">Tous les états</option>
+        <option value="VERIFIED">Vérifiée</option>
+        <option value="AVAILABLE">Disponible</option>
+        <option value="TO_CHECK">À vérifier</option>
+        <option value="OFFICIAL">Officielle</option>
+        <option value="LIMITED_ACCESS">Accès limité</option>
+        <option value="TO_CROSS_CHECK">À recouper</option>
+      </select>
+
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="filters.niveauFiabilite"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">Tous niveaux de fiabilité</option>
+        <option value="TRES_ELEVEE">Très élevée</option>
+        <option value="ELEVEE">Élevée</option>
+        <option value="MOYENNE">Moyenne</option>
+        <option value="FAIBLE">Faible</option>
+        <option value="TRES_FAIBLE">Très faible</option>
+      </select>
+
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="filters.sortBy"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="updatedAt">Trier par date de mise à jour</option>
+        <option value="nom">Trier par nom</option>
+        <option value="niveauFiabilite">Trier par fiabilité</option>
+        <option value="dateObtention">Trier par date d'obtention</option>
+      </select>
+    </div>
+  </div>
+</div>

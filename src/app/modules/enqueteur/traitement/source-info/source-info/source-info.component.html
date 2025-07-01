@@ -1,0 +1,36 @@
+<div class="mb-8">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900">Sources d'Informations</h1>
+      <p class="text-sm text-gray-500">Gérez vos sources d'informations pour les enquêtes</p>
+    </div>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+      (click)="openAddSourceModal()"
+    >
+      <i class="fas fa-plus mr-2"></i>Nouvelle Source
+    </button>
+  </div>
+</div>
+
+<app-source-filters (filtersChange)="onFiltersChange($event)"></app-source-filters>
+
+
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+  <app-source-card
+    *ngFor="let source of sources"
+    [source]="source"
+    (favoriteToggle)="onFavoriteToggle($event)"
+    (actionClick)="onActionClick($event)"
+  ></app-source-card>
+</div>
+
+
+<!-- Recent Sources -->
+<app-recent-sources
+  [recentSources]="recentSources"
+  (recentSourceAction)="onRecentSourceAction($event)"
+></app-recent-sources>
+
+
+

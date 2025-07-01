@@ -39,7 +39,7 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
       {
         label: "Source Information",
         icon: "fas fa-database",
-        route: "/enqueteur/traitement/source-information",
+        route: "/enqueteur/traitement/source-info",
         active: false,
       },
     ],

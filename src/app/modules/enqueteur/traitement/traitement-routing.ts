@@ -6,6 +6,10 @@ export const TRAITEMENT_ROUTES: Route[] = [
     loadChildren: () => import("@modules/enqueteur/traitement/document/document.module").then(m => m.DocumentModule)
   },
   {
+    path:"source-info",
+    loadChildren: () => import("@modules/enqueteur/traitement/source-info/source-info.module").then(m => m.SourceInfoModule),
+  },
+  {
     path:'**',
     redirectTo: 'document',
     pathMatch: 'full',

@@ -1,0 +1,58 @@
+<div class="bg-white rounded-lg shadow border border-gray-200 p-4 mb-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center space-x-2">
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="Rechercher une source..."
+          class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 w-80"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()"
+        >
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <i class="fas fa-search text-gray-400"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="selectedCategory"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">Toutes les catégories</option>
+        <option value="Documents officiels">Documents officiels</option>
+        <option value="Témoignages">Témoignages</option>
+        <option value="Bases de données">Bases de données</option>
+        <option value="Sites web">Sites web</option>
+        <option value="Contacts">Contacts</option>
+        <option value="Archives">Archives</option>
+      </select>
+
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="selectedReliability"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">Tous niveaux de fiabilité</option>
+        <option value="5">Très élevée (5/5)</option>
+        <option value="4">Élevée (4/5)</option>
+        <option value="3">Moyenne (3/5)</option>
+        <option value="2">Faible (2/5)</option>
+        <option value="1">Très faible (1/5)</option>
+      </select>
+
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="sortBy"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="date">Trier par date</option>
+        <option value="name">Trier par nom</option>
+        <option value="reliability">Trier par fiabilité</option>
+        <option value="usage">Trier par utilisation</option>
+      </select>
+    </div>
+  </div>
+</div>

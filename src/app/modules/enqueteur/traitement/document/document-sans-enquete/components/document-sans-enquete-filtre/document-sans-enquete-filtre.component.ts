@@ -1,9 +1,10 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {FilterOptions} from "@modules/enqueteur/traitement/document/document";
+import {DocumentFilterOptions} from "@modules/enqueteur/traitement/document/document";
 import {FILE_CATEGORIES, FILE_TRI} from "@config/constant";
 import {Option} from "@core/interfaces/option.interface";
 import {FormControl} from "@angular/forms";
 import {debounceTime, distinctUntilChanged, filter, Subject, takeUntil} from "rxjs";
+import {UtilService} from "@core/services/util.service";
 
 @Component({
   selector: 'app-document-sans-enquete-filtre',
@@ -11,13 +12,13 @@ import {debounceTime, distinctUntilChanged, filter, Subject, takeUntil} from "rx
   styleUrls: ['./document-sans-enquete-filtre.component.css']
 })
 export class DocumentSansEnqueteFiltreComponent  implements OnInit, OnDestroy {
-  @Output() filtersChange = new EventEmitter<FilterOptions>();
+  @Output() filtersChange = new EventEmitter<DocumentFilterOptions>();
   @Output() uploadClick = new EventEmitter<void>();
 
   filterCategories: Option[] = FILE_CATEGORIES;
   filterTries: Option[] = FILE_TRI;
 
-  filters: FilterOptions = {
+  filters: DocumentFilterOptions = {
     searchTerm: '',
     filterType: 'all',
     sortBy: 'date',
@@ -26,6 +27,11 @@ export class DocumentSansEnqueteFiltreComponent  implements OnInit, OnDestroy {
 
   searchControl = new FormControl('');
   private destroy$ = new Subject<void>();
+
+  constructor(
+    private utilService: UtilService,
+  ) {
+  }
 
   ngOnInit(): void {
     this.setupSearchListener();
@@ -37,22 +43,13 @@ export class DocumentSansEnqueteFiltreComponent  implements OnInit, OnDestroy {
   }
 
   private setupSearchListener(): void {
-    this.searchControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        filter(query => query === '' || this.isValidQuery(query)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(query => {
-        this.filters.searchTerm = <string>query?.trim();
-        this.onFiltersChange();
-      });
+
+    this.utilService.setupSearchListener(this.searchControl, query => {
+      this.filters.searchTerm = query;
+      this.onFiltersChange();
+    })
   }
 
-  private isValidQuery(query: string | null): boolean {
-    return query !== null && query.trim() !== '' && query.length >= 3;
-  }
 
   onFiltersChange(): void {
     this.filtersChange.emit(this.filters);

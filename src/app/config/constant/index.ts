@@ -125,16 +125,16 @@ export const FILE_TRI: Option[] = [
   {value: "type", label: "Trier par type"},
 ];
 
-export const RELIABILITY_LEVELS: Option[] = [
+export const RELIABILITY_LEVELS = [
   {value: "5", label: "5 - Très élevée"}, // (Source officielle vérifiée)
   {value: "4", label: "4 - Élevée"}, // (Source reconnue et fiable)
   {value: "3", label: "3 - Moyenne"}, // (Source généralement fiable)
   {value: "2", label: "2 - Faible"}, // (Source à vérifier)
   {value: "1", label: "1 - Très faible"}, // (Source douteuse)
-];
+] as const;
 
-export const SOURCE_INFO_TRI:Option[] = [
-  {value:"date", label:"Trier par date"},
-  {value:"name", label:"Trier par nom"},
-  {value:"reliability", label:"Trier par fiabilité"},
-]
+export const SOURCE_INFO_TRI = [
+  {value: "date", label: "Trier par date"},
+  {value: "name", label: "Trier par nom"},
+  {value: "reliability", label: "Trier par fiabilité"},
+] as const;

@@ -14,7 +14,7 @@ import {TypeSourceService} from "@modules/admin/parametrage/type-source/type-sou
 import {TypeSource} from "@modules/admin/parametrage/type-source/type-source";
 import {EtatSourceService} from "@modules/enqueteur/traitement/source-info/etat-source.service";
 import {SourceInfoService} from "@modules/enqueteur/traitement/source-info/source-info.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {forkJoin} from 'rxjs';
 import {Document} from "@modules/enqueteur/traitement/document/document";
@@ -41,7 +41,7 @@ export class FormSourceInfoComponent implements OnInit {
 
 
   readonly documentIds = signal<number[]>([]);
-  readonly reliabilityLevels: Option[] = RELIABILITY_LEVELS;
+  readonly reliabilityLevels: Option[] = RELIABILITY_LEVELS.map(d => d as Option);
   private readonly key = "sourceInfo.draft";
   private draft: any = undefined;
 

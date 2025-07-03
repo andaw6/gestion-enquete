@@ -7,6 +7,6 @@ export interface OptionSelect {
 
 
 export interface Option {
-  value: string;
-  label: string;
+  readonly value: string;
+  readonly label: string;
 }

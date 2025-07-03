@@ -22,7 +22,7 @@ export interface DocumentUrl {
   canPreview: boolean;
 }
 
-export interface FilterOptions {
+export interface DocumentFilterOptions {
   searchTerm: string
   filterType: string
   sortBy: string

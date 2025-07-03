@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP} from "@config/constant";
 import {Pagination} from "@core/interfaces/pagination.interface";
 import {formatDate} from "date-fns";
+import {UtilService} from "@core/services/util.service";
 
 @Component({
   selector: 'app-document-grid',
@@ -20,24 +21,12 @@ export class DocumentGridComponent {
   @Output() paginationChange = new EventEmitter<Pagination>();
   @Input() loading: boolean = false;
 
+  constructor(
+    protected utilService: UtilService,
+  ) {
+  }
+
   showMenu: null | number = null;
-
-  getIcon(extension: string): string {
-    return FILE_ICON_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
-  }
-
-  getBgIcon(extension:string):string{
-    return  FILE_BG_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
-  }
-
-
-  getActionLabel(document: Document): string {
-    return document.extension === "mp3" ? "Écouter" : "Voir"
-  }
-
-  getActionIcon(document:Document): string {
-    return document.extension === "mp3" ? "fas fa-play" : "fas fa-eye"
-  }
 
   closeMenu(): void {
     this.showMenu = null
@@ -53,17 +42,9 @@ export class DocumentGridComponent {
     this.downloadClick.emit(doc)
   }
 
-
   onDelete(doc: Document): void {
     this.closeMenu()
     this.deleteClick.emit(doc)
   }
 
-  formatFileSize(taille: number) {
-    if (taille === 0) return "0 B"
-    const k = 1024
-    const sizes = ["B", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(taille) / Math.log(k))
-    return Number.parseFloat((taille / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
-  }
 }

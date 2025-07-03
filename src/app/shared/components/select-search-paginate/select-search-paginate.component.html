@@ -1,80 +1,80 @@
 <div id="select-search">
-  <div class="card dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
-    <h2 class="card-title text-gray-900 dark:text-gray-100">
+  <div class="card border-gray-300 text-gray-900">
+    <h2 class="card-title text-gray-900">
       <i class="fas fa-filter"></i> {{ title }}
     </h2>
-  
+
     <div class="custom-dropdown">
       <!-- Dropdown header -->
       <div class="dropdown-header" [class.active]="isOpen" (click)="toggleDropdown($event)">
         <div class="flex items-center">
-          <span class="text-gray-700 dark:text-gray-300">{{ selectedOption ? getSelectedOptionLabel() : 'Sélectionnez une option' }}</span>
-          <span class="ml-2" [class.hidden]="!selectedOption">
-            <span class="chip dark:bg-gray-700 dark:text-gray-100">Sélectionné</span>
+          <span class="text-gray-700">{{ getSelectedOptionLabel() }}</span>
+          <span class="ml-2" [class.hidden]="selectedOptions.length === 0">
+            <span class="chip">{{ selectedOptions.length }} sélectionné{{ selectedOptions.length > 1 ? 's' : '' }}</span>
           </span>
         </div>
-        <i class="fas fa-chevron-down text-indigo-500 dark:text-indigo-300 dropdown-icon" [style.transform]="isOpen ? 'rotate(180deg)' : ''"></i>
+        <i class="fas fa-chevron-down text-indigo-500 dropdown-icon" [style.transform]="isOpen ? 'rotate(180deg)' : ''"></i>
       </div>
-      
+
       <!-- Dropdown menu -->
       <div class="dropdown-menu fade-in" [class.open]="isOpen">
         <!-- Search input -->
         <div class="dropdown-search">
           <div class="relative">
-            <input 
-              type="text" 
-              [(ngModel)]="searchTerm" 
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
               (ngModelChange)="onSearchChange($event)"
-              placeholder="Rechercher une option..." 
-              class="search-input dark:bg-gray-700 dark:text-gray-100">
-            <i class="fas fa-search search-icon dark:text-gray-400"></i>
+              placeholder="Rechercher une option..."
+              class="search-input">
+            <i class="fas fa-search search-icon text-gray-400"></i>
           </div>
         </div>
-        
-        <!-- Options list -->   
+
+        <!-- Options list -->
         <div class="dropdown-list">
           <ng-container *ngIf="filteredOptions.length > 0; else noResults">
-            <div 
-              *ngFor="let option of filteredOptions" 
-              class="dropdown-item dark:bg-gray-700 dark:text-gray-100 mb-2" 
-              [class.selected]="selectedOption === option.value"
+            <div
+              *ngFor="let option of filteredOptions"
+              class="dropdown-item mb-2"
+              [class.selected]="isSelected(option.value)"
               (click)="selectOption(option)">
               <div class="flex items-center justify-between">
                 <div>
                   <div class="font-medium">{{ option.label }}</div>
                   <div class="text-xs text-gray-500 mt-0.5">{{ option.description }}</div>
                 </div>
-                <i *ngIf="selectedOption === option.value" class="fas fa-check text-indigo-600 dark:text-indigo-400"></i>
+                <i *ngIf="isSelected(option.value)" class="fas fa-check text-indigo-600"></i>
               </div>
             </div>
           </ng-container>
-          
+
           <ng-template #noResults>
-            <div class="empty-state dark:bg-gray-700 dark:text-gray-300">
+            <div class="empty-state">
               <div class="empty-state-icon">
                 <i class="fas fa-search"></i>
               </div>
               <p>Aucun résultat trouvé</p>
-              <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Essayez avec un autre terme de recherche</p>
+              <p class="text-sm text-gray-400 mt-1">Essayez avec un autre terme de recherche</p>
             </div>
           </ng-template>
         </div>
-        
+
         <!-- Pagination -->
         <div class="pagination" *ngIf="activePagination">
-          <button 
-            class="btn btn-secondary flex items-center dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600" 
+          <button
+            class="btn btn-secondary flex items-center"
             [disabled]="pagination.page === 1"
             (click)="prevPage()">
             <i class="fas fa-chevron-left mr-1 text-xs"></i> Précédent
           </button>
           <div class="flex items-center">
-            <span class="chip dark:bg-gray-700 dark:text-gray-100">
+            <span class="chip">
               <span>{{ pagination.page }}</span>/<span>{{ pagination.totalPage }}</span>
             </span>
           </div>
-          <button 
-            class="btn btn-secondary flex items-center dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600" 
+          <button
+            class="btn btn-secondary flex items-center"
             [disabled]="pagination.page >= pagination.totalPage"
             (click)="nextPage()">
             Suivant <i class="fas fa-chevron-right ml-1 text-xs"></i>
@@ -82,5 +82,5 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 </div>

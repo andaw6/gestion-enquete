@@ -1,222 +1,111 @@
-import { Component } from '@angular/core';
-import {RecentSource, Source} from "@modules/enqueteur/traitement/source-info/source-info"
+import {Component, OnInit} from '@angular/core';
+import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info"
+import {Observable, of} from "rxjs";
+import {SourceInfoService} from "@modules/enqueteur/traitement/source-info/source-info.service";
+import {Pagination} from "@core/interfaces/pagination.interface";
+import {NotificationAlertService} from "@core/services/notification-alert.service";
+import {ResponseError} from "@core/interfaces/response-error.interface";
+import {ActivatedRoute, Router} from "@angular/router";
+
 @Component({
   selector: 'app-source-info',
   templateUrl: './source-info.component.html',
   styleUrls: ['./source-info.component.css']
 })
-export class SourceInfoComponent {
-  sources: Source[] = [
-    {
-      id: "1",
-      name: "Registre du Commerce",
-      category: "Documents officiels",
-      description:
-        "Base de données officielle du registre du commerce pour vérifier l'existence et le statut des entreprises.",
-      reliability: 5,
-      status: "verified",
-      usageCount: 45,
-      lastUpdated: "Mise à jour: 15/01/2024",
-      icon: "fas fa-file-alt",
-      iconColor: "bg-blue-500",
-      actionType: "access",
-      isFavorite: true,
-    },
-    {
-      id: "2",
-      name: "M. Amadou Diop",
-      category: "Contact expert",
-      description:
-        "Expert comptable spécialisé dans l'audit des PME. Contact privilégié pour les enquêtes financières.",
-      reliability: 4,
-      status: "available",
-      usageCount: 12,
-      lastUpdated: "Dernière fois: 10/01/2024",
-      icon: "fas fa-user-tie",
-      iconColor: "bg-green-500",
-      actionType: "contact",
-      isFavorite: false,
-    },
-    {
-      id: "3",
-      name: "ANSD Sénégal",
-      category: "Base de données",
-      description:
-        "Agence Nationale de la Statistique et de la Démographie. Données officielles sur l'emploi et les entreprises.",
-      reliability: 5,
-      status: "official",
-      usageCount: 78,
-      lastUpdated: "Mise à jour: 20/01/2024",
-      icon: "fas fa-globe",
-      iconColor: "bg-purple-500",
-      actionType: "access",
-      isFavorite: true,
-    },
-    {
-      id: "4",
-      name: "Témoignage Employé",
-      category: "Témoignage",
-      description:
-        "Témoignage d'un employé de SARL TechCorp concernant les conditions de travail et les pratiques de l'entreprise.",
-      reliability: 3,
-      status: "to-check",
-      usageCount: 1,
-      lastUpdated: "Recueilli: 18/01/2024",
-      icon: "fas fa-microphone",
-      iconColor: "bg-orange-500",
-      actionType: "consult",
-      isFavorite: false,
-    },
-    {
-      id: "5",
-      name: "Archives Nationales",
-      category: "Archives",
-      description:
-        "Archives historiques des entreprises et documents administratifs anciens pour les enquêtes approfondies.",
-      reliability: 4,
-      status: "limited-access",
-      usageCount: 8,
-      lastUpdated: "Dernière visite: 05/01/2024",
-      icon: "fas fa-archive",
-      iconColor: "bg-red-500",
-      actionType: "reserve",
-      isFavorite: false,
-    },
-    {
-      id: "6",
-      name: "Presse Locale",
-      category: "Médias",
-      description:
-        "Articles de presse et reportages locaux pouvant contenir des informations pertinentes sur les entreprises enquêtées.",
-      reliability: 2,
-      status: "to-cross-check",
-      usageCount: 15,
-      lastUpdated: "Mise à jour: 12/01/2024",
-      icon: "fas fa-newspaper",
-      iconColor: "bg-indigo-500",
-      actionType: "search",
-      isFavorite: false,
-    },
-  ]
+export class SourceInfoComponent implements OnInit {
 
-  recentSources: RecentSource[] = [
-    {
-      id: 1,
-      name: "Registre du Commerce",
-      icon: "fas fa-file-alt",
-      iconColor: "bg-blue-500",
-      lastUsed: "Il y a 2 heures",
-      context: "Utilisée dans l'enquête SARL TechCorp",
-      actionType: "access",
-    },
-    {
-      id: 2,
-      name: "M. Amadou Diop",
-      icon: "fas fa-user-tie",
-      iconColor: "bg-green-500",
-      lastUsed: "Hier",
-      context: "Contacté pour l'enquête Marie Diallo",
-      actionType: "contact",
-    },
-    {
-      id: 3,
-      name: "ANSD Sénégal",
-      icon: "fas fa-globe",
-      iconColor: "bg-purple-500",
-      lastUsed: "Il y a 3 jours",
-      context: "Consultée pour statistiques sectorielles",
-      actionType: "consult",
-    },
-  ]
+  sourceInfo$: Observable<SourceInfo[]> = of([]);
+  loading: boolean = false;
+  pagination: Pagination = {
+    totalItem: 1,
+    totalPage: 1,
+    limit: 10,
+    page: 1
+  };
+  showSourceId: number | null = null;
+  private highlightedId: number | null = null;
 
-  filteredSources: Source[] = []
-  paginatedSources: Source[] = []
-  currentPage = 1
-  itemsPerPage = 6
-  isAddSourceModalOpen = false
+  constructor(
+    private sourceInfoService: SourceInfoService,
+    private notificationService: NotificationAlertService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+  }
+
+  loadData() {
+    this.loading = true;
+    this.sourceInfoService.getAll({...this.pagination, sort: 'updatedAt,desc'}).subscribe({
+      next: response => {
+        this.loading = false;
+        this.pagination = response.pagination;
+        this.sourceInfo$ = of(response.data);
+        this.showSource(response.data);
+      },
+      error: (error: ResponseError) => {
+        console.log(error);
+        this.notificationService.showNotification(error.message || "Erreur lors de la récupération des sources d'information", "error");
+        this.loading = false;
+      }
+    })
+  }
+
+  showSource(data: SourceInfo[]) {
+    // On déclenche le clignotement après réception des données
+    if (this.highlightedId !== null) {
+      const found = data.some(s => s.id === this.highlightedId);
+      if (found) {
+        // active le clignotement pendant 1s
+        this.showSourceId = this.highlightedId;
+        setTimeout(() => {
+          this.showSourceId = null;
+        }, 2000);
+      } else {
+        this.showSourceId = null;
+      }
+    }
+  }
 
   ngOnInit() {
-    this.filteredSources = [...this.sources]
-    this.updatePaginatedSources()
+    this.route.queryParamMap.subscribe(params => {
+      const show = params.get("show");
+      if (show !== null) {
+        this.highlightedId = Number(show);
+      }
+    });
+
+    this.loadData();
   }
 
   onFiltersChange(filters: any) {
-    this.filteredSources = this.sources.filter((source) => {
-      return true;
-    })
 
-
-
-    this.currentPage = 1
-    this.updatePaginatedSources()
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page
-    this.updatePaginatedSources()
+  setPagination(pag: Pagination) {
+    this.pagination = pag;
+    this.loadData();
   }
 
-
-
-  onSourceAction(event: { sourceId: string; action: string }) {
-    console.log("Source action:", event)
-    // Implement source action logic here
+  actionClick($event: SourceInfo) {
+    this.router.navigate(["/enqueteur/traitement/source-info", $event.id]).then(console.info);
   }
 
-  onRecentSourceAction(event: { sourceId: number; action: string }) {
-    console.log("Recent source action:", event)
-    // Implement recent source action logic here
-  }
-
-  openAddSourceModal() {
-    this.isAddSourceModalOpen = true
-  }
-
-  closeAddSourceModal() {
-    this.isAddSourceModalOpen = false
-  }
-
-  onAddSource(sourceData: any) {
-
-    this.filteredSources = [...this.sources]
-    this.updatePaginatedSources()
-  }
-
-  onFavoriteToggle(sourceId: string) {
-  }
-
-  onActionClick(event: { sourceId: string; action: string }) {
-  }
-
-  private updatePaginatedSources() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage
-    const endIndex = startIndex + this.itemsPerPage
-    this.paginatedSources = this.filteredSources.slice(startIndex, endIndex)
-  }
-
-
-
-  private getIconForCategory(category: string): string {
-    const icons: { [key: string]: string } = {
-      "Documents officiels": "fas fa-file-alt",
-      "Temoignages": "fas fa-microphone",
-      "Bases de donnees": "fas fa-database",
-      "Sites web": "fas fa-globe",
-      "Contacts": "fas fa-user-tie",
-      "Archives": "fas fa-archive",
+  updatedClick($event: SourceInfo): void {
+    const {documents, utilisateur, ...rest} = $event;
+    const data = {
+      ...rest,
+      type: $event.type.code,
+      etat: $event.etat.code,
+      documentIds: documents.map(d => d.id),
+    };
+    const previousDraft = localStorage.getItem("sourceInfo.draft");
+    if (previousDraft) {
+      localStorage.setItem("sourceInfo", previousDraft);
     }
-    return icons[category] || "fas fa-file"
+    localStorage.setItem("sourceInfo.draft", JSON.stringify(data));
+    this.router.navigate(['/enqueteur/traitement/source-info/nouveau'],
+      // {queryParams: {edit: true}}
+    ).then(console.info);
   }
 
-  private getColorForCategory(category: string): string {
-    const colors: { [key: string]: string } = {
-      "Documents officiels": "bg-blue-500",
-      "Temoignages": "bg-orange-500",
-      "Bases de donnees": "bg-purple-500",
-      "Sites web": "bg-green-500",
-      "Contacts": "bg-indigo-500",
-      "Archives": "bg-red-500",
-    }
-    return colors[category] || "bg-gray-500"
-  }
 }

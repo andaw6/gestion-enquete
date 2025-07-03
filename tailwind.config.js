@@ -54,7 +54,7 @@ module.exports = {
           950: '#232322'
 
         },
-        primary1: {
+        primary123: {
           50: "#EFF6FF",
           100: "#DBEAFE",
           200: "#BFDBFE",
@@ -66,7 +66,7 @@ module.exports = {
           800: "#1E40AF",
           900: "#111827",
         },
-        test: {
+        primary124: {
           50: "#ECFDF5",
           100: "#D1FAE5",
           200: "#A7F3D0",

@@ -12,31 +12,31 @@ import {
   DocumentGridComponent
 } from "@modules/enqueteur/traitement/document/components/document-grid/document-grid.component";
 import {
-  DocumentPreviewModalComponent
-} from "@modules/enqueteur/traitement/document/components/document-preview-modal/document-preview-modal.component";
-import {
   DocumentUploadModalComponent
 } from "@modules/enqueteur/traitement/document/components/document-upload-modal/document-upload-modal.component";
 import { DocumentSansEnqueteFiltreComponent } from './document-sans-enquete/components/document-sans-enquete-filtre/document-sans-enquete-filtre.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
+import {
+  DocumentPreviewModalComponent
+} from "@shared/components/document-preview-modal/document-preview-modal.component";
 
 
 @NgModule({
-  declarations: [
-    DocumentComponent,
-    DocumentSansEnqueteComponent,
-    DocumentGridComponent,
-    DocumentPreviewModalComponent,
-    DocumentUploadModalComponent,
-    DocumentSansEnqueteFiltreComponent,
-    DeleteModalComponent,
-  ],
+    declarations: [
+        DocumentComponent,
+        DocumentSansEnqueteComponent,
+        DocumentGridComponent,
+        DocumentUploadModalComponent,
+        DocumentSansEnqueteFiltreComponent,
+        DeleteModalComponent,
+    ],
     imports: [
         CommonModule,
         FormsModule,
         PaginationComponent,
+        DocumentPreviewModalComponent,
+        ReactiveFormsModule,
         RouterModule.forChild(DOCUMENT_ROUTE),
-        ReactiveFormsModule
     ]
 })
 export class DocumentModule {

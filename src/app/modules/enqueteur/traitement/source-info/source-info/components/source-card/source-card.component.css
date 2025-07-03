@@ -1,0 +1,8 @@
+@keyframes flash-border {
+  0%, 100% {  opacity: 0; @apply border-primary-500 }
+  50% {  opacity: 1; @apply border-primary-500 }
+}
+
+.animate-flash {
+  animation: flash-border 1s ease-in-out infinite; /* boucle infinie */
+}

@@ -5,8 +5,8 @@
       <p class="text-sm text-gray-500">Gérez vos sources d'informations pour les enquêtes</p>
     </div>
     <button
-      class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-      (click)="openAddSourceModal()"
+      class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors"
+      [routerLink]="['/enqueteur/traitement/source-info/nouveau']"
     >
       <i class="fas fa-plus mr-2"></i>Nouvelle Source
     </button>
@@ -15,22 +15,27 @@
 
 <app-source-filters (filtersChange)="onFiltersChange($event)"></app-source-filters>
 
+<div class="bg-white rounded-lg shadow border border-gray-200 ">
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-5 items-stretch">
+    <app-source-card
+      *ngFor="let source of sourceInfo$ | async"
+      [source]="source"
+      [selected]="showSourceId!=null && showSourceId == source.id"
+      (onActionClick)="actionClick($event)"
+      (onUpdatedClick)="updatedClick($event)"
+    ></app-source-card>
+  </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-  <app-source-card
-    *ngFor="let source of sources"
-    [source]="source"
-    (favoriteToggle)="onFavoriteToggle($event)"
-    (actionClick)="onActionClick($event)"
-  ></app-source-card>
+  <div *ngIf="(sourceInfo$ | async)?.length === 0" class="text-center py-12">
+    <i class="fas fa-folder-open text-6xl text-gray-400 mb-4"></i>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun document trouvé</h3>
+    <p class="text-gray-500">
+      Essayez de modifier vos critères de recherche ou ajoutez de nouveaux documents.
+    </p>
+  </div>
+  <div *ngIf="(sourceInfo$ | async)?.length && !loading">
+    <app-pagination [pagination]="pagination" (pageChanged)="setPagination($event)"></app-pagination>
+  </div>
 </div>
-
-
-<!-- Recent Sources -->
-<app-recent-sources
-  [recentSources]="recentSources"
-  (recentSourceAction)="onRecentSourceAction($event)"
-></app-recent-sources>
-
 
 

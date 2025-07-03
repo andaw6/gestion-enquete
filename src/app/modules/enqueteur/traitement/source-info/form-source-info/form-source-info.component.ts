@@ -1,227 +1,24 @@
-import {Component, Injectable, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit, signal} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import {EtatSourceInfo, SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info";
-import {delay, map, Observable, of, throwError} from "rxjs";
-
-export interface CreateSourceFormData {
-  nom: string
-  type: string
-  description: string
-  niveauFiabilite: string
-  etat: string
-  dateObtention: string
-  dateMiseAJour?: string
-  commentaires?: string
-  enqueteAssociee?: string
-  ajouterAuxFavoris: boolean
-}
-
-// Interface pour les documents uploadés
-export interface DocumentUpload {
-  file: File
-  nom: string
-  type: string
-}
-
-// DTO pour la création - correspond exactement au backend
-export interface SourceInfoRequestDTO {
-  nom: string
-  description?: string
-  commentaires?: string
-  niveauFiabilite: string
-  etatId: number
-  utilisateurId: number
-  dateObtention?: string // ISO string format
-  documentIds?: number[]
-}
-
-
-@Injectable({
-  providedIn: "root",
-})
-export class SourceService {
-  private sources: SourceInfo[] = []
-  private currentUserId = 1 // ID de l'utilisateur connecté (Fatou Sall)
-
-  // États disponibles (normalement récupérés du backend)
-  private etatsDisponibles: EtatSourceInfo[] = [
-    { id: 1, code: "active", libelle: "Active" },
-    { id: 2, code: "verified", libelle: "Vérifiée" },
-    { id: 3, code: "pending", libelle: "En attente de vérification" },
-    { id: 4, code: "archived", libelle: "Archivée" },
-    { id: 5, code: "unavailable", libelle: "Indisponible" },
-  ]
-
-  constructor() {}
-
-  /**
-   * Crée une nouvelle source d'information
-   */
-  createSource(formData: CreateSourceFormData, documents: DocumentUpload[]): Observable<SourceInfo> {
-    // Validation des données
-    if (!formData.nom || !formData.description || !formData.niveauFiabilite) {
-      return throwError(() => new Error("Les champs obligatoires sont manquants"))
-    }
-
-    // Conversion du formulaire vers le DTO backend
-    const dto: SourceInfoRequestDTO = this.mapFormDataToDTO(formData, documents)
-
-    // Simulation de l'appel API
-    return this.sendToBackend(dto).pipe(
-      delay(1000), // Simulation du délai réseau
-      map((response) => this.mapDTOToSourceInfo(response, formData)),
-    )
-  }
-
-  /**
-   * Récupère les états disponibles
-   */
-  getEtatsDisponibles(): Observable<EtatSourceInfo[]> {
-    return of(this.etatsDisponibles)
-  }
-
-  /**
-   * Récupère les enquêtes disponibles
-   */
-  getEnquetes(): Observable<any[]> {
-    const enquetes = [
-      { id: 1, nom: "SARL TechCorp - Enquête employeur" },
-      { id: 2, nom: "Marie Diallo - Enquête travailleur" },
-      { id: 3, nom: "Association Solidarité - Enquête bénéficiaire" },
-    ]
-    return of(enquetes)
-  }
-
-  /**
-   * Upload des documents (simulation)
-   */
-  uploadDocuments(documents: DocumentUpload[]): Observable<number[]> {
-    // Simulation de l'upload des documents
-    const documentIds = documents.map(() => Math.floor(Math.random() * 1000) + 1)
-    return of(documentIds).pipe(delay(500))
-  }
-
-  /**
-   * Sauvegarde en brouillon
-   */
-  saveDraft(formData: CreateSourceFormData): Observable<any> {
-    console.log("Sauvegarde en brouillon:", formData)
-    return of({ success: true, message: "Brouillon sauvegardé" }).pipe(delay(300))
-  }
-
-  /**
-   * Conversion des données du formulaire vers le DTO backend
-   */
-  private mapFormDataToDTO(formData: CreateSourceFormData, documents: DocumentUpload[]): SourceInfoRequestDTO {
-    const etatId = this.getEtatIdByCode(formData.etat)
-
-    return {
-      nom: formData.nom.trim(),
-      description: formData.description?.trim(),
-      commentaires: formData.commentaires?.trim(),
-      niveauFiabilite: formData.niveauFiabilite,
-      etatId: etatId,
-      utilisateurId: this.currentUserId,
-      dateObtention: formData.dateObtention ? this.formatDateForBackend(formData.dateObtention) : undefined,
-      documentIds: [], // Sera rempli après l'upload des documents
-    }
-  }
-
-  /**
-   * Simulation de l'envoi au backend
-   */
-  private sendToBackend(dto: SourceInfoRequestDTO): Observable<SourceInfo> {
-    console.log("Envoi au backend:", dto)
-
-    // Simulation d'une réponse du backend
-    const mockResponse: SourceInfo = {
-      id: Date.now(),
-      nom: dto.nom,
-      description: dto.description || "",
-      commentaires: dto.commentaires || "",
-      niveauFiabilite: dto.niveauFiabilite,
-      etat: this.getEtatById(dto.etatId),
-      utilisateur: {
-        id: dto.utilisateurId,
-        username: "Fatou Sall",
-      },
-      documents: [],
-      dateObtention: dto.dateObtention || new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-
-    return of(mockResponse)
-  }
-
-  /**
-   * Conversion de la réponse backend vers l'objet complet
-   */
-  private mapDTOToSourceInfo(response: SourceInfo, originalFormData: CreateSourceFormData): SourceInfo {
-    return {
-      ...response,
-      // Ajout d'informations supplémentaires si nécessaire
-    }
-  }
-
-  /**
-   * Récupère l'ID de l'état par son code
-   */
-  private getEtatIdByCode(code: string): number {
-    const etat = this.etatsDisponibles.find((e) => e.code === code)
-    return etat?.id || 1 // Par défaut "active"
-  }
-
-  /**
-   * Récupère l'état par son ID
-   */
-  private getEtatById(id: number): any {
-    const etat = this.etatsDisponibles.find((e) => e.id === id)
-    return etat || this.etatsDisponibles[0]
-  }
-
-  /**
-   * Formate la date pour le backend (ISO string)
-   */
-  private formatDateForBackend(dateString: string): string {
-    const date = new Date(dateString)
-    return date.toISOString()
-  }
-
-  /**
-   * Validation des fichiers
-   */
-  validateFiles(files: File[]): { valid: boolean; errors: string[] } {
-    const errors: string[] = []
-    const maxSize = 10 * 1024 * 1024 // 10MB
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-    ]
-
-    files.forEach((file, index) => {
-      if (file.size > maxSize) {
-        errors.push(`Le fichier "${file.name}" dépasse la taille maximale de 10MB`)
-      }
-
-      if (!allowedTypes.includes(file.type)) {
-        errors.push(`Le type du fichier "${file.name}" n'est pas autorisé`)
-      }
-    })
-
-    return {
-      valid: errors.length === 0,
-      errors,
-    }
-  }
-}
-
-
+import {Option, OptionSelect} from "@core/interfaces/option.interface";
+import {DocumentService} from "@modules/enqueteur/traitement/document/document.service";
+import {TypeSourceService} from "@modules/admin/parametrage/type-source/type-source.service";
+import {TypeSource} from "@modules/admin/parametrage/type-source/type-source";
+import {EtatSourceService} from "@modules/enqueteur/traitement/source-info/etat-source.service";
+import {SourceInfoService} from "@modules/enqueteur/traitement/source-info/source-info.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {NotificationAlertService} from "@core/services/notification-alert.service";
+import {forkJoin} from 'rxjs';
+import {Document} from "@modules/enqueteur/traitement/document/document";
+import {RELIABILITY_LEVELS} from "@config/constant";
 
 @Component({
   selector: 'app-form-source-info',
@@ -229,199 +26,259 @@ export class SourceService {
   styleUrls: ['./form-source-info.component.css']
 })
 export class FormSourceInfoComponent implements OnInit {
-  sourceForm!: FormGroup
-  selectedFiles: File[] = []
-  enquetes: any[] = []
-  etatsDisponibles: EtatSourceInfo[] = []
-  isSubmitting = false
-  showSuccessModal = false
-  createdSource: any = null
-  fileValidationErrors: string[] = []
+  sourceForm!: FormGroup;
+  selectedFiles: File[] = [];
+  etatsDisponibles: EtatSourceInfo[] = [];
+  sourceTypes: TypeSource[] = [];
+  isSubmitting: boolean = false;
+  showSuccessModal: boolean = false;
+  fileValidationErrors: string[] = [];
+  selectedDocument: OptionSelect[] = [];
+  option: OptionSelect[] = [];
+  loadingDocument: boolean = false;
+  wasEditing: boolean = false;
+  sourceId: number | null = null;
 
-  sourceTypes = [
-    { value: "document_officiel", label: "Document officiel" },
-    { value: "base_donnees", label: "Base de données" },
-    { value: "contact_expert", label: "Contact expert" },
-    { value: "temoignage", label: "Témoignage" },
-    { value: "site_web", label: "Site web" },
-    { value: "archive", label: "Archive" },
-    { value: "media", label: "Média/Presse" },
-    { value: "autre", label: "Autre" },
-  ]
 
-  reliabilityLevels = [
-    { value: "5", label: "5 - Très élevée (Source officielle vérifiée)" },
-    { value: "4", label: "4 - Élevée (Source reconnue et fiable)" },
-    { value: "3", label: "3 - Moyenne (Source généralement fiable)" },
-    { value: "2", label: "2 - Faible (Source à vérifier)" },
-    { value: "1", label: "1 - Très faible (Source douteuse)" },
-  ]
+  readonly documentIds = signal<number[]>([]);
+  readonly reliabilityLevels: Option[] = RELIABILITY_LEVELS;
+  private readonly key = "sourceInfo.draft";
+  private draft: any = undefined;
+
 
   constructor(
-    private fb: FormBuilder,
-    private sourceService: SourceService,
-) {}
+    private readonly fb: FormBuilder,
+    private readonly documentService: DocumentService,
+    private readonly typeSourceService: TypeSourceService,
+    private readonly etatSourceService: EtatSourceService,
+    private readonly sourceInfoService: SourceInfoService,
+    private readonly notificationService: NotificationAlertService,
+    private readonly router: Router,
+  ) {
+  }
 
   ngOnInit(): void {
-    this.initializeForm()
-    this.loadData()
+    this.wasEditing = false;
+    this.initializeForm();
+    this.restoreDraft();
+    this.loadInitialData();
   }
 
   initializeForm(): void {
-    const today = new Date().toISOString().split("T")[0]
-
+    const today = new Date().toISOString().split("T")[0];
     this.sourceForm = this.fb.group({
       nom: ["", [Validators.required, Validators.minLength(3)]],
       type: ["", Validators.required],
       description: ["", [Validators.required, Validators.minLength(10)]],
       niveauFiabilite: ["", Validators.required],
-      etat: ["active"], // Code de l'état par défaut
-      dateObtention: [today],
-      dateMiseAJour: [""],
+      etat: [""],
+      dateObtention: [today, [this.noFutureDateValidator()]],
+      dateMiseAJour: ["", [this.noFutureDateValidator()]],
       commentaires: [""],
       enqueteAssociee: [""],
       ajouterAuxFavoris: [false],
-    })
+    });
   }
 
-  loadData(): void {
-    // Charger les enquêtes
-    this.sourceService.getEnquetes().subscribe((enquetes) => {
-      this.enquetes = enquetes
-    })
-
-    // Charger les états disponibles
-    this.sourceService.getEtatsDisponibles().subscribe((etats) => {
-      this.etatsDisponibles = etats
-    })
+  noFutureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const inputDate = new Date(control.value);
+      const today = new Date();
+      return inputDate > today ? {futureDate: true} : null;
+    };
   }
 
-  onFileSelected(event: any): void {
-    const files = Array.from(event.target.files) as File[]
-    this.addFiles(files)
+  loadInitialData(): void {
+    this.loadingDocument = true;
+
+    forkJoin({
+      documents: this.documentService.getAll(),
+      types: this.typeSourceService.getAll(),
+      etats: this.etatSourceService.getAll()
+    }).subscribe({
+      complete(): void {
+        console.log("complete");
+      },
+      next: ({documents, types, etats}) => {
+        this.option = documents.data.map(this.mapDocumentToOptionSelect);
+        this.sourceTypes = types.data;
+        this.etatsDisponibles = etats.data;
+        this.loadingDocument = false;
+        // Restauration des documents sélectionnés
+        if (this.draft?.documentIds) {
+          const idSet = new Set(this.draft.documentIds);
+          this.selectedDocument = documents.data
+            .filter(d => idSet.has(d.id))
+            .map(this.mapDocumentToOptionSelect);
+        }
+      },
+      error: err => {
+        this.loadingDocument = false;
+        this.notificationService.showNotification("Erreur de chargement des données", "error");
+        console.error(err);
+      }
+    });
   }
 
-  onDragOver(event: DragEvent): void {
-    event.preventDefault()
-    event.stopPropagation()
+  private mapDocumentToOptionSelect(doc: Document): OptionSelect {
+    return {
+      id: doc.id.toString(),
+      label: `${doc.nom}.${doc.extension}`,
+      description: `Type: ${doc.type.libelle} - Description: ${doc.description}`,
+      value: doc.id.toString()
+    };
   }
 
-  onDragLeave(event: DragEvent): void {
-    event.preventDefault()
-    event.stopPropagation()
+  restoreDraft(): void {
+    try {
+      const raw = localStorage.getItem(this.key);
+      if (!raw) return;
+
+      this.draft = JSON.parse(raw);
+      if (this.draft && typeof this.draft === 'object') {
+        if (this.draft.dateObtention && !isNaN(Date.parse(this.draft.dateObtention))) {
+          this.draft.dateObtention = this.toDateInputValue(this.draft.dateObtention);
+        }
+        if (this.draft.dateMiseAJour && !isNaN(Date.parse(this.draft.dateMiseAJour))) {
+          this.draft.dateMiseAJour = this.toDateInputValue(this.draft.dateMiseAJour);
+        }
+        this.sourceForm.patchValue(this.draft);
+        if (Array.isArray(this.draft.documentIds)) {
+          this.documentIds.set(this.draft.documentIds);
+        }
+        this.wasEditing = true;
+      }
+    } catch (err) {
+      console.warn("Échec de restauration du brouillon:", err);
+    }
   }
 
-  onDrop(event: DragEvent): void {
-    event.preventDefault()
-    event.stopPropagation()
-
-    const files = Array.from(event.dataTransfer?.files || []) as File[]
-    this.addFiles(files)
-  }
-
-private addFiles(files: File[]): void {
-    // Validation des fichiers
-    const validation = this.sourceService.validateFiles(files)
-
-    if (!validation.valid) {
-    this.fileValidationErrors = validation.errors
-    return
-  }
-
-  this.fileValidationErrors = []
-  this.selectedFiles = [...this.selectedFiles, ...files]
-}
-
-  removeFile(index: number): void {
-    this.selectedFiles.splice(index, 1)
-    this.fileValidationErrors = []
-  }
-
-  getFileSize(size: number): string {
-    return (size / 1024 / 1024).toFixed(2)
+  onSelectDocument(select: OptionSelect[]): void {
+    this.documentIds.set(select.map(s => Number(s.value)));
   }
 
   isFieldInvalid(fieldName: string): boolean {
-    const field = this.sourceForm.get(fieldName)
-    return !!(field && field.invalid && (field.dirty || field.touched))
+    const field = this.sourceForm.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
   getFieldError(fieldName: string): string {
-    const field = this.sourceForm.get(fieldName)
+    const field = this.sourceForm.get(fieldName);
     if (field?.errors) {
-      if (field.errors["required"]) {
-        return "Ce champ est requis"
-      }
-      if (field.errors["minlength"]) {
-        return `Minimum ${field.errors["minlength"].requiredLength} caractères`
-      }
+      if (field.errors["required"]) return "Ce champ est requis";
+      if (field.errors["minlength"]) return `Minimum ${field.errors["minlength"].requiredLength} caractères`;
+      if (field.errors["futureDate"]) return "La date ne peut pas être dans le futur";
     }
-    return ""
+    return "";
+  }
+
+  getFormData(): Record<string, any> {
+    const formValue = this.sourceForm.value;
+    return {
+      ...formValue,
+      dateMiseAJour: formValue.dateMiseAJour ? new Date(formValue.dateMiseAJour) : null,
+      dateObtention: formValue.dateObtention ? new Date(formValue.dateObtention) : null,
+      documentIds: this.documentIds(),
+      utilisateurId: 1
+    };
   }
 
   onSubmit(): void {
-    if (this.sourceForm.valid) {
-    this.isSubmitting = true
+    if (this.sourceForm.invalid) {
+      this.markAllTouched();
+      return;
+    }
 
-    const formData: CreateSourceFormData = this.sourceForm.value
+    this.isSubmitting = true;
+    const payload = this.getFormData();
+    const request$ = this.isEditingMode()
+      ? this.sourceInfoService.update(Number(this.draft.id), payload)
+      : this.sourceInfoService.create(payload);
 
-    // Préparation des documents
-    const documents: DocumentUpload[] = this.selectedFiles.map((file) => ({
-      file,
-      nom: file.name,
-      type: file.type,
-    }))
-
-    this.sourceService.createSource(formData, documents).subscribe({
-      next: (source) => {
-        this.createdSource = source
-        this.showSuccessModal = true
-        this.isSubmitting = false
+    this.sourceId = null;
+    request$.subscribe({
+      next: (data: SourceInfo) => {
+        this.showSuccessModal = true;
+        this.isSubmitting = false;
+        localStorage.removeItem(this.key);
+        this.draft = undefined;
+        this.sourceId = data.id;
       },
-      error: (error) => {
-        console.error("Erreur lors de la création:", error)
-        this.isSubmitting = false
-        // Ici vous pourriez afficher un message d'erreur à l'utilisateur
-      },
-    })
-  } else {
-    // Marquer tous les champs comme touchés pour afficher les erreurs
-    Object.keys(this.sourceForm.controls).forEach((key) => {
-      this.sourceForm.get(key)?.markAsTouched()
-    })
+      error: err => {
+        this.isSubmitting = false;
+        this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
+        console.error(err);
+      }
+    });
   }
-}
+
+  isEditingMode(): boolean {
+    return !!(this.draft && this.draft.id);
+  }
 
   saveDraft(): void {
-    const formData: CreateSourceFormData = this.sourceForm.value
+    localStorage.setItem(this.key, JSON.stringify(this.getFormData()));
+    this.notificationService.showNotification("Brouillon savegardez", "success");
+  }
 
-  this.sourceService.saveDraft(formData).subscribe({
-    next: (response) => {
-      console.log("Brouillon sauvegardé:", response)
-      // Afficher un message de confirmation
-    },
-    error: (error) => {
-      console.error("Erreur lors de la sauvegarde:", error)
-    },
-  })
-}
+  markAllTouched(): void {
+    Object.keys(this.sourceForm.controls).forEach(key => {
+      this.sourceForm.get(key)?.markAsTouched();
+    });
+  }
 
   closeSuccessModal(): void {
-    this.showSuccessModal = false
+    this.showSuccessModal = false;
   }
 
   viewSource(): void {
-    this.closeSuccessModal()
-    // Navigation vers la vue de la source
-    console.log("Navigation vers la source:", this.createdSource)
+    this.closeSuccessModal();
+    this.router.navigate(
+      ["/enqueteur/traitement/source-info"],
+      {queryParams: {show: this.sourceId}}
+    ).then(console.info);
+  }
+
+  getTextButton(): string {
+    return this.isEditingMode()
+      ? (this.isSubmitting ? 'Modification...' : 'Modifier la Source')
+      : (this.isSubmitting ? 'Création...' : 'Créer la Source');
   }
 
   addAnother(): void {
-    this.closeSuccessModal()
-    this.sourceForm.reset()
-    this.selectedFiles = []
-    this.fileValidationErrors = []
-    this.initializeForm()
-    window.scrollTo(0, 0)
+    this.closeSuccessModal();
+    this.sourceForm.reset();
+    this.selectedFiles = [];
+    this.fileValidationErrors = [];
+    this.documentIds.set([]);
+    this.selectedDocument = [];
+    this.initializeForm();
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
+
+  isValid(): boolean {
+    return this.isSubmitting || this.sourceForm.invalid;
+  }
+
+  private toDateInputValue(date: string | Date): string {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  goBack(): void {
+    if (this.isEditingMode()) {
+      const raw = localStorage.getItem("sourceInfo");
+      if (raw) {
+        localStorage.removeItem("sourceInfo");
+        localStorage.setItem(this.key, raw);
+      } else {
+        localStorage.removeItem(this.key);
+      }
+    }
+  }
+
 }

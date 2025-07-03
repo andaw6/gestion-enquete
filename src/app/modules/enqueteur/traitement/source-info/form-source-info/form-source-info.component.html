@@ -1,12 +1,14 @@
 <main class="flex-1 overflow-y-auto p-6">
   <div class="max-w-4xl mx-auto">
+    <app-button-back (onClick)="goBack()" [url]="'/enqueteur/traitement/source-info'" [activeUrl]="false" ></app-button-back>
+
     <form [formGroup]="sourceForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
       <!-- Section 1: Informations Générales -->
       <div class="bg-white rounded-lg shadow border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
           <h3 class="text-lg font-medium text-gray-900">
-            <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+            <i class="fas fa-info-circle mr-2 text-primary-500"></i>
             Informations Générales
           </h3>
         </div>
@@ -39,9 +41,9 @@
                 formControlName="type"
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 [class.border-red-500]="isFieldInvalid('type')">
-                <option value="">Sélectionner un type</option>
-                <option *ngFor="let type of sourceTypes" [value]="type.value">
-                  {{ type.label }}
+                <option value="" [disabled]="true">Sélectionner un type</option>
+                <option *ngFor="let type of sourceTypes" [value]="type.code">
+                  {{ type.libelle }}
                 </option>
               </select>
               <div *ngIf="isFieldInvalid('type')" class="mt-1 text-xs text-red-500">
@@ -74,7 +76,7 @@
       <div class="bg-white rounded-lg shadow border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
           <h3 class="text-lg font-medium text-gray-900">
-            <i class="fas fa-star mr-2 text-blue-500"></i>
+            <i class="fas fa-star mr-2 text-primary-500"></i>
             Évaluation et Métadonnées
           </h3>
         </div>
@@ -90,7 +92,7 @@
                 formControlName="niveauFiabilite"
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 [class.border-red-500]="isFieldInvalid('niveauFiabilite')">
-                <option value="">Évaluer la fiabilité</option>
+                <option value="" [disabled]="true">Évaluer la fiabilité</option>
                 <option *ngFor="let level of reliabilityLevels" [value]="level.value">
                   {{ level.label }}
                 </option>
@@ -108,6 +110,7 @@
                 id="etat"
                 formControlName="etat"
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="" [disabled]="true">Sélectionner un Etat</option>
                 <option *ngFor="let etat of etatsDisponibles" [value]="etat.code">
                   {{ etat.libelle }}
                 </option>
@@ -126,7 +129,11 @@
                 id="dateObtention"
                 formControlName="dateObtention"
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <div *ngIf="sourceForm.get('dateObtention')?.errors?.['futureDate']" class="mt-1 text-xs text-red-500">
+                La date d’obtention ne peut pas être dans le futur.
+              </div>
               <p class="mt-1 text-xs text-gray-500">Date à laquelle la source a été identifiée</p>
+
             </div>
 
             <div>
@@ -138,6 +145,10 @@
                 id="dateMiseAJour"
                 formControlName="dateMiseAJour"
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <div *ngIf="sourceForm.get('dateMiseAJour')?.errors?.['futureDate']" class="mt-1 text-xs text-red-500">
+                La date d’obtention ne peut pas être dans le futur.
+              </div>
+
               <p class="mt-1 text-xs text-gray-500">Date de dernière mise à jour des informations</p>
             </div>
           </div>
@@ -157,87 +168,19 @@
         </div>
       </div>
 
-      <!-- Section 3: Documents et Pièces Jointes -->
-      <div class="bg-white rounded-lg shadow border border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">
-            <i class="fas fa-paperclip mr-2 text-blue-500"></i>
-            Documents et Pièces Jointes
-          </h3>
-        </div>
-        <div class="p-6 space-y-6">
-          <!-- Zone de téléchargement -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Documents associés
-            </label>
-            <div
-              class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors"
-              (dragover)="onDragOver($event)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event)">
-              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-              <p class="text-sm text-gray-600 mb-2">
-                Glissez-déposez vos fichiers ici ou
-                <button type="button" class="text-blue-500 hover:text-blue-600 font-medium" (click)="fileInput.click()">
-                  parcourez
-                </button>
-              </p>
-              <p class="text-xs text-gray-500">
-                Formats acceptés: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (Max: 10MB)
-              </p>
-              <input
-                #fileInput
-                type="file"
-                multiple
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                class="hidden"
-                (change)="onFileSelected($event)">
-            </div>
-          </div>
-
-          <!-- Liste des fichiers téléchargés -->
-          <div *ngIf="selectedFiles.length > 0">
-            <h4 class="text-sm font-medium text-gray-700 mb-2">Fichiers sélectionnés:</h4>
-            <div class="space-y-2">
-              <div *ngFor="let file of selectedFiles; let i = index"
-                   class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                <div class="flex items-center">
-                  <i class="fas fa-file text-gray-400 mr-3"></i>
-                  <div>
-                    <p class="text-sm font-medium text-gray-900">{{ file.name }}</p>
-                    <p class="text-xs text-gray-500">{{ getFileSize(file.size) }} MB</p>
-                  </div>
-                </div>
-                <button type="button" (click)="removeFile(i)" class="text-red-500 hover:text-red-700">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Erreurs de validation des fichiers -->
-        <div *ngIf="fileValidationErrors.length > 0" class="mt-4">
-          <div class="bg-red-50 border border-red-200 rounded-md p-4">
-            <div class="flex">
-              <i class="fas fa-exclamation-triangle text-red-400 mr-2 mt-0.5"></i>
-              <div>
-                <h4 class="text-sm font-medium text-red-800">Erreurs de validation des fichiers :</h4>
-                <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
-                  <li *ngFor="let error of fileValidationErrors">{{ error }}</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-select-search-paginate
+        *ngIf="!loadingDocument"
+        [title]="'Documents et Pièces Jointes'"
+        [options]="option"
+        [selected]="selectedDocument"
+        (optionSelected)="onSelectDocument($event)"
+      ></app-select-search-paginate>
 
       <!-- Section 4: Association aux Enquêtes -->
       <div class="bg-white rounded-lg shadow border border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200">
           <h3 class="text-lg font-medium text-gray-900">
-            <i class="fas fa-link mr-2 text-blue-500"></i>
+            <i class="fas fa-link mr-2 text-primary-500"></i>
             Association aux Enquêtes
           </h3>
         </div>
@@ -252,9 +195,6 @@
               formControlName="enqueteAssociee"
               class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
               <option value="">Aucune enquête spécifique</option>
-              <option *ngFor="let enquete of enquetes" [value]="enquete.id">
-                {{ enquete.nom }}
-              </option>
             </select>
             <p class="mt-1 text-xs text-gray-500">Associer cette source à une enquête spécifique</p>
           </div>
@@ -276,20 +216,26 @@
         </div>
 
         <div class="flex space-x-4">
-          <button
-            type="button"
-            (click)="saveDraft()"
-            class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+          <button *ngIf="!isEditingMode()"
+                  type="button"
+                  (click)="saveDraft()"
+                  class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
             <i class="fas fa-save mr-2"></i>Enregistrer comme brouillon
           </button>
           <button
             type="submit"
-            [disabled]="isSubmitting || sourceForm.invalid"
+            [disabled]="isValid()"
             class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             <i class="fas fa-spinner fa-spin mr-2" *ngIf="isSubmitting"></i>
-            <i class="fas fa-plus mr-2" *ngIf="!isSubmitting"></i>
-            {{ isSubmitting ? 'Création...' : 'Créer la Source' }}
+            <i
+              class="mr-2"
+              [ngClass]="{'fas fa-plus': !isEditingMode() && !isSubmitting,'fas fa-edit': isEditingMode() && !isSubmitting}"
+              *ngIf="!isSubmitting">
+            </i>
+
+            {{ getTextButton() }}
           </button>
+
         </div>
       </div>
     </form>
@@ -303,10 +249,15 @@
       <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <i class="fas fa-check text-2xl text-green-500"></i>
       </div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">Source créée avec succès!</h3>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">
+        {{ wasEditing ? 'Source modifiée avec succès!' : 'Source créée avec succès!' }}
+      </h3>
       <p class="text-sm text-gray-500 mb-6">
-        La nouvelle source d'information a été ajoutée à votre base de données.
+        {{ wasEditing
+        ? 'La source d\'information a été mise à jour avec succès.'
+        : 'La nouvelle source d\'information a été ajoutée à votre base de données.' }}
       </p>
+
       <div class="flex space-x-3">
         <button
           (click)="viewSource()"

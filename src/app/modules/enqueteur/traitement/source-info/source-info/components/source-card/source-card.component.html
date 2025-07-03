@@ -1,32 +1,19 @@
-<div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+<div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow relative">
   <div class="p-6">
     <div class="flex items-start justify-between">
       <div class="flex items-center">
-        <div class="w-12 h-12 rounded-lg flex items-center justify-center" [ngClass]="source.iconColor">
-          <i [class]="source.icon + ' text-white'"></i>
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-primary-500">
+          <i class="fas fa-file-alt  text-white "></i>
         </div>
         <div class="ml-4">
-          <h3 class="text-lg font-medium text-gray-900">{{ source.name }}</h3>
-          <p class="text-sm text-gray-500">{{ source.category }}</p>
-        </div>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button
-          (click)="toggleFavorite()"
-          [class]="source.isFavorite ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-yellow-500'"
-        >
-          <i [class]="source.isFavorite ? 'fas fa-star' : 'far fa-star'"></i>
-        </button>
-        <div class="relative">
-          <button class="text-gray-400 hover:text-gray-600">
-            <i class="fas fa-ellipsis-v"></i>
-          </button>
+          <h3 class="text-lg font-medium text-gray-900 line-clamp-1">{{ source.nom }}</h3>
+          <p class="text-sm text-gray-500 line-clamp-1">{{ source.type.libelle }}</p>
         </div>
       </div>
     </div>
 
     <div class="mt-4">
-      <p class="text-sm text-gray-600">{{ source.description }}</p>
+      <p class="text-sm text-gray-600 line-clamp-1">{{ source.description }}</p>
     </div>
 
     <div class="mt-4 flex items-center justify-between">
@@ -39,33 +26,37 @@
               [class]="star ? 'fas fa-star text-xs' : 'far fa-star text-xs'"
             ></i>
           </div>
-          <span class="ml-1 text-sm text-gray-600">({{ source.reliability }}/5)</span>
+          <span class="ml-1 text-sm text-gray-600">({{ source.niveauFiabilite }}/5)</span>
         </div>
       </div>
       <span
-        class="px-2 py-1 text-xs font-medium rounded-full"
-        [ngClass]="getStatusClass()"
+        class="px-2 py-1 text-xs font-medium rounded-full line-clamp-1 w-max bg-gray-100 text-gray-800"
       >
-            {{ getStatusText() }}
+            {{ source.etat.libelle }}
           </span>
     </div>
 
     <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
       <span>{{ getUsageText() }}</span>
-      <span>{{ source.lastUpdated }}</span>
+      <span>{{ source.dateMiseAJour| date: "dd MMM YYYY HH:MM" }}</span>
     </div>
 
     <div class="mt-4 flex space-x-2">
       <button
-        class="flex-1 px-3 py-2 text-white text-sm rounded-md transition-colors"
-        [ngClass]="getActionButtonClass()"
-        (click)="onAction()"
+        class="flex-1 px-3 py-2 text-white text-sm rounded-md transition-colors bg-primary-500 hover:bg-primary-600"
+        (click)="onActionClick.emit(source)"
       >
-        <i [class]="getActionIcon() + ' mr-1'"></i>{{ getActionText() }}
+        <i class="fas fa-external-link-alt mr-1"></i>Accéder
       </button>
-      <button class="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded-md hover:bg-gray-200 transition-colors">
+      <button
+        class="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded-md hover:bg-gray-200 transition-colors"
+        (click)="onUpdatedClick.emit(source)"
+      >
         <i class="fas fa-edit"></i>
       </button>
     </div>
+  </div>
+  <div [ngClass]="{ block: selected, hidden: !selected,  'animate-flash': selected }"
+       class="z-10 absolute right-0 bottom-0 bg-primary-400 bg-opacity-10 top-0 left-0 border-2 border-primary-500 rounded-lg">
   </div>
 </div>

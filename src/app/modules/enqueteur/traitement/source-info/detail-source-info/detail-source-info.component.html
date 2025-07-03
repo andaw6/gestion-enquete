@@ -1,0 +1,49 @@
+<div class="bg-gray-50 font-sans ">
+  <div class="max-w-7xl mx-auto px-6 py-8 pt-0">
+
+    <app-source-header (onEdit)="handleEdit()" />
+
+    <!-- Si la source est présente -->
+    <div *ngIf="source as s; else loading" class="grid grid-cols-1 xl:grid-cols-4 gap-8 mt-6">
+
+      <div class="xl:col-span-3 space-y-8">
+
+        <app-source-details [source]="s" />
+
+        <app-documents-section
+          [documents]="s.documents "
+          (onViewDocument)="handleViewDocument($event)"
+          (onDownloadDocument)="handleDownloadDocument($event)"
+        />
+
+      </div>
+
+      <div class="xl:col-span-1">
+        <app-source-sidebar
+          [teamMembers]="getUsers()"
+          [timeline]="getTimelineEvent()"
+          [niveauFiabilite]="getProgress()"
+        />
+      </div>
+
+    </div>
+
+    <!-- Cas où la source est introuvable ou en chargement -->
+    <ng-template #loading>
+      <div class="mt-8 text-center text-gray-500">
+        Chargement des données ou source introuvable...
+      </div>
+    </ng-template>
+
+  </div>
+</div>
+
+
+
+
+<!-- Preview Modal -->
+<app-document-preview-modal
+  [isModalOpen]="isPreviewModalOpen"
+  [document]="selectedDocument"
+  (modalClosed)="isPreviewModalOpen=false"
+></app-document-preview-modal>

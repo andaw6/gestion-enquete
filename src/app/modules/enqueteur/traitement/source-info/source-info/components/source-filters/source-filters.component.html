@@ -18,16 +18,20 @@
     <div class="flex flex-wrap items-center gap-2">
       <select
         class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
-        [(ngModel)]="selectedCategory"
+        [(ngModel)]="selectedType"
         (ngModelChange)="onFilterChange()"
       >
         <option value="">Toutes les catégories</option>
-        <option value="Documents officiels">Documents officiels</option>
-        <option value="Témoignages">Témoignages</option>
-        <option value="Bases de données">Bases de données</option>
-        <option value="Sites web">Sites web</option>
-        <option value="Contacts">Contacts</option>
-        <option value="Archives">Archives</option>
+        <option *ngFor="let type of typeSources" [value]="type.code">{{type.libelle}}</option>
+      </select>
+
+      <select
+        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        [(ngModel)]="selectedEtat"
+        (ngModelChange)="onFilterChange()"
+      >
+        <option value="">Toutes les catégories</option>
+        <option *ngFor="let etat of etatSources" [value]="etat.code">{{etat.libelle}}</option>
       </select>
 
       <select
@@ -36,11 +40,7 @@
         (ngModelChange)="onFilterChange()"
       >
         <option value="">Tous niveaux de fiabilité</option>
-        <option value="5">Très élevée (5/5)</option>
-        <option value="4">Élevée (4/5)</option>
-        <option value="3">Moyenne (3/5)</option>
-        <option value="2">Faible (2/5)</option>
-        <option value="1">Très faible (1/5)</option>
+        <option *ngFor="let opt of reliabilityLevels" [value]="opt.value">{{opt.label}}</option>
       </select>
 
       <select
@@ -48,10 +48,7 @@
         [(ngModel)]="sortBy"
         (ngModelChange)="onFilterChange()"
       >
-        <option value="date">Trier par date</option>
-        <option value="name">Trier par nom</option>
-        <option value="reliability">Trier par fiabilité</option>
-        <option value="usage">Trier par utilisation</option>
+        <option *ngFor="let opt of sourceInfoTrie" [value]="opt.value">{{ opt.label }}</option>
       </select>
     </div>
   </div>

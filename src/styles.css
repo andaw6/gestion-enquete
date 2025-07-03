@@ -83,3 +83,49 @@
     transform: translateX(0);
     opacity: 1;
 }
+
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8); /* Tu peux remplacer par secondaire 50 si tu veux teinter */
+}
+
+/* Gradient avec tes couleurs primary et secondary */
+.gradient-bg {
+  background: linear-gradient(135deg, #293F76 0%, #17ABDD 100%);
+}
+
+/* Security pattern avec un fond foncé issu de ta palette dark */
+.security-pattern {
+  background-image:
+    linear-gradient(45deg, transparent 40%, rgba(17, 23, 50, 0.02) 50%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, rgba(17, 23, 50, 0.02) 50%, transparent 60%);
+  background-size: 20px 20px;
+  background-color: #111732; /* dark 900 */
+}
+
+/* Ombre avec une légère teinte de dark */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(39, 39, 39, 0.1), 0 2px 4px -1px rgba(39, 39, 39, 0.06);
+}
+
+.card-shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(39, 39, 39, 0.1), 0 4px 6px -2px rgba(39, 39, 39, 0.05);
+}
+
+/* Indicateur de statut avec la couleur secondary */
+.status-indicator {
+  background-color: #17ABDD;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}

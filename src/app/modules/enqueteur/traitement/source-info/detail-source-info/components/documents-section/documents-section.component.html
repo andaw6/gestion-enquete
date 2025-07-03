@@ -1,0 +1,62 @@
+<div class="bg-white rounded-xl card-shadow-lg border border-gray-100 overflow-hidden">
+  <div class="bg-gradient-to-r from-dark-50 to-dark-100 px-6 py-4 border-b border-dark-200">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-dark-800 flex items-center">
+        <div class="w-8 h-8 bg-dark-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-folder-open text-white text-sm"></i>
+        </div>
+        Pièces à Conviction & Documents
+      </h2>
+      <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 bg-dark-600 text-white text-xs font-semibold rounded-full">
+              {{ documents.length }} Documents
+            </span>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div
+        *ngFor="let document of documents"
+        [class]="'bg-gradient-to-br from-' + getColor(document.extension) + '-50 to-' + getColor(document.extension) + '-100 p-4 rounded-xl border border-' + getColor(document.extension) + '-200 hover:shadow-lg transition-all duration-200'">
+        <div class="flex items-start justify-between mb-3">
+          <div
+            [class]="'w-12 h-12 bg-' + getColor(document.extension) + '-500 rounded-lg flex items-center justify-center'">
+            <i [class]="utilService.getIcon(document.extension) + ' text-white text-lg'"></i>
+          </div>
+          <div class="flex space-x-1">
+            <button
+              (click)="onViewDocument.emit(document)"
+              class="w-8 h-8 bg-white/80 rounded-lg flex items-center justify-center hover:bg-white transition-colors">
+              <i [class]="utilService.getDocumentActionIcon(document)+' text-' + getColor(document.extension) + '-600 text-xs'"></i>
+            </button>
+            <button
+              (click)="onDownloadDocument.emit(document)"
+              class="w-8 h-8 bg-white/80 rounded-lg flex items-center justify-center hover:bg-white transition-colors">
+              <i [class]="'fas fa-download text-' + getColor(document.extension) + '-600 text-xs'"></i>
+            </button>
+          </div>
+        </div>
+        <h3 class="font-semibold text-dark-800 mb-1">{{ document.nom }}</h3>
+        <p class="text-sm text-dark-600 mb-2 line-clime-1">{{ document.description }}</p>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-dark-500">{{ document.taille }}</span>
+          <span
+            [class]="'px-2 py-1 bg-' + getColor(document.extension) + '-200 text-' + getColor(document.extension) + '-800 rounded-full font-medium'">
+                {{ document.type.libelle }}
+              </span>
+        </div>
+        <div class="mt-2 text-xs text-dark-500">
+          <i class="fas fa-calendar mr-1"></i>{{ document.createdAt }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="documents.length === 0" class="text-center py-12 pt-0">
+    <i class="fas fa-folder-open text-6xl text-gray-400 mb-4"></i>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun document associé à cette source d'information</h3>
+  </div>
+</div>

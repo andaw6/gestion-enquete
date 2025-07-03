@@ -80,7 +80,6 @@ export const FILE_BG_CLASS_MAP: Record<string, string> = {
   'default': 'bg-gray-50'
 };
 
-
 export const FILE_TYPE_CATEGORY_MAP: Record<string, string[]> = {
   "document": [
     "pdf", "doc", "docx", "odt", "xls", "xlsx", "csv", "ppt", "pptx", "txt", "md"
@@ -108,7 +107,6 @@ export const FILE_TYPE_CATEGORY_MAP: Record<string, string[]> = {
   ]
 };
 
-
 export const FILE_CATEGORIES: Option[] = [
   {label: '🖼️ Images', value: 'image'},
   {label: '🎵 Audios', value: 'audio'},
@@ -120,10 +118,23 @@ export const FILE_CATEGORIES: Option[] = [
   // {label: '🧩 Autres', value: 'autre'}
 ];
 
-
 export const FILE_TRI: Option[] = [
   {value: "date", label: "Trier par date"},
   {value: "name", label: "Trier par nom"},
   {value: "size", label: "Trier par taille"},
   {value: "type", label: "Trier par type"},
 ];
+
+export const RELIABILITY_LEVELS: Option[] = [
+  {value: "5", label: "5 - Très élevée"}, // (Source officielle vérifiée)
+  {value: "4", label: "4 - Élevée"}, // (Source reconnue et fiable)
+  {value: "3", label: "3 - Moyenne"}, // (Source généralement fiable)
+  {value: "2", label: "2 - Faible"}, // (Source à vérifier)
+  {value: "1", label: "1 - Très faible"}, // (Source douteuse)
+];
+
+export const SOURCE_INFO_TRI:Option[] = [
+  {value:"date", label:"Trier par date"},
+  {value:"name", label:"Trier par nom"},
+  {value:"reliability", label:"Trier par fiabilité"},
+]

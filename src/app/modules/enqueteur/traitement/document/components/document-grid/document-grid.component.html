@@ -19,8 +19,8 @@
         class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
       >
         <div class="flex items-center justify-between mb-4">
-          <div [class]="'w-12 h-12 rounded-xl flex items-center justify-center shadow-sm '+getBgIcon(doc.extension) ">
-            <i [class]="getIcon(doc.extension) + ' text-lg ' "></i>
+          <div [class]="'w-12 h-12 rounded-xl flex items-center justify-center shadow-sm '+utilService.getBgIcon(doc.extension) ">
+            <i [class]="utilService.getIcon(doc.extension) + ' text-lg ' "></i>
           </div>
           <div class="relative">
             <button
@@ -44,7 +44,7 @@
           <button
             (click)="onPreview(doc)"
             class="flex-1 px-3 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-medium rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-sm hover:shadow-md">
-            <i [class]="getActionIcon(doc) + ' mr-2'"></i>{{ getActionLabel(doc) }}
+            <i [class]="utilService.getDocumentActionIcon(doc) + ' mr-2'"></i>{{ utilService.getDocumentActionLabel(doc) }}
           </button>
           <button
             (click)="onDownload(doc)"
@@ -84,8 +84,8 @@
           <!-- Icône du fichier -->
           <div class="col-span-1 flex items-center">
             <div
-              [class]="'w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ' + getBgIcon(doc.extension)">
-              <i [class]="getIcon(doc.extension) + ' text-sm'"></i>
+              [class]="'w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ' + utilService.getBgIcon(doc.extension)">
+              <i [class]="utilService.getIcon(doc.extension) + ' text-sm'"></i>
             </div>
           </div>
 
@@ -109,7 +109,7 @@
 
           <!-- Taille -->
           <div class="col-span-1 flex items-center">
-            <span class="text-sm text-gray-600">{{ formatFileSize(doc.taille) }}</span>
+            <span class="text-sm text-gray-600">{{ utilService.formatFileSize(doc.taille) }}</span>
           </div>
 
           <!-- Version -->
@@ -127,7 +127,7 @@
               class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 opacity-100"
               title="Voir le document"
             >
-              <i [class]="getActionIcon(doc) + ' text-sm'"></i>
+              <i [class]="utilService.getDocumentActionIcon(doc) + ' text-sm'"></i>
             </button>
             <button
               (click)="onDownload(doc); $event.stopPropagation()"

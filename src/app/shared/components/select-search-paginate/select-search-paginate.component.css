@@ -25,13 +25,15 @@
 
 #select-search
 .dropdown-header:hover {
-    border-color: #10B981;
+    /*border-color: #10B981;*/
+  @apply border-primary-500;
     box-shadow: 0 2px 5px rgba(79, 70, 229, 0.15);
 }
 
 #select-search
 .dropdown-header.active {
-    border-color: #10B981;
+    /*border-color: #10B981;*/
+  @apply border-primary-500;
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
 }
 
@@ -115,8 +117,9 @@
 #select-search
 .dropdown-item.selected {
     background-color: #ede9fe;
-    color: #10B981;
+    /*color: #10B981;*/
     font-weight: 500;
+  @apply text-primary-500;
 }
 
 /* Dark mode styles */
@@ -126,7 +129,7 @@
     }
 
     .dropdown-item.selected {
-        @apply bg-green-800 text-green-400 font-medium; /* couleurs adaptées au dark mode */
+        @apply bg-primary-800 text-primary-400 font-medium; /* couleurs adaptées au dark mode */
     }
 }
 
@@ -215,9 +218,10 @@
 #select-search
 .search-input:focus {
     outline: none;
-    border-color: #10B981;
+    /*border-color: #10B981;*/
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
     background-color: white;
+  @apply border-primary-500;
 }
 
 #select-search
@@ -267,8 +271,9 @@
 
 #select-search
 .card-title i {
-    color: #10B981;
+    /*color: #10B981;*/
     margin-right: 0.5rem;
+  @apply text-primary-500;
 }
 
 #select-search

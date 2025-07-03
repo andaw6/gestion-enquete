@@ -15,11 +15,14 @@ import {DocumentUrl, Document} from '@modules/enqueteur/traitement/document/docu
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {ResponseError} from "@core/interfaces/response-error.interface";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-document-preview-modal',
   templateUrl: './document-preview-modal.component.html',
-  styleUrls: ['./document-preview-modal.component.css']
+  styleUrls: ['./document-preview-modal.component.css'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChanges {
   @Output() modalClosed = new EventEmitter<void>();
@@ -108,8 +111,8 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
         this.loadAndEmbed();
       }
     }
-    if(changes["isModalOpen"]) {
-      if(changes["isModalOpen"].currentValue) {
+    if (changes["isModalOpen"]) {
+      if (changes["isModalOpen"].currentValue) {
         this.renderer.setStyle((document as any).body, 'overflow', 'hidden');
       }
     }

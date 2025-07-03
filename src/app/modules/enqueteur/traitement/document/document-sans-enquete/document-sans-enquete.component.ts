@@ -24,6 +24,8 @@ import {
   DocumentUploadModalComponent
 } from '@modules/enqueteur/traitement/document/components/document-upload-modal/document-upload-modal.component';
 import {IParams} from "@core/interfaces/http-options.interface";
+import {UtilService} from "@core/services/util.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-document-sans-enquete',
@@ -67,8 +69,8 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   constructor(
     private documentService: DocumentService,
     private typeDocumentService: TypeDocumentService,
-    private notificationService: NotificationAlertService,
-    private renderer: Renderer2
+    private utilService: UtilService,
+    private renderer: Renderer2,
   ) {
   }
 
@@ -89,7 +91,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
         this.pagination = response.pagination;
       },
       error: () => {
-        this.notificationService.showNotification(
+        this.utilService.showNotification(
           'Erreur lors du chargement des documents',
           'error'
         );
@@ -146,7 +148,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
 
   onUpload(data: DocumentUpload): void {
     if (!data?.file) {
-      this.notificationService.showNotification('Aucun fichier sélectionné.', 'warning');
+      this.utilService.showNotification('Aucun fichier sélectionné.', 'warning');
       return;
     }
 
@@ -162,7 +164,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
         this.documents$ = this.documents$.pipe(
           map((docs) => [document, ...docs])
         );
-        this.notificationService.showNotification(
+        this.utilService.showNotification(
           'Document téléchargé avec succès !',
           'success'
         );
@@ -170,7 +172,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
         this.uploadModal.close.emit();
       },
       error: (err: ResponseError) => {
-        this.notificationService.showNotification(
+        this.utilService.showNotification(
           err?.message || 'Erreur lors du téléchargement du document.',
           'error'
         );
@@ -185,24 +187,15 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
 
   onDownloadClick(document: Document): void {
     this.documentService.getView(document.id, {download: true}).subscribe({
-      next: (blob: Blob) => this.downloadBlob(blob, `${document.nom}.${document.extension}`),
+      next: (blob: Blob) => this.utilService.downloadBlob(this.renderer, blob, `${document.nom}.${document.extension}`),
       error: () =>
-        this.notificationService.showNotification(
+        this.utilService.showNotification(
           'Erreur lors du téléchargement du document',
           'error'
         ),
     });
   }
 
-  private downloadBlob(blob: Blob, fileName: string): void {
-    const url = URL.createObjectURL(blob);
-    const link = this.renderer.createElement('a');
-    this.renderer.setAttribute(link, 'href', url);
-    this.renderer.setAttribute(link, 'download', fileName);
-    link.click();
-    URL.revokeObjectURL(url);
-    this.notificationService.showNotification('Téléchargement du document effectué', 'success');
-  }
 
   onDeleteClick(document: Document): void {
     this.showDeleteModal = true;
@@ -223,11 +216,11 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
         this.documents$ = this.documents$.pipe(
           map((docs) => docs.filter((doc) => doc.id !== this.deletedDocument?.id))
         );
-        this.notificationService.showNotification('Document supprimé avec succès !', 'success');
+        this.utilService.showNotification('Document supprimé avec succès !', 'success');
         this.closeDeleteModal();
       },
       error: (err) => {
-        this.notificationService.showNotification(
+        this.utilService.showNotification(
           err.message || 'Erreur lors de la suppression du document !',
           'error'
         );

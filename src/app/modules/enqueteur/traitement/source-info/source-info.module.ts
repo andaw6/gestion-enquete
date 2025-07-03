@@ -1,23 +1,25 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SourceInfoComponent } from './source-info/source-info.component';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {PaginationComponent} from "@shared/components/pagination/pagination.component";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {RouterModule} from "@angular/router";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {SourceInfoComponent} from './source-info/source-info.component';
+import {SourceCardComponent} from './source-info/components/source-card/source-card.component';
+import {SourceFiltersComponent} from './source-info/components/source-filters/source-filters.component';
+import {FormSourceInfoComponent} from './form-source-info/form-source-info.component';
 import {SOURCE_INFO_ROUTE} from "@modules/enqueteur/traitement/source-info/source-info-routing";
-import { SourceCardComponent } from './source-info/components/source-card/source-card.component';
-import { SourceFiltersComponent } from './source-info/components/source-filters/source-filters.component';
-import { RecentSourcesComponent } from './source-info/components/recent-sources/recent-sources.component';
-import { SourceTestComponent } from './source-test/source-test.component';
-import { SourceFilterComponent } from './source-test/components/source-filter/source-filter.component';
-import {
-  SourceCardTestComponent
-} from "@modules/enqueteur/traitement/source-info/source-test/components/source-card/source-card.component";
-import { FormSourceInfoComponent } from './form-source-info/form-source-info.component';
+import {PaginationComponent} from "@shared/components/pagination/pagination.component";
+import {ButtonBackComponent} from "@shared/components/button-back/button-back.component";
 import {
   SelectSearchPaginateComponent
 } from "@shared/components/select-search-paginate/select-search-paginate.component";
-
+import {DetailSourceInfoComponent} from './detail-source-info/detail-source-info.component';
+import {DocumentsSectionComponent} from './detail-source-info/components/documents-section/documents-section.component';
+import {SourceDetailsComponent} from './detail-source-info/components/source-details/source-details.component';
+import {SourceHeaderComponent} from './detail-source-info/components/source-header/source-header.component';
+import {SourceSidebarComponent} from './detail-source-info/components/source-sidebar/source-sidebar.component';
+import {
+  DocumentPreviewModalComponent
+} from "@shared/components/document-preview-modal/document-preview-modal.component";
 
 
 @NgModule({
@@ -25,19 +27,24 @@ import {
     SourceInfoComponent,
     SourceCardComponent,
     SourceFiltersComponent,
-    RecentSourcesComponent,
-    SourceTestComponent,
-    SourceFilterComponent,
-    SourceCardTestComponent,
-    FormSourceInfoComponent
+    FormSourceInfoComponent,
+    DetailSourceInfoComponent,
+    DocumentsSectionComponent,
+    SourceDetailsComponent,
+    SourceHeaderComponent,
+    SourceSidebarComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     PaginationComponent,
+    RouterModule,
     SelectSearchPaginateComponent,
+    ButtonBackComponent,
+    DocumentPreviewModalComponent,
     RouterModule.forChild(SOURCE_INFO_ROUTE),
   ]
 })
-export class SourceInfoModule { }
+export class SourceInfoModule {
+}

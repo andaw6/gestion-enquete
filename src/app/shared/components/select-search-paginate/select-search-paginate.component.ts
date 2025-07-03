@@ -1,10 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { OptionSelect } from "@core/interfaces/option.interface";
 import { Pagination } from "@core/interfaces/pagination.interface";
 import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
-
 
 @Component({
   selector: 'app-select-search-paginate',
@@ -13,9 +12,10 @@ import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
   templateUrl: './select-search-paginate.component.html',
   styleUrls: ['./select-search-paginate.component.css']
 })
-export class SelectSearchPaginateComponent {
+export class SelectSearchPaginateComponent implements OnInit {
   @Input() title: string = 'Sélecteur Avancé';
   @Input() options: OptionSelect[] = [];
+  @Input() selected:OptionSelect[] = [];
   @Input() activePagination: boolean = false;
   @Input() pagination: Pagination = {
     totalItem: 1,
@@ -23,23 +23,26 @@ export class SelectSearchPaginateComponent {
     limit: 10,
     page: 1
   };
-  @Output() onPaginationChange: EventEmitter<Pagination> = new EventEmitter<Pagination>()
-  @Output() optionSelected = new EventEmitter<OptionSelect | null>();
+  @Output() onPaginationChange = new EventEmitter<Pagination>();
+  @Output() optionSelected = new EventEmitter<OptionSelect[]>();
 
   isOpen: boolean = false;
   searchTerm: string = '';
-  selectedOption: string | null = null;
+  selectedOptions: string[] = [];
   filteredOptions: OptionSelect[] = [];
-
 
   private searchSubject = new Subject<string>();
 
   ngOnInit() {
+    if(this.selected.length) {
+      this.selected.forEach((option: OptionSelect) => this.selectOption(option));
+    }
     this.filteredOptions = [...this.options];
+
     if (!this.activePagination) {
       this.updatePagination();
     }
-    // Setup debounced search
+
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -52,7 +55,6 @@ export class SelectSearchPaginateComponent {
     event.stopPropagation();
     this.isOpen = !this.isOpen;
 
-    // Add click outside listener when opened
     if (this.isOpen) {
       setTimeout(() => {
         document.addEventListener('click', this.onClickOutside);
@@ -89,20 +91,29 @@ export class SelectSearchPaginateComponent {
   }
 
   selectOption(option: OptionSelect) {
-    if (this.selectedOption == option.value) {
-      this.selectedOption = null;
-      this.optionSelected.emit(null);
+    const index = this.selectedOptions.indexOf(option.value);
+
+    if (index >= 0) {
+      this.selectedOptions.splice(index, 1);
     } else {
-      this.selectedOption = option.value;
-      this.optionSelected.emit(option);
-      this.isOpen = false;
+      this.selectedOptions.push(option.value);
     }
-    document.removeEventListener('click', this.onClickOutside);
+
+    const selected = this.options.filter(opt => this.selectedOptions.includes(opt.value));
+    this.optionSelected.emit(selected);
+  }
+
+  isSelected(value: string): boolean {
+    return this.selectedOptions.includes(value);
   }
 
   getSelectedOptionLabel(): string {
-    const option = this.options.find(o => o.value === this.selectedOption);
-    return option ? option.label : 'Sélectionnez une option';
+    if (this.selectedOptions.length === 0) return 'Sélectionnez une option';
+    if (this.selectedOptions.length === 1) {
+      const opt = this.options.find(o => o.value === this.selectedOptions[0]);
+      return opt ? opt.label : '1 sélectionné';
+    }
+    return `${this.selectedOptions.length} sélectionnés`;
   }
 
   nextPage() {
@@ -125,4 +136,3 @@ export class SelectSearchPaginateComponent {
     }
   }
 }
-

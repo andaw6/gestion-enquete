@@ -11,12 +11,10 @@ import {Observable, Subject, of, map} from 'rxjs';
 import {DocumentService} from '@modules/enqueteur/traitement/document/document.service';
 import {
   Document,
-  DocumentData,
+  DocumentData, DocumentFilterOptions,
   DocumentUpload,
-  FilterOptions,
 } from '@modules/enqueteur/traitement/document/document';
 import {TypeDocumentService} from '@modules/admin/parametrage/type-document/type-document.service';
-import {NotificationAlertService} from '@core/services/notification-alert.service';
 import {Pagination} from '@core/interfaces/pagination.interface';
 import {ApiResponse} from '@core/interfaces/api-response.interface';
 import {ResponseError} from '@core/interfaces/response-error.interface';
@@ -25,7 +23,6 @@ import {
 } from '@modules/enqueteur/traitement/document/components/document-upload-modal/document-upload-modal.component';
 import {IParams} from "@core/interfaces/http-options.interface";
 import {UtilService} from "@core/services/util.service";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-document-sans-enquete',
@@ -45,7 +42,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
     totalPage: 0,
   };
 
-  currentFilters: FilterOptions = {
+  currentFilters: DocumentFilterOptions = {
     searchTerm: '',
     filterType: 'all',
     sortBy: 'date',
@@ -105,7 +102,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
     this.loadDocuments();
   }
 
-  onFiltersChange(filters: FilterOptions): void {
+  onFiltersChange(filters: DocumentFilterOptions): void {
     this.currentFilters = filters;
     this.applyFilters();
   }

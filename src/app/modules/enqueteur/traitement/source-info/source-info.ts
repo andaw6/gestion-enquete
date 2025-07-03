@@ -2,6 +2,7 @@ import {Document} from "@modules/enqueteur/traitement/document/document";
 import {EntityType} from "@core/interfaces/entity-type.interface";
 import {TypeSource} from "@modules/admin/parametrage/type-source/type-source";
 import {Utilisateur} from "@core/interfaces/utilisateur.interface";
+import {RELIABILITY_LEVELS, SOURCE_INFO_TRI} from "@config/constant";
 
 export interface SourceInfo {
   id: number;
@@ -17,26 +18,22 @@ export interface SourceInfo {
   dateMiseAJour: string;
 }
 
-export interface SourceFilters {
-  searchTerm: string
-  etatCode: string
-  niveauFiabilite: string
-  sortBy: string
+export type SourceSortBy = typeof SOURCE_INFO_TRI[number]['value'];
+export type SourceNiveauFiabilite = typeof RELIABILITY_LEVELS[number]['value'];
+
+export interface SourceFiltersOption {
+  searchTerm: string;
+  etatCode: string;
+  typeCode: string;
+  niveauFiabilite: SourceNiveauFiabilite | "";
+  sortBy: SourceSortBy;
 }
 
 export interface EtatSourceInfo extends EntityType {
 }
 
-
-export interface TeamMember {
-  nom: string
-  role: string
-  icone: string
-  couleur: string
-}
-
 export interface TimelineEvent {
-  titre: string
-  date: string
-  couleur: string
+  titre: string;
+  date: string;
+  couleur: string;
 }

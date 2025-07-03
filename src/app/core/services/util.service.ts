@@ -3,11 +3,14 @@ import {NavigationItem, NavigationSection} from "@core/interfaces/navigation.int
 import {FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP, FILE_TYPE_CATEGORY_MAP} from "@config/constant";
 import {Document} from "@modules/enqueteur/traitement/document/document";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
+import {debounceTime, distinctUntilChanged, filter, Subject, takeUntil} from "rxjs";
+import {FormControl} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService extends NotificationAlertService {
+  private destroy$ = new Subject<void>();
 
   updateActiveLink(navigation: NavigationSection[], url: string) {
 
@@ -75,7 +78,7 @@ export class UtilService extends NotificationAlertService {
           case "document":
           case "code":
           case "video":
-            return  "Voir";
+            return "Voir";
           case "audio":
             return "Écouter";
           case "archive":
@@ -90,7 +93,6 @@ export class UtilService extends NotificationAlertService {
   }
 
 
-
   formatFileSize(taille: number) {
     if (taille === 0) return "0 B"
     const k = 1024
@@ -100,10 +102,10 @@ export class UtilService extends NotificationAlertService {
   }
 
   getBgIcon(extension: string) {
-    return  FILE_BG_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
+    return FILE_BG_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
   }
 
-  downloadBlob(renderer:Renderer2, blob: Blob, fileName: string): void {
+  downloadBlob(renderer: Renderer2, blob: Blob, fileName: string): void {
     const url = URL.createObjectURL(blob);
     const link = renderer.createElement('a');
     renderer.setAttribute(link, 'href', url);
@@ -111,5 +113,28 @@ export class UtilService extends NotificationAlertService {
     link.click();
     URL.revokeObjectURL(url);
     this.showNotification('Téléchargement du document effectué', 'success');
+  }
+
+
+  setupSearchListener(
+    searchControl: FormControl,
+    onSearch: (query: string) => void,
+    isValidQuery: (query: string | null) => boolean = this.isValidQuery,
+  ): void {
+
+    searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((query: string) => query === '' || isValidQuery(query)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((query: string) => {
+        onSearch(query);
+      });
+  }
+
+  private isValidQuery(query: string | null): boolean {
+    return query !== null && query.trim() !== '' && query.length >= 3;
   }
 }

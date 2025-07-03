@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info"
+import {SourceFiltersOption, SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info"
 import {Observable, of} from "rxjs";
 import {SourceInfoService} from "@modules/enqueteur/traitement/source-info/source-info.service";
 import {Pagination} from "@core/interfaces/pagination.interface";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {ResponseError} from "@core/interfaces/response-error.interface";
 import {ActivatedRoute, Router} from "@angular/router";
+import {IParams} from "@core/interfaces/http-options.interface";
 
 @Component({
   selector: 'app-source-info',
@@ -22,6 +23,13 @@ export class SourceInfoComponent implements OnInit {
     limit: 10,
     page: 1
   };
+  filter: SourceFiltersOption = {
+    searchTerm: "",
+    etatCode: "",
+    typeCode: "",
+    niveauFiabilite: "",
+    sortBy: "date",
+  }
   showSourceId: number | null = null;
   private highlightedId: number | null = null;
 
@@ -33,9 +41,19 @@ export class SourceInfoComponent implements OnInit {
   ) {
   }
 
-  loadData() {
+  ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      const show = params.get("show");
+      if (show !== null) {
+        this.highlightedId = Number(show);
+      }
+    });
+    this.applyFilter();
+  }
+
+  loadData(filter: IParams = {sort: 'updatedAt,desc'}) {
     this.loading = true;
-    this.sourceInfoService.getAll({...this.pagination, sort: 'updatedAt,desc'}).subscribe({
+    this.sourceInfoService.getAll({...this.pagination, ...filter}).subscribe({
       next: response => {
         this.loading = false;
         this.pagination = response.pagination;
@@ -66,19 +84,10 @@ export class SourceInfoComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    this.route.queryParamMap.subscribe(params => {
-      const show = params.get("show");
-      if (show !== null) {
-        this.highlightedId = Number(show);
-      }
-    });
 
-    this.loadData();
-  }
-
-  onFiltersChange(filters: any) {
-
+  onFiltersChange(filters: SourceFiltersOption) {
+    this.filter = filters;
+    this.applyFilter();
   }
 
   setPagination(pag: Pagination) {
@@ -108,4 +117,33 @@ export class SourceInfoComponent implements OnInit {
     ).then(console.info);
   }
 
+
+  private applyFilter() {
+    const filter: IParams = {};
+    if (this.filter.searchTerm != "") {
+      filter["search"] = this.filter.searchTerm;
+    }
+    if (this.filter.etatCode != "") {
+      filter["etat"] = this.filter.etatCode;
+    }
+    if (this.filter.typeCode != "") {
+      filter["type"] = this.filter.typeCode;
+    }
+    if(this.filter.niveauFiabilite != ""){
+      filter["niveauFiabilite"] = this.filter.niveauFiabilite;
+    }
+    switch (this.filter.sortBy) {
+      case "date":
+        filter["sort"] = "updatedAt,desc";
+        break;
+      case "name":
+        filter["sort"] = "nom,asc";
+        break;
+      case "reliability":
+        filter["sort"] = "niveauFiabilite,desc";
+        break;
+    }
+
+    this.loadData(filter)
+  }
 }

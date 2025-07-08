@@ -1,14 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ApiService } from '@core/api/api.service';
-import { IParams } from '@core/interfaces/http-options.interface';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {ApiService} from '@core/api/api.service';
+import {IParams} from '@core/interfaces/http-options.interface';
 import {Notification, NotificationStats} from './notification';
+import {ApiCrudService} from "@core/api/api-crud.service";
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationService extends ApiService {
+export class NotificationService extends ApiCrudService<Notification> {
   USER_ID = 1;
 
   constructor(http: HttpClient) {
@@ -20,7 +21,7 @@ export class NotificationService extends ApiService {
     return this.responseGetOne<Notification>(`/${id}`);
   }
 
-  getStats(){
+  getStats() {
     return this.responseGetOne<NotificationStats>(`/stats/${this.USER_ID}`);
   }
 
@@ -52,7 +53,7 @@ export class NotificationService extends ApiService {
   }
 
   create(data: Pick<Notification, 'message' | 'typeNotification'>) {
-    let notif = { ...data, utilisateurId: this.USER_ID };
+    let notif = {...data, utilisateurId: this.USER_ID};
     return this.responsePostOne<Notification>('', notif);
   }
 
@@ -63,7 +64,8 @@ export class NotificationService extends ApiService {
   deleteOne(id: number) {
     return this.responseDeleteOne(`/${id}`);
   }
-   deleateMany(list:number[]){
+
+  deleteMany(list: number[]) {
     return this.responseDeleteMany('', list);
-   }
+  }
 }

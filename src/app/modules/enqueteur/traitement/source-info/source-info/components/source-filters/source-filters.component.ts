@@ -48,10 +48,6 @@ export class SourceFiltersComponent implements OnInit {
     });
   }
 
-  onSearchChange() {
-    this.emitFilters()
-  }
-
   onFilterChange() {
     this.emitFilters()
   }
@@ -69,6 +65,8 @@ export class SourceFiltersComponent implements OnInit {
       next: ({etat, type}) => {
         this.etatSources = etat.data;
         this.typeSources = type.data;
+      },
+      complete: () => {
       },
       error: (err) => {
         console.error(err);

@@ -4,6 +4,7 @@ import {NavigationSection} from '@core/interfaces/navigation.interface';
 import {BaseComponent} from "@layout/base/base.component";
 import {CommonModule} from "@angular/common";
 import {ADMIN_NAVIGATION} from "@config/navigation/admin";
+import {User} from "@core/interfaces/utilisateur.interface";
 
 @Component({
   selector: 'app-admin',
@@ -13,8 +14,14 @@ import {ADMIN_NAVIGATION} from "@config/navigation/admin";
   imports: [HeaderComponent, BaseComponent, CommonModule]
 })
 export class AdminComponent {
+  user: User = {
+    name: "El Hadji",
+    role: "administrateur",
+    initials: "EH"
+  }
   isSidebarOpen = false;
   navigation: NavigationSection[] = ADMIN_NAVIGATION;
+
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen
   }

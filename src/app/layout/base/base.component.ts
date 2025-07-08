@@ -5,6 +5,7 @@ import {UtilService} from "@core/services/util.service";
 import {SidebarComponent} from "@layout/base/components/sidebar/sidebar.component";
 import {OverlayComponent} from "@layout/base/components/overlay/overlay.component";
 import {CommonModule} from "@angular/common";
+import {User} from "@core/interfaces/utilisateur.interface";
 
 @Component({
   selector: 'app-base',
@@ -17,6 +18,7 @@ export class BaseComponent implements OnInit {
   @Input() isSidebarOpen = false;
   @Input() navigation: NavigationSection[] = [];
   @ContentChild("header") header!: TemplateRef<any>
+  @Input() user!: User;
 
 
   constructor(private router: Router, private utilService: UtilService) {

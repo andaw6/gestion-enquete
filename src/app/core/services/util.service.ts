@@ -24,11 +24,8 @@ export class UtilService extends NotificationAlertService {
       if (item.children?.length) {
         childActive = item.children.map(updateItem).some(active => active);
       }
-
-      // Déplie si lui-même ou un enfant est actif
       item.expanded = item.active || childActive;
 
-      // Retourne true si ce lien ou un de ses enfants est actif
       return item.active || childActive;
     };
 
@@ -40,9 +37,9 @@ export class UtilService extends NotificationAlertService {
 
   }
 
-
-  getIcon(extension: string): string {
-    return (FILE_ICON_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"]).split(" ").splice(0, 2).join(" ");
+  getIcon(extension: string, color: boolean = true): string {
+    let result: string = FILE_ICON_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
+    return color ? result.split(" ").splice(0, 2).join(" ") : result;
   }
 
   getDocumentActionIcon(document: Document): string {

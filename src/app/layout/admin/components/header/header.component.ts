@@ -1,11 +1,8 @@
-import { Component, EventEmitter,Output } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-export interface User {
-  name: string
-  role: string
-  initials: string
-}
+import {User} from "@core/interfaces/utilisateur.interface";
+
 
 @Component({
   selector: 'app-header',
@@ -18,7 +15,7 @@ export class HeaderComponent {
 
   @Output() toggleSidebar = new EventEmitter<void>()
 
-  user: User = {
+  @Input() user: User = {
     name: "El Hadji",
     role: "Administrateur",
     initials: "EH",

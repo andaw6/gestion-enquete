@@ -20,7 +20,7 @@
       >
         <div class="flex items-center justify-between mb-4">
           <div [class]="'w-12 h-12 rounded-xl flex items-center justify-center shadow-sm '+utilService.getBgIcon(doc.extension) ">
-            <i [class]="utilService.getIcon(doc.extension) + ' text-lg ' "></i>
+            <i [class]="utilService.getIcon(doc.extension, false) + ' text-lg ' "></i>
           </div>
           <div class="relative">
             <button
@@ -85,7 +85,7 @@
           <div class="col-span-1 flex items-center">
             <div
               [class]="'w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ' + utilService.getBgIcon(doc.extension)">
-              <i [class]="utilService.getIcon(doc.extension) + ' text-sm'"></i>
+              <i [class]="utilService.getIcon(doc.extension, false) + ' text-sm'"></i>
             </div>
           </div>
 

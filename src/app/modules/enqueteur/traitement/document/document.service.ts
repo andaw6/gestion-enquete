@@ -5,11 +5,12 @@ import {Observable} from "rxjs";
 import {IParams} from "@core/interfaces/http-options.interface";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
 import {Document, DocumentData, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
+import {ApiCrudService} from "@core/api/api-crud.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentService extends ApiService {
+export class DocumentService extends ApiCrudService<Document, DocumentData> {
 
   constructor(http: HttpClient) {
     super(http);
@@ -39,7 +40,7 @@ export class DocumentService extends ApiService {
     return this.responsePostOne<Document>('', formData);
   }
 
-  update(id: number, data: any): Observable<Document> {
+  update(id: number, data: DocumentData): Observable<Document> {
     return this.responsePutOne<Document>(`/${id}`, data);
   }
 

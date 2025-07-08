@@ -1,0 +1,179 @@
+<div class="bg-white rounded-lg shadow border border-gray-200">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h3 class="text-lg font-medium text-gray-900">Préférences de notification</h3>
+    <p class="text-sm text-gray-500">Choisissez comment vous souhaitez être notifié</p>
+  </div>
+  <div class="p-6">
+    <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Notifications d'enquêtes -->
+      <div>
+        <h4 class="text-md font-medium text-gray-900 mb-4">Enquêtes</h4>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-900">Nouvelles assignations</p>
+              <p class="text-sm text-gray-500">Être notifié lors de nouvelles assignations d'enquêtes</p>
+            </div>
+            <div class="flex space-x-4">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesNewAssignmentsEmail"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Email</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesNewAssignmentsSms"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">SMS</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesNewAssignmentsPush"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Push</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-900">Échéances proches</p>
+              <p class="text-sm text-gray-500">Rappels pour les enquêtes arrivant à échéance</p>
+            </div>
+            <div class="flex space-x-4">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesDeadlinesEmail"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Email</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesDeadlinesSms"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">SMS</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesDeadlinesPush"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Push</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-900">Commentaires et mises à jour</p>
+              <p class="text-sm text-gray-500">Notifications sur les commentaires des superviseurs</p>
+            </div>
+            <div class="flex space-x-4">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesCommentsEmail"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Email</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesCommentsSms"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">SMS</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="enquetesCommentsPush"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Push</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications système -->
+      <div>
+        <h4 class="text-md font-medium text-gray-900 mb-4">Système</h4>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-900">Mises à jour de sécurité</p>
+              <p class="text-sm text-gray-500">Notifications importantes de sécurité</p>
+            </div>
+            <div class="flex space-x-4">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="systemSecurityEmail"
+                  [disabled] = "true"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Email</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-900">Maintenance système</p>
+              <p class="text-sm text-gray-500">Notifications de maintenance programmée</p>
+            </div>
+            <div class="flex space-x-4">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="systemMaintenanceEmail"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Email</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="systemMaintenancePush"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                <span class="ml-2 text-sm text-gray-700">Push</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages de succès/erreur -->
+      <div *ngIf="successMessage()" class="p-4 bg-green-50 border border-green-200 rounded-md">
+        <div class="flex">
+          <i class="fas fa-check-circle text-green-400 mr-2 mt-0.5"></i>
+          <p class="text-sm text-green-800">{{ successMessage() }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage()" class="p-4 bg-red-50 border border-red-200 rounded-md">
+        <div class="flex">
+          <i class="fas fa-exclamation-circle text-red-400 mr-2 mt-0.5"></i>
+          <p class="text-sm text-red-800">{{ errorMessage() }}</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          type="submit"
+          [disabled]="isSubmitting()"
+          class="px-6 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <span *ngIf="isSubmitting()" class="inline-flex items-center">
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Enregistrement...
+              </span>
+          <span *ngIf="!isSubmitting()">Enregistrer les préférences</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

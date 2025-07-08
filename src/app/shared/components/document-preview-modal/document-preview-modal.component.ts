@@ -10,12 +10,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import {DocumentService} from '@modules/enqueteur/traitement/document/document.service';
-import {Subscription} from 'rxjs';
+import {of, Subscription, switchMap} from 'rxjs';
 import {DocumentUrl, Document} from '@modules/enqueteur/traitement/document/document';
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 import {NotificationAlertService} from "@core/services/notification-alert.service";
 import {ResponseError} from "@core/interfaces/response-error.interface";
 import {CommonModule} from "@angular/common";
+import {catchError, map} from "rxjs/operators";
 
 @Component({
   selector: 'app-document-preview-modal',
@@ -48,43 +49,48 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
   ) {
   }
 
-  private loadAndEmbed() {
+  private loadAndEmbed(): void {
     this.isLoading = true;
     this.hasError = false;
     this.embedUrl = "";
-    this.documentService.getUrl(this.documentId).subscribe({
-      next: (url: DocumentUrl | null) => {
-        if (url) {
+
+    this.documentService.getUrl(this.documentId).pipe(
+        switchMap((url: DocumentUrl | null) => {
+          if (!url) {
+            throw new Error("Document introuvable");
+          }
+
           this.documentUrl = url;
           this.contentType = url.contentType;
-          console.log(this.contentType);
-          if (url.canPreview) {
-            this.documentService.getBlob(this.documentId).subscribe({
-              next: (blob) => {
-                const objectUrl = URL.createObjectURL(blob);
-                this.embedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
-                this.isLoading = false;
-              },
-              error: (err) => {
-                console.error(err);
-                this.isLoading = false;
-                this.hasError = true;
-                this.notificationService.showNotification("Impossible de charger le document", "error");
-              }
-            });
-          } else {
-            this.notificationService.showNotification("Le document ne peut pas être afficher", "info");
+
+          if (!url.canPreview) {
+            this.notificationService.showNotification("Le document ne peut pas être affiché", "info");
             this.isLoading = false;
+            return of(null);
           }
-        }
-      },
-      error: (err: ResponseError) => {
-        this.isLoading = false;
-        this.notificationService.showNotification(err.message || "Erreur lors du chargement du document", "error");
-      }
-    })
 
-
+          return this.documentService.getBlob(this.documentId).pipe(
+              map((blob) => {
+                const objectUrl = URL.createObjectURL(blob);
+                return this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
+              })
+          );
+        }),
+        catchError((err: any) => {
+          this.isLoading = false;
+          this.hasError = true;
+          const message = err?.message || "Erreur lors du chargement du document";
+          this.notificationService.showNotification(message, "error");
+          return of(null);
+        })
+    ).subscribe((safeUrl) => {
+     // setTimeout(()=>{
+       if(safeUrl) {
+         this.embedUrl = safeUrl;
+       }
+       this.isLoading = false;
+     // }, 3000)
+    });
   }
 
 

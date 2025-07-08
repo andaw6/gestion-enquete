@@ -5,11 +5,12 @@ import {IParams} from "@core/interfaces/http-options.interface";
 import {Observable} from "rxjs";
 import {ApiResponse} from "@core/interfaces/api-response.interface"
 import {TypeSource} from "@modules/admin/parametrage/type-source/type-source";
+import {ApiCrudService} from "@core/api/api-crud.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TypeSourceService extends ApiService {
+export class TypeSourceService extends ApiCrudService<TypeSource> {
   constructor(http: HttpClient) {
     super(http);
     this.setBaseUrl("/type/source");

@@ -5,11 +5,12 @@ import {IParams} from "@core/interfaces/http-options.interface";
 import {Observable} from "rxjs";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
 import {EtatEnquete} from "@modules/admin/parametrage/etat-enquete/etat-enquete";
+import {ApiCrudService} from "@core/api/api-crud.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class EtatEnqueteService extends ApiService{
+export class EtatEnqueteService extends ApiCrudService<EtatEnquete> {
 
   constructor(http: HttpClient) {
     super(http);

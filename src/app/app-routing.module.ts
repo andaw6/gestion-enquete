@@ -10,7 +10,8 @@ const routes: Routes = [
     children: [
       {
         path: "parametrage",
-        loadChildren: () => import("@modules/admin/parametrage/parametrage.module").then(m => m.ParametrageModule)
+        loadChildren: () =>
+          import("@modules/admin/parametrage/parametrage.module").then(m => m.ParametrageModule)
       },
       {
         path: '**',
@@ -25,7 +26,18 @@ const routes: Routes = [
     children: [
       {
         path: "traitement",
-        loadChildren: () => import("@modules/enqueteur/traitement/traitement.module").then(m => m.TraitementModule)
+        loadChildren: () =>
+          import("@modules/enqueteur/traitement/traitement.module").then(m => m.TraitementModule)
+      },
+      {
+        path: "parametrage",
+        loadChildren: () =>
+          import("@modules/enqueteur/parametrage/parametrage.module").then(m => m.ParametrageModule)
+      },
+      {
+        path: 'profil',
+        loadChildren: () =>
+          import('@modules/enqueteur/parametrage/profil/profil.module').then(m => m.ProfilModule),
       },
       {
         path: '**',

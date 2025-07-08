@@ -29,8 +29,10 @@
     "lucide-angular": "^0.518.0",
     "postcss": "^8.5.6",
     "rxjs": "~7.8.0",
+    "shadcn": "^2.8.0",
     "simplebar": "^6.3.1",
     "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
   },

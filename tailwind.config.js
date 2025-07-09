@@ -10,7 +10,7 @@ module.exports = {
       colors: {
 
         // Couleur principale bleu foncé
-        primary: {
+        secondary: {
           DEFAULT: '#293F76',
           50: '#EAECF1',
           100: '#C1C6D6',
@@ -25,7 +25,7 @@ module.exports = {
         },
 
         // Couleur secondaire cyan
-        secondary: {
+        primary: {
           DEFAULT: '#17ABDD',
           50: '#E7F4FA',
           100: '#BAE1F1',

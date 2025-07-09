@@ -62,11 +62,11 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
         icon: "fas fa-cogs",
         route: "/enqueteur/parametrage",
         children: [
-          {
-            label: "Préférences",
-            icon: "fas fa-sliders-h",
-            route: "/enqueteur/parametrage/preference",
-          },
+          // {
+          //   label: "Préférences",
+          //   icon: "fas fa-sliders-h",
+          //   route: "/enqueteur/parametrage/preference",
+          // },
           {
             label: "Sécurité",
             icon: "fas fa-shield-alt",

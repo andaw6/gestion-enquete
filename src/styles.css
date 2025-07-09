@@ -130,3 +130,9 @@
     transform: scale(1.1);
   }
 }
+
+
+.gradient-sidebar {
+  background: linear-gradient(to bottom, rgba(41, 63, 118, 1), rgba(23, 171, 221, 0.75));
+  /*@apply bg-gradient-to-b from-primary via-primary-600 to-primary-800;*/
+}

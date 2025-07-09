@@ -4,6 +4,7 @@ import {RouterModule} from "@angular/router";
 import {SECURITE_ROUTES} from "@modules/enqueteur/parametrage/securite/securite-routing";
 import { SecuriteComponent } from './securite/securite.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import {LucideAngularModule} from "lucide-angular";
 
 
 
@@ -14,6 +15,7 @@ import {ReactiveFormsModule} from "@angular/forms";
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    LucideAngularModule,
     RouterModule.forChild(SECURITE_ROUTES),
   ]
 })

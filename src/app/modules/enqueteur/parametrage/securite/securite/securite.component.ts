@@ -1,6 +1,7 @@
 import {Component, inject, signal} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ProfilService} from "@modules/enqueteur/parametrage/profil/profil.service";
+import {Save} from "lucide-angular";
 
 
 function passwordMatchValidator(control: AbstractControl) {
@@ -8,7 +9,7 @@ function passwordMatchValidator(control: AbstractControl) {
   const confirmPassword = control.get("confirmPassword")
 
   if (newPassword && confirmPassword && newPassword.value !== confirmPassword.value) {
-    return { passwordMismatch: true }
+    return {passwordMismatch: true}
   }
   return null
 }
@@ -22,6 +23,11 @@ function passwordMatchValidator(control: AbstractControl) {
 export class SecuriteComponent {
   private fb = inject(FormBuilder)
   private settingsService = inject(ProfilService)
+  readonly iconSave = Save;
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+
 
   passwordForm: FormGroup
   isPasswordSubmitting = signal(false)
@@ -39,7 +45,7 @@ export class SecuriteComponent {
         ],
         confirmPassword: ["", [Validators.required]],
       },
-      { validators: passwordMatchValidator },
+      {validators: passwordMatchValidator},
     )
   }
 

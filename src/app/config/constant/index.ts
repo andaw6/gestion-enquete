@@ -112,9 +112,9 @@ export const FILE_CATEGORIES: Option[] = [
   {label: '🎵 Audios', value: 'audio'},
   {label: '🎬 Vidéos', value: 'video'},
   {label: '📄 Documents', value: 'document'},
-  {label: '🧳 Archives', value: 'archive'},
-  {label: '💻 Code', value: 'code'},
-  {label: '⚙️ Exécutables', value: 'executable'},
+  // {label: '🧳 Archives', value: 'archive'},
+  // {label: '💻 Code', value: 'code'},
+  // {label: '⚙️ Exécutables', value: 'executable'},
   // {label: '🧩 Autres', value: 'autre'}
 ];
 

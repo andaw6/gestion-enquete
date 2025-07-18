@@ -25,7 +25,8 @@ export class SourceFiltersComponent implements OnInit {
     etatCode: "",
     typeCode: "",
     niveauFiabilite: "",
-    sortBy: "date"
+    sortBy: "date",
+    viewMode: 'grid',
   }
 
   etatSources: EtatSourceInfo[] = [];
@@ -40,6 +41,7 @@ export class SourceFiltersComponent implements OnInit {
   }
 
   searchControl = new FormControl('');
+
 
   private setupSearchListener(): void {
     this.utilService.setupSearchListener(this.searchControl, query => {
@@ -78,5 +80,10 @@ export class SourceFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
     this.setupSearchListener();
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.filter.viewMode = mode;
+    this.onFilterChange();
   }
 }

@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
-import { environment } from '@env/environment.development';
-import { HttpOptions, IParams } from '@core/interfaces/http-options.interface';
-import { ApiResponse } from '@core/interfaces/api-response.interface';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {tap, catchError, map} from 'rxjs/operators';
+import {environment} from '@env/environment';
+import {HttpOptions, IParams} from '@core/interfaces/http-options.interface';
+import {ApiResponse} from '@core/interfaces/api-response.interface';
 
 /**
  * Service abstrait fournissant une couche d'accès HTTP générique et sécurisée.
@@ -39,7 +39,8 @@ export abstract class ApiService {
   /** URL de base complète de l'API (dépend de l'environnement). */
   private _baseUrl = environment.apiUrl;
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient) {
+  }
 
   /**
    * Définit dynamiquement un nouveau segment d'URL de base.
@@ -83,7 +84,7 @@ export abstract class ApiService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     headers = headers.set('Accept', 'application/json');
-    return { ...options, headers, withCredentials: true };
+    return {...options, headers, withCredentials: true};
   }
 
   /**
@@ -239,7 +240,7 @@ export abstract class ApiService {
     params?: IParams,
     url?: string
   ): Observable<ApiResponse<T>> {
-    const springParams: IParams = { ...params };
+    const springParams: IParams = {...params};
 
     if (params?.["page"] !== undefined && params?.["limit"] !== undefined) {
       springParams['page'] = Math.max(0, params?.["page"] - 1);
@@ -249,8 +250,8 @@ export abstract class ApiService {
       delete springParams['totalPage'];
     }
 
-    return this.get<any>(url ?? '/', springParams).pipe(
-      map((response) => {
+    return this.get<T>(url ?? '/', springParams).pipe(
+      map((response: any) => {
         if (response && response.content) {
           return {
             data: response.content as T[],
@@ -297,8 +298,8 @@ export abstract class ApiService {
    * @param url - Endpoint.
    * @param data - Payload.
    */
-  protected responsePostOne<T = any>(url: string, data: any): Observable<T> {
-    return this.post<T>(url, data).pipe(
+  protected responsePostOne<T = any>(data: any, url?: string): Observable<T> {
+    return this.post<T>(url ?? "", data).pipe(
       map((response) => response ?? data),
       catchError((error) => {
         // eslint-disable-next-line no-console

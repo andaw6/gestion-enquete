@@ -1,0 +1,24 @@
+<svg *ngIf="showSpinner"
+  xmlns="http://www.w3.org/2000/svg"
+  [attr.width]="size"
+  [attr.height]="size"
+  viewBox="0 0 100 100"
+  overflow="visible"
+  [attr.fill]="color"
+  stroke="none"
+>
+  <defs>
+    <rect id="loader" x="46.5" y="40" width="7" height="20" rx="2" ry="2" transform="translate(0 -30)"/>
+  </defs>
+  <ng-container *ngFor="let angle of angles; let i = index">
+    <use [attr.xlink:href]="'#loader'" [attr.transform]="'rotate(' + angle + ' 50 50)'">
+      <animate
+        attributeName="opacity"
+        values="0;1;0"
+        dur="1s"
+        [attr.begin]="(i * 0.125) + 's'"
+        repeatCount="indefinite"
+      ></animate>
+    </use>
+  </ng-container>
+</svg>

@@ -61,93 +61,184 @@
       </div>
     </div>
 
+<!--    <div class="overflow-hidden" *ngIf="viewMode === 'list'">-->
+<!--     -->
+<!--      <div-->
+<!--        class="grid grid-cols-10 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase tracking-wider">-->
+<!--        <div class="col-span-1 flex items-center">-->
+<!--          <i class="fas fa-file-alt w-4 h-4"></i>-->
+<!--        </div>-->
+<!--        <div class="col-span-4">Nom du document</div>-->
+<!--        <div class="col-span-2">Type</div>-->
+<!--        <div class="col-span-1">Taille</div>-->
+<!--        <div class="col-span-1">Version</div>-->
+<!--        <div class="col-span-1 text-center">Actions</div>-->
+<!--      </div>-->
+
+<!--   -->
+<!--      <div class="divide-y divide-gray-100">-->
+<!--        <div-->
+<!--          *ngFor="let doc of documents | async; "-->
+<!--          class="grid grid-cols-10 gap-4 px-4 py-4 hover:bg-gray-50 transition-colors duration-150 cursor-pointer group"-->
+<!--        >-->
+<!--        -->
+<!--          <div class="col-span-1 flex items-center">-->
+<!--            <div-->
+<!--              [class]="'w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ' + utilService.getBgIcon(doc.extension)">-->
+<!--              <i [class]="utilService.getIcon(doc.extension, false) + ' text-sm'"></i>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--       -->
+<!--          <div class="col-span-4 flex flex-col justify-center min-w-0">-->
+<!--            <h4 class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">-->
+<!--              {{ doc.nom }}-->
+<!--            </h4>-->
+<!--            <p class="text-xs text-gray-500 truncate mt-1" *ngIf="doc.description">-->
+<!--              {{ doc.description }}-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--       -->
+<!--          <div class="col-span-2 flex items-center">-->
+<!--            <span-->
+<!--              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">-->
+<!--              {{ doc.type.libelle }}-->
+<!--            </span>-->
+<!--          </div>-->
+
+<!--   -->
+<!--          <div class="col-span-1 flex items-center">-->
+<!--            <span class="text-sm text-gray-600">{{ utilService.formatFileSize(doc.taille) }}</span>-->
+<!--          </div>-->
+
+<!--        -->
+<!--          <div class="col-span-1 flex items-center">-->
+<!--            <span-->
+<!--              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">-->
+<!--              v{{ doc.version }}-->
+<!--            </span>-->
+<!--          </div>-->
+
+<!--      -->
+<!--          <div class="col-span-1 flex items-center justify-center space-x-1">-->
+<!--            <button-->
+<!--              (click)="onPreview(doc); $event.stopPropagation()"-->
+<!--              class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 opacity-100"-->
+<!--              title="Voir le document"-->
+<!--            >-->
+<!--              <i [class]="utilService.getDocumentActionIcon(doc) + ' text-sm'"></i>-->
+<!--            </button>-->
+<!--            <button-->
+<!--              (click)="onDownload(doc); $event.stopPropagation()"-->
+<!--              class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200 opacity-100"-->
+<!--              title="Télécharger"-->
+<!--            >-->
+<!--              <i class="fas fa-download text-sm"></i>-->
+<!--            </button>-->
+<!--            <button-->
+<!--              (click)="onDelete(doc); $event.stopPropagation()"-->
+<!--              class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 opacity-100"-->
+<!--              title="Supprimer"-->
+<!--            >-->
+<!--              <i class="fas fa-trash-alt text-sm"></i>-->
+<!--            </button>-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
     <div class="overflow-hidden" *ngIf="viewMode === 'list'">
-      <!-- En-tête de la liste -->
-      <div
-        class="grid grid-cols-10 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase tracking-wider">
-        <div class="col-span-1 flex items-center">
-          <i class="fas fa-file-alt w-4 h-4"></i>
-        </div>
-        <div class="col-span-4">Nom du document</div>
-        <div class="col-span-2">Type</div>
-        <div class="col-span-1">Taille</div>
-        <div class="col-span-1">Version</div>
-        <div class="col-span-1 text-center">Actions</div>
-      </div>
-
-      <!-- Lignes de documents -->
-      <div class="divide-y divide-gray-100">
+      <!-- Conteneur scrollable -->
+      <div class="overflow-x-auto custom-scrollbar">
+        <!-- En-tête -->
         <div
-          *ngFor="let doc of documents | async; "
-          class="grid grid-cols-10 gap-4 px-4 py-4 hover:bg-gray-50 transition-colors duration-150 cursor-pointer group"
-        >
-          <!-- Icône du fichier -->
+          class="min-w-[1000px] grid grid-cols-10 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase tracking-wider">
           <div class="col-span-1 flex items-center">
-            <div
-              [class]="'w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ' + utilService.getBgIcon(doc.extension)">
-              <i [class]="utilService.getIcon(doc.extension, false) + ' text-sm'"></i>
+            <i class="fas fa-file-alt w-4 h-4"></i>
+          </div>
+          <div class="col-span-4">Nom du document</div>
+          <div class="col-span-2">Type</div>
+          <div class="col-span-1">Taille</div>
+          <div class="col-span-1">Version</div>
+          <div class="col-span-1 text-center">Actions</div>
+        </div>
+
+        <!-- Lignes -->
+        <div class="divide-y divide-gray-100 min-w-[1000px]">
+          <div
+            *ngFor="let doc of documents | async"
+            class="grid grid-cols-10 gap-4 px-4 py-4 hover:bg-gray-50 transition-colors duration-150 cursor-pointer group"
+          >
+            <!-- Icône -->
+            <div class="col-span-1 flex items-center">
+              <div
+                [class]="'w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ' + utilService.getBgIcon(doc.extension)">
+                <i [class]="utilService.getIcon(doc.extension, false) + ' text-sm'"></i>
+              </div>
             </div>
-          </div>
 
-          <!-- Nom et description -->
-          <div class="col-span-4 flex flex-col justify-center min-w-0">
-            <h4 class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
-              {{ doc.nom }}
-            </h4>
-            <p class="text-xs text-gray-500 truncate mt-1" *ngIf="doc.description">
-              {{ doc.description }}
-            </p>
-          </div>
+            <!-- Nom -->
+            <div class="col-span-4 flex flex-col justify-center min-w-0">
+              <h4 class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                {{ doc.nom }}
+              </h4>
+              <p class="text-xs text-gray-500 truncate mt-1" *ngIf="doc.description">
+                {{ doc.description }}
+              </p>
+            </div>
 
-          <!-- Type de document -->
-          <div class="col-span-2 flex items-center">
-            <span
-              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              {{ doc.type.libelle }}
-            </span>
-          </div>
+            <!-- Type -->
+            <div class="col-span-2 flex items-center">
+          <span
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {{ doc.type.libelle }}
+          </span>
+            </div>
 
-          <!-- Taille -->
-          <div class="col-span-1 flex items-center">
-            <span class="text-sm text-gray-600">{{ utilService.formatFileSize(doc.taille) }}</span>
-          </div>
+            <!-- Taille -->
+            <div class="col-span-1 flex items-center">
+              <span class="text-sm text-gray-600">{{ utilService.formatFileSize(doc.taille) }}</span>
+            </div>
 
-          <!-- Version -->
-          <div class="col-span-1 flex items-center">
-            <span
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              v{{ doc.version }}
-            </span>
-          </div>
+            <!-- Version -->
+            <div class="col-span-1 flex items-center">
+          <span
+            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            v{{ doc.version }}
+          </span>
+            </div>
 
-          <!-- Actions -->
-          <div class="col-span-1 flex items-center justify-center space-x-1">
-            <button
-              (click)="onPreview(doc); $event.stopPropagation()"
-              class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 opacity-100"
-              title="Voir le document"
-            >
-              <i [class]="utilService.getDocumentActionIcon(doc) + ' text-sm'"></i>
-            </button>
-            <button
-              (click)="onDownload(doc); $event.stopPropagation()"
-              class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200 opacity-100"
-              title="Télécharger"
-            >
-              <i class="fas fa-download text-sm"></i>
-            </button>
-            <button
-              (click)="onDelete(doc); $event.stopPropagation()"
-              class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 opacity-100"
-              title="Supprimer"
-            >
-              <i class="fas fa-trash-alt text-sm"></i>
-            </button>
-
+            <!-- Actions -->
+            <div class="col-span-1 flex items-center justify-center space-x-1">
+              <button
+                (click)="onPreview(doc); $event.stopPropagation()"
+                class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                title="Voir le document"
+              >
+                <i [class]="utilService.getDocumentActionIcon(doc) + ' text-sm'"></i>
+              </button>
+              <button
+                (click)="onDownload(doc); $event.stopPropagation()"
+                class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+                title="Télécharger"
+              >
+                <i class="fas fa-download text-sm"></i>
+              </button>
+              <button
+                (click)="onDelete(doc); $event.stopPropagation()"
+                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+                title="Supprimer"
+              >
+                <i class="fas fa-trash-alt text-sm"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
 
 
     <div *ngIf="(documents | async)?.length === 0" class="text-center py-12">

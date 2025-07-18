@@ -17,13 +17,14 @@ import {NotificationAlertService} from "@core/services/notification-alert.servic
 import {ResponseError} from "@core/interfaces/response-error.interface";
 import {CommonModule} from "@angular/common";
 import {catchError, map} from "rxjs/operators";
+import {SpinnerComponent} from "@shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-document-preview-modal',
   templateUrl: './document-preview-modal.component.html',
   styleUrls: ['./document-preview-modal.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, SpinnerComponent]
 })
 export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChanges {
   @Output() modalClosed = new EventEmitter<void>();

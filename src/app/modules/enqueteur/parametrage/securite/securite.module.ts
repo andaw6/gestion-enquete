@@ -5,6 +5,7 @@ import {SECURITE_ROUTES} from "@modules/enqueteur/parametrage/securite/securite-
 import { SecuriteComponent } from './securite/securite.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {LucideAngularModule} from "lucide-angular";
+import {PageHeaderComponent} from "@shared/components/page-header/page-header.component";
 
 
 
@@ -12,11 +13,12 @@ import {LucideAngularModule} from "lucide-angular";
   declarations: [
     SecuriteComponent
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    LucideAngularModule,
-    RouterModule.forChild(SECURITE_ROUTES),
-  ]
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        LucideAngularModule,
+        RouterModule.forChild(SECURITE_ROUTES),
+        PageHeaderComponent,
+    ]
 })
 export class SecuriteModule { }

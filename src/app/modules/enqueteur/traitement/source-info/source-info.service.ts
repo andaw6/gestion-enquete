@@ -26,7 +26,7 @@ export class SourceInfoService extends ApiService{
   }
 
   create(data: any): Observable<SourceInfo> {
-    return this.responsePostOne<SourceInfo>('', data);
+    return this.responsePostOne<SourceInfo>(data);
   }
 
   update(id: number, data: any): Observable<SourceInfo> {

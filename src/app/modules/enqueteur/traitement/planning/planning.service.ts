@@ -1,19 +1,27 @@
 import {Injectable, signal} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {CalendarEvent, Planning} from "@modules/enqueteur/traitement/planning/planning";
+import {
+  CalendarEvent,
+  EvenementCalendrier,
+  EvenementCalendrierData,
+  StatistiqueCalendrier
+} from "@modules/enqueteur/traitement/planning/planning";
 import {ApiCrudService} from "@core/api/api-crud.service";
 import {Observable, of} from "rxjs";
 import {IParams} from "@core/interfaces/http-options.interface";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlanningService extends ApiCrudService<Planning> {
+export class PlanningService extends ApiCrudService<EvenementCalendrier, EvenementCalendrierData> {
+
+  readonly USER_ID: number = 1;
 
   constructor(http: HttpClient) {
     super(http);
-    this.setBaseUrl("/planning");
+    this.setBaseUrl("/evenement/calendrier");
   }
 
 
@@ -132,23 +140,29 @@ export class PlanningService extends ApiCrudService<Planning> {
     }
   }
 
-  create(data: any): Observable<Planning> {
-    return of();
+  override create(data: EvenementCalendrierData): Observable<EvenementCalendrier> {
+    return this.responsePostOne<EvenementCalendrier>(data);
   }
 
-  deleteOne(id: number): Observable<boolean> {
-    return of(true);
+  override deleteOne(id: number): Observable<boolean> {
+    return this.responseDeleteOne(`/${id}`);
   }
 
-  getAll(params: IParams | undefined): Observable<ApiResponse<Planning>> {
-    return of();
+  override getAll(params: IParams = {}): Observable<ApiResponse<EvenementCalendrier>> {
+    params["utilisateurId"] = this.USER_ID;
+    return this.responseGetMany<EvenementCalendrier>(params, "/all");
   }
 
-  getOne(id: number): Observable<Planning | null> {
-    return of();
+  override getOne(id: number): Observable<EvenementCalendrier | null> {
+    return this.responseGetOne<EvenementCalendrier>(`/${id}`);
   }
 
-  update(id: number, data: any): Observable<Planning> {
-    return of();
+  override update(id: number, data: EvenementCalendrierData): Observable<EvenementCalendrier> {
+    return this.responsePutOne<EvenementCalendrier>(`/${id}`, data);
   }
+
+  getStates(): Observable<StatistiqueCalendrier> {
+    return this.responseGetOne<StatistiqueCalendrier>(`/statistique/semaine/${this.USER_ID}`).pipe(map(s => s!));
+  }
+
 }

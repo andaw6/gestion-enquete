@@ -1,6 +1,14 @@
-<main class="flex-1 overflow-y-auto p-6">
+<app-page-header
+  [title]="pageTitle()"
+  [subtitle]="pageSubtitle()"
+  [buttonText]="'Retour'"
+  [buttonIcon]="'fas fa-arrow-left mr-2'"
+  [buttonAction]="goBack"
+></app-page-header>
+
+<main class="flex-1 overflow-y-auto custom-scrollbar p-6">
   <div class="max-w-4xl mx-auto">
-    <app-button-back (onClick)="goBack()" [url]="'/enqueteur/traitement/source-info'" [activeUrl]="false" ></app-button-back>
+
 
     <form [formGroup]="sourceForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
@@ -203,16 +211,16 @@
 
       <!-- Boutons d'action -->
       <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            id="ajouterAuxFavoris"
-            formControlName="ajouterAuxFavoris"
-            class="text-blue-500 focus:ring-blue-500">
-          <label for="ajouterAuxFavoris" class="ml-2 text-sm text-gray-700">
-            <i class="fas fa-star text-yellow-500 mr-1"></i>
-            Ajouter aux favoris
-          </label>
+        <div class="flex items-center ">
+<!--          <input-->
+<!--            type="checkbox"-->
+<!--            id="ajouterAuxFavoris"-->
+<!--            formControlName="ajouterAuxFavoris"-->
+<!--            class="text-blue-500 focus:ring-blue-500">-->
+<!--          <label for="ajouterAuxFavoris" class="ml-2 text-sm text-gray-700">-->
+<!--            <i class="fas fa-star text-yellow-500 mr-1"></i>-->
+<!--            Ajouter aux favoris-->
+<!--          </label>-->
         </div>
 
         <div class="flex space-x-4">
@@ -225,7 +233,7 @@
           <button
             type="submit"
             [disabled]="isValid()"
-            class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            class="px-6 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             <i class="fas fa-spinner fa-spin mr-2" *ngIf="isSubmitting"></i>
             <i
               class="mr-2"
@@ -253,9 +261,11 @@
         {{ wasEditing ? 'Source modifiée avec succès!' : 'Source créée avec succès!' }}
       </h3>
       <p class="text-sm text-gray-500 mb-6">
-        {{ wasEditing
-        ? 'La source d\'information a été mise à jour avec succès.'
-        : 'La nouvelle source d\'information a été ajoutée à votre base de données.' }}
+        {{
+          wasEditing
+            ? 'La source d\'information a été mise à jour avec succès.'
+            : 'La nouvelle source d\'information a été ajoutée à votre base de données.'
+        }}
       </p>
 
       <div class="flex space-x-3">

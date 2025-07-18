@@ -23,28 +23,32 @@ export class DocumentService extends ApiCrudService<Document, DocumentData> {
     });
   }
 
-  getAll(params?: IParams): Observable<ApiResponse<Document>> {
+  override getAll(params: IParams= {}): Observable<ApiResponse<Document>> {
     return this.responseGetMany<Document>(params, "/all");
   }
 
-  getOne(id: number): Observable<Document | null> {
+  override getOne(id: number): Observable<Document | null> {
     return this.responseGetOne<Document>(`/${id}`);
   }
 
-  create(data: DocumentData): Observable<Document> {
+  override create(data: DocumentData): Observable<Document> {
+    return this.responsePostOne<Document>(this.toFormData(data));
+  }
+
+  private toFormData(data:DocumentData):FormData{
     const formData = new FormData();
     formData.append("nom", data.nom);
     formData.append("description", data.description);
     formData.append("typeId", data.typeId.toString());
     formData.append("file", data.file);
-    return this.responsePostOne<Document>('', formData);
+    return formData;
   }
 
-  update(id: number, data: DocumentData): Observable<Document> {
+  override update(id: number, data: DocumentData): Observable<Document> {
     return this.responsePutOne<Document>(`/${id}`, data);
   }
 
-  deleteOne(id: number): Observable<boolean> {
+  override deleteOne(id: number): Observable<boolean> {
     return this.responseDeleteOne(`/${id}`);
   }
 

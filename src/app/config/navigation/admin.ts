@@ -31,42 +31,35 @@ export const  ADMIN_NAVIGATION: NavigationSection[] = [
     title: "PARAMÈTRES",
     items: [
       {
+        label: "Mes Notifications",
+        icon: "fas fa-bell",
+        route: "/admin/parametrage/notification"
+      },
+      {
         label: "Paramètre Système",
         icon: "fas fa-cogs",
         active: false,
         route: "/admin/parametrage/systeme",
         children: [
           {
-            label: "Notifications",
-            icon: "fas fa-bell",
-            route: "/admin/parametrage/systeme/notification"
-          },
-          {
             label: "Types de documents",
             icon: "fas fa-file-alt",
             route: "/admin/parametrage/systeme/type-document"
           },
-          {
-            label: "États de demande",
-            icon: "fas fa-tasks",
-            route: "/admin/parametrage/systeme/etat-demande"
-          },
-          {
-            label: "États d'enquête",
-            icon: "fas fa-poll",
-            route: "/admin/parametrage/systeme/etat-enquete"
-          },
+          // {
+          //   label: "États de demande",
+          //   icon: "fas fa-tasks",
+          //   route: "/admin/parametrage/systeme/etat-demande"
+          // },
+          // {
+          //   label: "États d'enquête",
+          //   icon: "fas fa-poll",
+          //   route: "/admin/parametrage/systeme/etat-enquete"
+          // },
           {
             label: "Sources d'information",
             icon: "fas fa-stream",
             route: "/admin/parametrage/systeme/type-source",
-            // children: [
-            //   {
-            //     label: "Teste",
-            //     icon: "fas fa-key",
-            //     route: "/admin/parametrage/systeme/type-source"
-            //   },
-            // ]
           },
         ],
       },

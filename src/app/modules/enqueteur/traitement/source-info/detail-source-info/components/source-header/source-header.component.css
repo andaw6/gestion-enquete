@@ -1,12 +1,4 @@
-.glass-effect {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.8); /* Tu peux remplacer par secondaire 50 si tu veux teinter */
-}
 
-/* Gradient avec tes couleurs primary et secondary */
-.gradient-bg {
-  background: linear-gradient(135deg, #293F76 0%, #17ABDD 100%);
-}
 
 /* Security pattern avec un fond foncé issu de ta palette dark */
 .security-pattern {

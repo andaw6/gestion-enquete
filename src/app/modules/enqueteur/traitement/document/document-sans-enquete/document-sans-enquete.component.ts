@@ -23,6 +23,7 @@ import {
 } from '@modules/enqueteur/traitement/document/components/document-upload-modal/document-upload-modal.component';
 import {IParams} from "@core/interfaces/http-options.interface";
 import {UtilService} from "@core/services/util.service";
+import {ViewMode} from "@core/types";
 
 @Component({
   selector: 'app-document-sans-enquete',
@@ -59,19 +60,25 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   isDeleting = false;
 
   paramFilter: IParams = {};
+  private readonly key:string =  "DocumentSans-Enquete.viewMode";
 
   @ViewChild(DocumentUploadModalComponent)
   uploadModal!: DocumentUploadModalComponent;
+  pageTitle: string = "Mes Documents non classés";
+  pageSubTitle: string = "Retrouvez et organisez facilement vos documents d'enquêtes non classés";
 
   constructor(
     private documentService: DocumentService,
-    private typeDocumentService: TypeDocumentService,
     private utilService: UtilService,
     private renderer: Renderer2,
   ) {
   }
 
   ngOnInit(): void {
+    if (window != undefined) {
+      this.currentFilters.viewMode = localStorage.getItem(this.key) as ViewMode ?? 'grid';
+    }
+
     this.applyFilters();
   }
 
@@ -104,6 +111,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
 
   onFiltersChange(filters: DocumentFilterOptions): void {
     this.currentFilters = filters;
+    localStorage.setItem(this.key, this.currentFilters.viewMode);
     this.applyFilters();
   }
 

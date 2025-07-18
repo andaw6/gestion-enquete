@@ -1,10 +1,16 @@
 <div class="h-screen flex flex-col overflow-hidden">
-  <app-overlay [isActive]="isSidebarOpen" (overlayClick)="closeSidebar()">
-  </app-overlay>
+  <app-overlay
+    [isActive]="isSidebarOpen"
+    (overlayClick)="closeSidebar()"
+  ></app-overlay>
 
   <div class="flex flex-1 overflow-hidden">
-    <app-sidebar [user]="user" [navigationSections]="navigation" [isOpen]="isSidebarOpen" (closeSidebar)="closeSidebar()">
-    </app-sidebar>
+    <app-sidebar
+      [user]="user"
+      [navigationSections]="navigation"
+      [isOpen]="isSidebarOpen"
+      (closeSidebar)="closeSidebar()"
+    ></app-sidebar>
 
     <!-- Main Content Area - Structure originale -->
     <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -14,7 +20,7 @@
       <!-- Content Area avec scroll -->
       <div class="flex-1 overflow-y-auto custom-scrollbar bg-gray-50">
         <main class="p-4 sm:p-6 lg:p-8">
-          <router-outlet></router-outlet>
+          <router-outlet/>
         </main>
       </div>
     </div>

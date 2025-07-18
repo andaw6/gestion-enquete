@@ -13,7 +13,6 @@ export class UtilService extends NotificationAlertService {
   private destroy$ = new Subject<void>();
 
   updateActiveLink(navigation: NavigationSection[], url: string) {
-
     const updateItem = (item: NavigationItem): boolean => {
 
 

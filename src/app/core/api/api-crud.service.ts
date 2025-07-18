@@ -21,7 +21,7 @@ export abstract class ApiCrudService<T, D = any> extends ApiService {
    * @param params - Paramètres de requête HTTP (pagination, filtres, etc.)
    * @returns Un observable contenant une réponse API avec une liste d'entités.
    */
-  abstract getAll(params?: IParams): Observable<ApiResponse<T>>;
+  abstract getAll(params: IParams): Observable<ApiResponse<T>>;
 
   /**
    * Récupère une entité spécifique par son identifiant.

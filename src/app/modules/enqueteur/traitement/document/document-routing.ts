@@ -16,7 +16,7 @@ export const DOCUMENT_ROUTE:Route[] = [
   },
   {
     path: '**',
-    redirectTo: 'avec-enquete',
+    redirectTo: 'sans-enquete',
     pathMatch: 'full'
   }
 ]

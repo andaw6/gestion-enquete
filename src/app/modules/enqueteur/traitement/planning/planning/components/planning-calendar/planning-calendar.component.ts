@@ -1,12 +1,16 @@
-import {Component, computed, EventEmitter, inject, Input, Output, signal} from '@angular/core';
+import {Component, computed, EventEmitter, inject, Input, OnInit, Output, signal, WritableSignal} from '@angular/core';
 import {
   CalendarDay,
   CalendarEvent,
-  CalendarView,
-  TimeSlot,
+  CalendarView, EvenementCalendrier,
+  TimeSlot, TypeEvenement,
   WeekDay
 } from "@modules/enqueteur/traitement/planning/planning";
 import {PlanningService} from "@modules/enqueteur/traitement/planning/planning.service";
+import {UtilService} from "@core/services/util.service";
+import {ResponseError} from "@core/interfaces/response-error.interface";
+import {ApiResponse} from "@core/interfaces/api-response.interface";
+import {TypeEvenementService} from "@modules/enqueteur/traitement/planning/type-evenement.service";
 
 
 @Component({
@@ -14,16 +18,58 @@ import {PlanningService} from "@modules/enqueteur/traitement/planning/planning.s
   templateUrl: './planning-calendar.component.html',
   styleUrls: ['./planning-calendar.component.css']
 })
-export class PlanningCalendarComponent {
+export class PlanningCalendarComponent implements OnInit {
   @Input() currentView: CalendarView = "month"
-  @Output() dateSelected = new EventEmitter<string>()
-  @Output() eventClick = new EventEmitter<number>()
+  @Output() dateSelected: EventEmitter<string> = new EventEmitter<string>()
+  @Output() eventClick: EventEmitter<number> = new EventEmitter<number>()
+  loading: boolean = false;
+
+  eventsSignal: WritableSignal<EvenementCalendrier[]> = signal<EvenementCalendrier[]>([]);
+  typeEvent: WritableSignal<TypeEvenement[]> = signal<TypeEvenement[]>([]);
+
+
+  constructor(
+    private readonly service: PlanningService,
+    private readonly typeEvenementService: TypeEvenementService,
+    private readonly utilService: UtilService,
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.loadType();
+    this.loadData();
+  }
+
+  loadData() {
+    this.loading = true;
+    this.service.getAll().subscribe({
+      next: (response: ApiResponse<EvenementCalendrier>) => {
+        this.eventsSignal.set(response.data);
+        this.loading = false;
+      },
+      error: (err: ResponseError) => {
+        this.loading = false;
+        this.utilService.showNotification(err.message || "Erreur lors du chargement des événements de l'utilisateur", "error");
+      }
+    })
+  }
+
+  loadType() {
+    this.typeEvenementService.getAll().subscribe({
+      next: (response: ApiResponse<TypeEvenement>) => {
+        this.typeEvent.set(response.data);
+      },
+      error: (err: ResponseError) => {
+        this.utilService.showNotification(err.message || "Erreur lors du chargement des types d'événements", "error");
+      }
+    })
+  }
 
   private calendarService = inject(PlanningService)
   protected currentDate = signal(new Date())
 
   dayNames = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
-  dayNamesShort = ["L", "M", "M", "J", "V", "S", "D"]
+  // dayNamesShort = ["L", "M", "M", "J", "V", "S", "D"]
   monthNames = [
     "Janvier",
     "Février",
@@ -49,35 +95,35 @@ export class PlanningCalendarComponent {
 
   // Time slots for week and day views
   timeSlots: TimeSlot[] = [
-    { hour: 8, label: "08:00" },
-    { hour: 9, label: "09:00" },
-    { hour: 10, label: "10:00" },
-    { hour: 11, label: "11:00" },
-    { hour: 12, label: "12:00" },
-    { hour: 13, label: "13:00" },
-    { hour: 14, label: "14:00" },
-    { hour: 15, label: "15:00" },
-    { hour: 16, label: "16:00" },
-    { hour: 17, label: "17:00" },
-    { hour: 18, label: "18:00" },
+    {hour: 8, label: "08:00"},
+    {hour: 9, label: "09:00"},
+    {hour: 10, label: "10:00"},
+    {hour: 11, label: "11:00"},
+    {hour: 12, label: "12:00"},
+    {hour: 13, label: "13:00"},
+    {hour: 14, label: "14:00"},
+    {hour: 15, label: "15:00"},
+    {hour: 16, label: "16:00"},
+    {hour: 17, label: "17:00"},
+    {hour: 18, label: "18:00"},
   ]
 
   // Extended time slots for day view
   extendedTimeSlots: TimeSlot[] = [
-    { hour: 7, label: "07:00" },
-    { hour: 8, label: "08:00" },
-    { hour: 9, label: "09:00" },
-    { hour: 10, label: "10:00" },
-    { hour: 11, label: "11:00" },
-    { hour: 12, label: "12:00" },
-    { hour: 13, label: "13:00" },
-    { hour: 14, label: "14:00" },
-    { hour: 15, label: "15:00" },
-    { hour: 16, label: "16:00" },
-    { hour: 17, label: "17:00" },
-    { hour: 18, label: "18:00" },
-    { hour: 19, label: "19:00" },
-    { hour: 20, label: "20:00" },
+    {hour: 7, label: "07:00"},
+    {hour: 8, label: "08:00"},
+    {hour: 9, label: "09:00"},
+    {hour: 10, label: "10:00"},
+    {hour: 11, label: "11:00"},
+    {hour: 12, label: "12:00"},
+    {hour: 13, label: "13:00"},
+    {hour: 14, label: "14:00"},
+    {hour: 15, label: "15:00"},
+    {hour: 16, label: "16:00"},
+    {hour: 17, label: "17:00"},
+    {hour: 18, label: "18:00"},
+    {hour: 19, label: "19:00"},
+    {hour: 20, label: "20:00"},
   ]
 
   calendarDays = computed(() => {

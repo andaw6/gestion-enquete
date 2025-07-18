@@ -8,8 +8,17 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
         label: "Tableau de bord",
         icon: "fas fa-tachometer-alt",
         route: "/enqueteur/dashboard",
-        active: false,
       },
+      {
+        label: "Mes enquêtes",
+        icon: "fas fa-tasks",
+
+      },
+      {
+        label: "Nouvelle enquête",
+        icon: "fas fa-folder-plus",
+        route: "/enqueteur/enquetes/nouveau",
+      }
     ],
   },
   {
@@ -20,11 +29,11 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
         icon: "fas fa-file-alt",
         route: "/enqueteur/traitement/document",
         children: [
-          {
-            label: "Liés à une enquête",
-            icon: "fas fa-link",
-            route: "/enqueteur/traitement/document/avec-enquete",
-          },
+          // {
+          //   label: "Liés à une enquête",
+          //   icon: "fas fa-link",
+          //   route: "/enqueteur/traitement/document/avec-enquete",
+          // },
           {
             label: "Non liés à une enquête",
             icon: "fas fa-unlink",
@@ -81,7 +90,9 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
             label:"Notification",
             icon: "fas fa-tools",
             route: "/enqueteur/parametrage/notification",
-          }
+          },
+
+
         ]
       }
     ]

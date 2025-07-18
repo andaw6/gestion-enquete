@@ -23,7 +23,7 @@ export const PARAMETRAGE_ROUTES: Route[] = [
   },
   {
     path: '**',
-    redirectTo: 'profil',
+    redirectTo: 'securite',
     pathMatch: 'full',
   }
 ];

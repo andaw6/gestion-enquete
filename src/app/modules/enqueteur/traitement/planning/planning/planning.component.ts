@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {CalendarView} from "@modules/enqueteur/traitement/planning/planning";
 
 @Component({
@@ -6,7 +6,15 @@ import {CalendarView} from "@modules/enqueteur/traitement/planning/planning";
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.css']
 })
-export class PlanningComponent {
+export class PlanningComponent implements OnInit {
+
+  ngOnInit(): void {
+
+
+  }
+
+
+
   currentView = signal<CalendarView>("month")
   isModalOpen = signal(false)
   selectedDate = signal<string>("")

@@ -28,6 +28,8 @@ export class SecuriteComponent {
   showNewPassword = false;
   showConfirmPassword = false;
 
+  pageTitle = 'Paramètres de sécurité';
+  pageSubTitle = 'Mettez à jour vos informations sensibles et sécurisez l’accès à votre compte';
 
   passwordForm: FormGroup
   isPasswordSubmitting = signal(false)

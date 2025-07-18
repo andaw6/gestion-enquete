@@ -15,23 +15,23 @@ export class UtilisateurService extends ApiCrudService<Utilisateur>{
     super(http);
   }
 
-  create(data: any): Observable<Utilisateur> {
+  override create(data: any): Observable<Utilisateur> {
     return of();
   }
 
-  deleteOne(id: number): Observable<boolean> {
+  override deleteOne(id: number): Observable<boolean> {
     return of();
   }
 
-  getAll(params: IParams | undefined): Observable<ApiResponse<Utilisateur>> {
+  override getAll(params: IParams | undefined): Observable<ApiResponse<Utilisateur>> {
     return of();
   }
 
-  getOne(id: number): Observable<Utilisateur | null> {
+  override getOne(id: number): Observable<Utilisateur | null> {
     return of();
   }
 
-  update(id: number, data: any): Observable<Utilisateur> {
+  override update(id: number, data: any): Observable<Utilisateur> {
     return of();
   }
 }

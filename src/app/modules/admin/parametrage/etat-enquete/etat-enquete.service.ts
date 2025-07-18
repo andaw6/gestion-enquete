@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from "@core/api/api.service";
 import {HttpClient} from "@angular/common/http";
 import {IParams} from "@core/interfaces/http-options.interface";
@@ -17,23 +17,23 @@ export class EtatEnqueteService extends ApiCrudService<EtatEnquete> {
     this.setBaseUrl("/etat/enquete");
   }
 
-  getAll(params?: IParams): Observable<ApiResponse<EtatEnquete>> {
+  override getAll(params: IParams = {}): Observable<ApiResponse<EtatEnquete>> {
     return this.responseGetMany<EtatEnquete>(params, "/all");
   }
 
-  getOne(id: number): Observable<EtatEnquete | null> {
+  override getOne(id: number): Observable<EtatEnquete | null> {
     return this.responseGetOne<EtatEnquete>(`/${id}`);
   }
 
-  create(data: Pick<EtatEnquete, 'code' | 'libelle'>): Observable<EtatEnquete> {
-    return this.responsePostOne<EtatEnquete>('', data);
+  override create(data: Pick<EtatEnquete, 'code' | 'libelle'>): Observable<EtatEnquete> {
+    return this.responsePostOne<EtatEnquete>(data);
   }
 
-  update(id: number, data: Pick<EtatEnquete, 'code' | 'libelle'>): Observable<EtatEnquete> {
+  override update(id: number, data: Pick<EtatEnquete, 'code' | 'libelle'>): Observable<EtatEnquete> {
     return this.responsePutOne<EtatEnquete>(`/${id}`, data);
   }
 
-  deleteOne(id: number): Observable<boolean> {
+  override deleteOne(id: number): Observable<boolean> {
     return this.responseDeleteOne(`/${id}`);
   }
 }

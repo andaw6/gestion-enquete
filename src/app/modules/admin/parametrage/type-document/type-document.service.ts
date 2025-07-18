@@ -17,23 +17,23 @@ export class TypeDocumentService extends ApiCrudService<TypeDocument, TypeDocume
     this.setBaseUrl("/type/document");
   }
 
-  getAll(params?: IParams): Observable<ApiResponse<TypeDocument>> {
+  override getAll(params: IParams = {}): Observable<ApiResponse<TypeDocument>> {
     return this.responseGetMany<TypeDocument>(params, "/all");
   }
 
-  getOne(id: number): Observable<TypeDocument | null> {
+  override getOne(id: number): Observable<TypeDocument | null> {
     return this.responseGetOne<TypeDocument>(`/${id}`);
   }
 
-  create(data: TypeDocumentData): Observable<TypeDocument> {
-    return this.responsePostOne<TypeDocument>('', data);
+  override create(data: TypeDocumentData): Observable<TypeDocument> {
+    return this.responsePostOne<TypeDocument>(data);
   }
 
-  update(id: number, data: TypeDocumentData): Observable<TypeDocument> {
+  override update(id: number, data: TypeDocumentData): Observable<TypeDocument> {
     return this.responsePutOne<TypeDocument>(`/${id}`, data);
   }
 
-  deleteOne(id: number): Observable<boolean> {
+  override deleteOne(id: number): Observable<boolean> {
     return this.responseDeleteOne(`/${id}`);
   }
 }

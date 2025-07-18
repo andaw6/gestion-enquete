@@ -1,0 +1,51 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <app-stats-card
+    *ngFor="let stat of stats"
+    [stat]="stat">
+  </app-stats-card>
+</div>
+
+<!-- Charts section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <app-chart
+    title="Évolution des enquêtes"
+    subtitle="Derniers 6 mois"
+    chartType="line"
+    [chartData]="evolutionChartData">
+  </app-chart>
+
+  <app-chart
+    title="Répartition par statut"
+    subtitle="Enquêtes actuelles"
+    chartType="doughnut"
+    [chartData]="statutsChartData">
+  </app-chart>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <app-chart
+    title="Répartition par type de concerné"
+    subtitle="Tous types confondus"
+    chartType="bar"
+    [chartData]="typeConcerneChartData">
+  </app-chart>
+
+  <!-- Taux de complétion -->
+  <div class="bg-white shadow-sm rounded-lg border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Taux de complétion</h3>
+      <p class="text-sm text-gray-500">Enquêtes en cours</p>
+    </div>
+    <div class="p-6">
+      <div class="space-y-4">
+        <app-progress-bar
+          *ngFor="let item of completionData"
+          [label]="item.id"
+          [value]="item.progression">
+        </app-progress-bar>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-recent-enquetes/>

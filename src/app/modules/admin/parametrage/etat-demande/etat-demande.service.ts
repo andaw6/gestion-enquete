@@ -16,23 +16,23 @@ export class EtatDemandeService extends ApiCrudService<EtatDemande, EtatDemandeD
     this.setBaseUrl("/etat/demande");
   }
 
-  getAll(params?: IParams): Observable<ApiResponse<EtatDemande>> {
+  override getAll(params: IParams= {}): Observable<ApiResponse<EtatDemande>> {
     return this.responseGetMany<EtatDemande>(params, "/all");
   }
 
-  getOne(id: number): Observable<EtatDemande | null> {
+  override getOne(id: number): Observable<EtatDemande | null> {
     return this.responseGetOne<EtatDemande>(`/${id}`);
   }
 
-  create(data: EtatDemandeData): Observable<EtatDemande> {
-    return this.responsePostOne<EtatDemande>('', data);
+  override create(data: EtatDemandeData): Observable<EtatDemande> {
+    return this.responsePostOne<EtatDemande>(data);
   }
 
-  update(id: number, data: EtatDemandeData): Observable<EtatDemande> {
+  override update(id: number, data: EtatDemandeData): Observable<EtatDemande> {
     return this.responsePutOne<EtatDemande>(`/${id}`, data);
   }
 
-  deleteOne(id: number): Observable<boolean> {
+  override deleteOne(id: number): Observable<boolean> {
     return this.responseDeleteOne(`/${id}`);
   }
 }

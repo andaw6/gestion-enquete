@@ -17,7 +17,7 @@ export class NotificationService extends ApiCrudService<Notification> {
     this.setBaseUrl('/notification');
   }
 
-  getOne(id: number) {
+  override getOne(id: number) {
     return this.responseGetOne<Notification>(`/${id}`);
   }
 
@@ -25,7 +25,7 @@ export class NotificationService extends ApiCrudService<Notification> {
     return this.responseGetOne<NotificationStats>(`/stats/${this.USER_ID}`);
   }
 
-  getAll(params: IParams = {}) {
+  override getAll(params: IParams = {}) {
     params['utilisateurId'] = this.USER_ID;
     return this.responseGetMany<Notification>(params, '/all');
   }
@@ -40,7 +40,7 @@ export class NotificationService extends ApiCrudService<Notification> {
   }
 
   markRead(id: number) {
-    return this.responsePostOne<Notification>(`/mark/read/${id}`, null);
+    return this.responsePostOne<Notification>(undefined, `/mark/read/${id}`,);
   }
 
   markManyRead(ids: number[]) {
@@ -52,16 +52,16 @@ export class NotificationService extends ApiCrudService<Notification> {
     return this.responseGetMany<Notification>(params, '/all/not/read');
   }
 
-  create(data: Pick<Notification, 'message' | 'typeNotification'>) {
+  override create(data: Pick<Notification, 'message' | 'typeNotification'>) {
     let notif = {...data, utilisateurId: this.USER_ID};
-    return this.responsePostOne<Notification>('', notif);
+    return this.responsePostOne<Notification>(notif);
   }
 
-  update(id: number, data: Pick<Notification, 'message' | 'typeNotification'>) {
+  override update(id: number, data: Pick<Notification, 'message' | 'typeNotification'>) {
     return this.responsePutOne<Notification>(`/${id}`, data);
   }
 
-  deleteOne(id: number) {
+  override deleteOne(id: number) {
     return this.responseDeleteOne(`/${id}`);
   }
 

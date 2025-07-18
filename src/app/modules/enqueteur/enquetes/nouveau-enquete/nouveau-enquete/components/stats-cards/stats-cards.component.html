@@ -1,0 +1,18 @@
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+  <div
+    *ngFor="let stat of stats"
+    class="bg-white rounded-lg shadow p-6 border border-gray-200"
+  >
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <div [class]="'w-8 h-8 rounded-md flex items-center justify-center ' + getColorClass(stat.color)">
+          <i [class]="'fas fa-' + stat.icon + ' text-white text-sm'"></i>
+        </div>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-500">{{ stat.title }}</p>
+        <p class="text-2xl font-semibold text-gray-900">{{ stat.value }}</p>
+      </div>
+    </div>
+  </div>
+</div>

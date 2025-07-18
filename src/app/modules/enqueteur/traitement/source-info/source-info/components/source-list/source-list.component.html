@@ -1,0 +1,140 @@
+<div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+  <div class="px-6 py-3 bg-gray-50 border-b border-gray-200">
+    <h2 class="text-lg font-medium text-gray-900">List des source d'informations</h2>
+  </div>
+
+  <div class="divide-y divide-gray-200">
+    <div *ngFor="let source of sources;"
+         class="px-6 py-3 hover:bg-gray-50 transition-colors flex items-center justify-between"
+         [ngClass]="{ 'bg-primary-50': selected === source.id }">
+
+      <div class="flex items-center flex-1 min-w-0">
+        <div class="w-8 h-8 rounded-md flex items-center justify-center bg-primary-500 flex-shrink-0">
+          <i class="fas fa-file-alt text-white text-xs"></i>
+        </div>
+
+        <div class="ml-3 flex-1 min-w-0">
+          <div class="flex items-center">
+            <h3 class="text-sm font-medium text-gray-900 truncate">{{ source.nom }}</h3>
+            <span class="ml-2 text-xs text-gray-500">{{ source.type.libelle }}</span>
+          </div>
+
+          <div class="flex items-center mt-1">
+            <div class="flex text-yellow-400">
+              <i *ngFor="let star of getStars(source)"
+                 [class]="star ? 'fas fa-star text-xs' : 'far fa-star text-xs'"></i>
+            </div>
+            <span class="ml-1 text-xs text-gray-600">({{ source.niveauFiabilite }}/5)</span>
+            <span class="ml-3 text-xs text-gray-500">{{ source.dateMiseAJour | date: "dd/MM/yyyy" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+          {{ source.etat.libelle }}
+        </span>
+        <button
+          class="px-2 py-1 text-white text-xs rounded-md transition-colors bg-primary-500 hover:bg-primary-600"
+          (click)="onActionClick.emit(source)"
+        >
+          <i class="fas fa-external-link-alt"></i>
+        </button>
+        <button
+          class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md hover:bg-gray-200 transition-colors"
+          (click)="onUpdatedClick.emit(source)"
+        >
+          <i class="fas fa-edit"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Liste des sources d'information -->
+<div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden hidden">
+  <div class="divide-y divide-gray-200">
+    <!-- En-tête de la liste -->
+    <div class="px-6 py-3 bg-gray-50 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-medium text-gray-900">Sources d'information</h2>
+        <span class="text-sm text-gray-500">{{ sources.length }} sources</span>
+      </div>
+    </div>
+
+    <!-- Items de la liste -->
+    <div *ngFor="let source of sources;"
+         class="relative hover:bg-gray-50 transition-colors"
+         [ngClass]="{ 'bg-primary-50 border-l-4 border-primary-500': selected === source.id }">
+
+      <div class="px-6 py-4">
+        <div class="flex items-center justify-between">
+          <!-- Informations principales -->
+          <div class="flex items-center flex-1 min-w-0">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary-500 flex-shrink-0">
+              <i class="fas fa-file-alt text-white text-sm"></i>
+            </div>
+
+            <div class="ml-4 flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-medium text-gray-900 truncate">{{ source.nom }}</h3>
+                <span class="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 whitespace-nowrap">
+                  {{ source.etat.libelle }}
+                </span>
+              </div>
+
+              <p class="text-sm text-gray-500 truncate">{{ source.type.libelle }}</p>
+
+              <div class="flex items-center mt-1">
+                <span class="text-xs text-gray-500">Fiabilité:</span>
+                <div class="ml-2 flex items-center">
+                  <div class="flex text-yellow-400">
+                    <i *ngFor="let star of getStars(source)"
+                       [class]="star ? 'fas fa-star text-xs' : 'far fa-star text-xs'"></i>
+                  </div>
+                  <span class="ml-1 text-xs text-gray-600">({{ source.niveauFiabilite }}/5)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center space-x-2 ml-4">
+            <button
+              class="px-3 py-1 text-white text-sm rounded-md transition-colors bg-primary-500 hover:bg-primary-600"
+              (click)="onActionClick.emit(source)"
+            >
+              <i class="fas fa-external-link-alt mr-1"></i>Accéder
+            </button>
+            <button
+              class="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-md hover:bg-gray-200 transition-colors"
+              (click)="onUpdatedClick.emit(source)"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Description et métadonnées -->
+        <div class="mt-3 ml-14">
+          <p class="text-sm text-gray-600 line-clamp-2">{{ source.description }}</p>
+
+          <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+            <span>{{ getUsageText(source) }}</span>
+            <span>{{ source.dateMiseAJour | date: "dd MMM YYYY HH:mm" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- État vide -->
+    <div *ngIf="sources.length === 0" class="px-6 py-8 text-center">
+      <i class="fas fa-file-alt text-gray-300 text-3xl mb-2"></i>
+      <p class="text-gray-500">Aucune source d'information disponible</p>
+    </div>
+  </div>
+</div>

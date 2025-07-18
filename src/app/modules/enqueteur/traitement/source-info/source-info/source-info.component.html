@@ -1,22 +1,19 @@
-<div class="mb-8">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-semibold text-gray-900">Sources d'Informations</h1>
-      <p class="text-sm text-gray-500">Gérez vos sources d'informations pour les enquêtes</p>
-    </div>
-    <button
-      class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors"
-      [routerLink]="['/enqueteur/traitement/source-info/nouveau']"
-    >
-      <i class="fas fa-plus mr-2"></i>Nouvelle Source
-    </button>
-  </div>
-</div>
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageDescription"
+  [buttonIcon]="'fas fa-plus'"
+  [buttonText]="'Nouvelle source'"
+  [buttonLink]="['/enqueteur/traitement/source-info/nouveau']"
+></app-page-header>
 
-<app-source-filters (filtersChange)="onFiltersChange($event)"></app-source-filters>
+<app-source-filters
+  [filter]="filter"
+  (filtersChange)="onFiltersChange($event)"
+></app-source-filters>
 
 <div class="bg-white rounded-lg shadow border border-gray-200 ">
-  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-5 items-stretch">
+  <div *ngIf="filter.viewMode === 'grid'"
+       class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-5 items-stretch">
     <app-source-card
       *ngFor="let source of sourceInfo$ | async"
       [source]="source"
@@ -26,7 +23,20 @@
     ></app-source-card>
   </div>
 
-  <div *ngIf="(sourceInfo$ | async)?.length === 0" class="text-center py-12">
+  <ng-container *ngIf="(sourceInfo$ | async) as sources">
+    <app-source-list *ngIf="filter.viewMode === 'list'"
+                     [sources]="sources"
+                     [selected]="showSourceId"
+                     (onActionClick)="actionClick($event)"
+                     (onUpdatedClick)="updatedClick($event)"
+    ></app-source-list>
+  </ng-container>
+
+  <div class="flex justify-center items-center">
+    <app-loader [show]="loading"/>
+  </div>
+
+  <div *ngIf="(sourceInfo$ | async)?.length === 0 && !loading" class="text-center py-12">
     <i class="fas fa-folder-open text-6xl text-gray-400 mb-4"></i>
     <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun document trouvé</h3>
     <p class="text-gray-500">
@@ -34,7 +44,10 @@
     </p>
   </div>
   <div *ngIf="(sourceInfo$ | async)?.length && !loading">
-    <app-pagination [pagination]="pagination" (pageChanged)="setPagination($event)"></app-pagination>
+    <app-pagination
+      [pagination]="pagination"
+      (pageChanged)="setPagination($event)"
+    ></app-pagination>
   </div>
 </div>
 

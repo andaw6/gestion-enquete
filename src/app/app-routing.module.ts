@@ -25,6 +25,16 @@ const routes: Routes = [
     component: EnqueteurLayoutComponent,
     children: [
       {
+        path: 'dashboard',
+        loadChildren: () =>
+          import("@modules/enqueteur/enquetes/dashboard/dashboard.module").then(m => m.DashboardModule)
+      },
+      {
+        path: 'enquetes',
+        loadChildren: () =>
+          import("@modules/enqueteur/enquetes/enquetes.module").then(m => m.EnquetesModule),
+      },
+      {
         path: "traitement",
         loadChildren: () =>
           import("@modules/enqueteur/traitement/traitement.module").then(m => m.TraitementModule)
@@ -41,7 +51,7 @@ const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'traitement',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       }
     ]

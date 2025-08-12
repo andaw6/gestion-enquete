@@ -21,13 +21,13 @@ export interface CalendarDay {
   date: Date
   isCurrentMonth: boolean
   isToday: boolean
-  events: CalendarEvent[]
+  events: EvenementCalendrier[]
 }
 
 export interface WeekDay {
   date: Date
   isToday: boolean
-  events: CalendarEvent[]
+  events: EvenementCalendrier[]
 }
 
 export interface TimeSlot {
@@ -39,13 +39,15 @@ export interface TimeSlot {
 export interface TypeEvenement extends EntityType {
 }
 
+export type EvenementCalendrierPriorite = "normale" | "haute" | "urgente";
+
 export interface EvenementCalendrier {
   id: number;
   titre: string;
   date: string;
   heure: string;
   duree: number;
-  priorite: string;
+  priorite: EvenementCalendrierPriorite;
   description?: string;
   type: TypeEvenement;
   utilisateur: Utilisateur;
@@ -56,7 +58,7 @@ export interface EvenementCalendrierData {
   date: string;
   heure: string;
   duree: number;
-  priorite: "normale" | "haute" | "urgente";
+  priorite: EvenementCalendrierPriorite;
   description?: string;
   typeCode: string;
   utilisateurId: number;

@@ -17,7 +17,7 @@ export class TypeEvenementService extends ApiCrudService<TypeEvenement> {
   }
 
   override getAll(params: IParams = {}): Observable<ApiResponse<TypeEvenement>> {
-    return this.responseGetMany<TypeEvenement>(params);
+    return this.responseGetMany<TypeEvenement>(params, "/all");
   }
 
   override getOne(id: number): Observable<TypeEvenement | null> {

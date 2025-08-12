@@ -30,11 +30,7 @@
           <select
             formControlName="type"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500">
-            <option value="enquete">Enquête terrain</option>
-            <option value="rdv">Rendez-vous</option>
-            <option value="echeance">Échéance</option>
-            <option value="reunion">Réunion</option>
-            <option value="autre">Autre</option>
+            <option *ngFor="let type of typeEvents()" [value]="type.code">{{ type.libelle }}</option>
           </select>
         </div>
 

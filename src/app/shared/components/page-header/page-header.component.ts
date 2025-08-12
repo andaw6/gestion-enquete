@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgIf} from '@angular/common';
 import {RouterLink} from "@angular/router";
 
 @Component({
     selector: 'app-page-header',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, NgIf],
     templateUrl: './page-header.component.html',
     styleUrls: ['./page-header.component.css']
 })

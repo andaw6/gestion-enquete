@@ -1,0 +1,19 @@
+<div class="flex items-center justify-between">
+  <div>
+    <p class="text-gray-500 text-sm font-medium">{{ stat.title }}</p>
+    <h3 class="text-3xl font-bold text-gray-900 mt-2">{{ stat.value }}</h3>
+    <p [ngClass]="getChangeClass(stat.changeType)" class="text-sm mt-1">
+      <i [ngClass]="getChangeIcon(stat.changeType)" class="mr-1"></i>
+      {{ stat.change }}
+    </p>
+  </div>
+  <div
+    [ngClass]="
+      'w-12 h-12 bg-gradient-to-r ' +
+      stat.gradient +
+      ' rounded-xl flex items-center justify-center'
+    "
+  >
+    <i [ngClass]="stat.icon + ' text-white text-lg'"></i>
+  </div>
+</div>

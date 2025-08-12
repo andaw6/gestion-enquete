@@ -1,10 +1,10 @@
-import {Injectable, Renderer2} from '@angular/core';
-import {NavigationItem, NavigationSection} from "@core/interfaces/navigation.interface";
-import {FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP, FILE_TYPE_CATEGORY_MAP} from "@config/constant";
-import {Document} from "@modules/enqueteur/traitement/document/document";
-import {NotificationAlertService} from "@core/services/notification-alert.service";
-import {debounceTime, distinctUntilChanged, filter, Subject, takeUntil} from "rxjs";
-import {FormControl} from "@angular/forms";
+import { Injectable, Renderer2 } from '@angular/core';
+import { NavigationItem, NavigationSection } from "@core/interfaces/navigation.interface";
+import { FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP, FILE_TYPE_CATEGORY_MAP } from "@config/constant";
+import { Document } from "@modules/enqueteur/traitement/document/document";
+import { NotificationAlertService } from "@core/services/notification-alert.service";
+import { debounceTime, distinctUntilChanged, filter, Subject, takeUntil } from "rxjs";
+import { FormControl } from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +128,23 @@ export class UtilService extends NotificationAlertService {
       .subscribe((query: string) => {
         onSearch(query);
       });
+  }
+
+  getPrioriteLabel(priority: number): string {
+    switch (priority) {
+      case 1:
+        return " Très haute"
+      case 2:
+        return "Haute"
+      case 3:
+        return "Moyenne"
+      case 4:
+        return "Faible"
+      case 5:
+        return "Très faible"
+      default:
+        return "Moyenne"
+    }
   }
 
   private isValidQuery(query: string | null): boolean {

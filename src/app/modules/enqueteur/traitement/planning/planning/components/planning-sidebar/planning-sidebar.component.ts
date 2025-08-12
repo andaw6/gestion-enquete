@@ -1,7 +1,6 @@
 import {Component, computed, inject} from '@angular/core';
-import {CalendarEvent} from "@modules/enqueteur/traitement/planning/planning";
+import {CalendarEvent, EvenementCalendrier} from "@modules/enqueteur/traitement/planning/planning";
 import {PlanningService} from "@modules/enqueteur/traitement/planning/planning.service";
-
 
 
 @Component({
@@ -16,34 +15,35 @@ export class PlanningSidebarComponent {
   upcomingEvents = computed(() => this.calendarService.getUpcomingEvents())
   weekStats = computed(() => this.calendarService.getWeekStats())
 
-  eventBgColors = {
+  eventBgColors:Record<string, string> = {
     enquete: "bg-primary-50",
     rdv: "bg-green-50",
     echeance: "bg-yellow-50",
     reunion: "bg-purple-50",
-    autre: "bg-gray-50",
   }
 
-  eventDotColors = {
+  eventDotColors: Record<string, string> = {
     enquete: "bg-primary-500",
     rdv: "bg-green-500",
     echeance: "bg-yellow-500",
     reunion: "bg-purple-500",
-    autre: "bg-gray-500",
+  };
+
+  getEventBgClass(event: EvenementCalendrier): string {
+    const code = event?.type?.code?.toLowerCase?.();
+    return this.eventBgColors[code] || "bg-gray-50"
   }
 
-  getEventBgClass(event: CalendarEvent): string {
-    return this.eventBgColors[event.type] || "bg-gray-50"
+  getEventDotClass(event: EvenementCalendrier): string {
+    const code = event?.type?.code?.toLowerCase?.();
+    return this.eventDotColors[code] || "bg-gray-500";
   }
 
-  getEventDotClass(event: CalendarEvent): string {
-    return this.eventDotColors[event.type] || "bg-gray-500"
-  }
 
-  getEndTime(event: CalendarEvent): string {
-    const [hours, minutes] = event.time.split(":").map(Number)
+  getEndTime(event: EvenementCalendrier): string {
+    const [hours, minutes] = event.heure.split(":").map(Number)
     const endDate = new Date()
-    endDate.setHours(hours, minutes + event.duration)
+    endDate.setHours(hours, minutes + event.duree)
     return endDate.toTimeString().slice(0, 5)
   }
 
@@ -68,12 +68,12 @@ export class PlanningSidebarComponent {
     return labels[priority as keyof typeof labels] || "Planifié"
   }
 
-  getPriorityBadgeClass(event: CalendarEvent): string {
+  getPriorityBadgeClass(event: EvenementCalendrier): string {
     const classes = {
       normale: "bg-blue-100 text-blue-800",
       haute: "bg-yellow-100 text-yellow-800",
       urgente: "bg-red-100 text-red-800",
     }
-    return classes[event.priority] || classes["normale"]
+    return classes[event.priorite] || classes["normale"]
   }
 }

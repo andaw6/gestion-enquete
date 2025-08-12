@@ -1,0 +1,36 @@
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+></app-page-header>
+
+<div
+  class="bg-white rounded-2xl shadow-lg border border-white/20 overflow-hidden"
+>
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900">
+        Liste des Demandes Validées avec Enquêtes
+      </h3>
+      <div class="flex items-center space-x-2 text-sm text-gray-500">
+        <span id="results-count">{{ demandes().length }} résultats</span>
+        <button class="ml-4 text-blue-600 hover:text-blue-700">
+          <i class="fas fa-th-large" id="view-toggle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- <app-table-demandes [demandes]="demandes()"></app-table-demandes> -->
+  <app-demandes-liste
+    [demandes]="demandes()"
+    [loading]="loading()"
+    (voirDemande)="onVoirDemande($event)"
+    (telechargerDemande)="onTelechargerDemande($event)"
+  ></app-demandes-liste>
+
+  <app-pagination
+    *ngIf="!loading() && demandes().length"
+    [pagination]="pagination"
+    (pageChanged)="setPagination($event)"
+  />
+</div>

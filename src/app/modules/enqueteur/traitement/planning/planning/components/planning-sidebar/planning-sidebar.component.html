@@ -8,9 +8,9 @@
              [class]="'flex items-start space-x-3 p-3 rounded-lg ' + getEventBgClass(event)">
           <div [class]="'w-2 h-2 rounded-full mt-2 ' + getEventDotClass(event)"></div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-900">{{ event.title }}</p>
+            <p class="text-sm font-medium text-gray-900">{{ event.titre }}</p>
             <p class="text-xs text-gray-500">
-              {{ event.time }}{{ event.duration > 0 ? ' - ' + getEndTime(event) : '' }}
+              {{ event.heure }}{{ event.duree > 0 ? ' - ' + getEndTime(event) : '' }}
             </p>
             <p class="text-xs text-gray-500">{{ event.description }}</p>
           </div>
@@ -32,12 +32,12 @@
           <div class="flex items-center space-x-3">
             <div [class]="'w-2 h-2 rounded-full ' + getEventDotClass(event)"></div>
             <div>
-              <p class="text-sm font-medium text-gray-900">{{ event.title }}</p>
+              <p class="text-sm font-medium text-gray-900">{{ event.titre }}</p>
               <p class="text-xs text-gray-500">{{ getRelativeDate(event.date) }}</p>
             </div>
           </div>
           <span [class]="'text-xs px-2 py-1 rounded-full ' + getPriorityBadgeClass(event)">
-                {{ getPriorityLabel(event.priority) }}
+                {{ getPriorityLabel(event.priorite) }}
               </span>
         </div>
 

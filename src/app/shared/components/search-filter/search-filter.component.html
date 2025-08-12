@@ -1,0 +1,45 @@
+<div class="bg-white rounded-2xl shadow-lg border border-white/20 p-6 mb-8">
+  <div
+    class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0"
+  >
+    <!-- Recherche -->
+    <div class="flex-1 max-w-md" *ngIf="showSearch">
+      <div class="relative">
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Rechercher par référence, objet..."
+          class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+        />
+        <i
+          class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        ></i>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="flex flex-wrap gap-3">
+      <ng-container *ngFor="let filter of filters">
+        <select
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          [ngModel]="selectedFilters[filter.key] || ''"
+          (ngModelChange)="onFilterChange(filter.key, $event)"
+        >
+          <option [value]="''">{{ filter.placeholder || "Tous" }}</option>
+          <option *ngFor="let opt of filter.options" [value]="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+      </ng-container>
+
+      <button
+        type="button"
+        class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+        (click)="onReset()"
+      >
+        <i class="fas fa-times mr-1"></i>
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+</div>

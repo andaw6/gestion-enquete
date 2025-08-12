@@ -1,0 +1,56 @@
+<div
+  *ngIf="isVisible"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  (click)="onBackdropClick($event)"
+>
+  <div
+    class="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-center gap-3 mb-4">
+      <div
+        class="w-10 h-10 rounded-full flex items-center justify-center"
+        [ngClass]="{
+          'bg-red-100': data.type === 'danger',
+          'bg-yellow-100': data.type === 'warning',
+          'bg-blue-100': data.type === 'info' || !data.type
+        }"
+      >
+        <i
+          [ngClass]="{
+            'fas fa-exclamation-triangle text-red-600': data.type === 'danger',
+            'fas fa-exclamation-triangle text-yellow-600':
+              data.type === 'warning',
+            'fas fa-info-circle text-blue-600':
+              data.type === 'info' || !data.type
+          }"
+        ></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900">{{ data.title }}</h3>
+    </div>
+    <p class="text-gray-600 mb-6">{{ data.message }}</p>
+    <div class="flex gap-3 justify-end">
+      <button
+        (click)="onCancel()"
+        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+      >
+        {{ data.cancelText || "Annuler" }}
+      </button>
+      <button
+        (click)="onConfirm()"
+        [disabled]="isLoading"
+        class="px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50"
+        [ngClass]="{
+          'bg-red-500 text-white hover:bg-red-600': data.type === 'danger',
+          'bg-yellow-500 text-white hover:bg-yellow-600':
+            data.type === 'warning',
+          'bg-blue-500 text-white hover:bg-blue-600':
+            data.type === 'info' || !data.type
+        }"
+      >
+        <i *ngIf="isLoading" class="fas fa-spinner fa-spin mr-2"></i>
+        {{ data.confirmText || "Confirmer" }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,9 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {AdminComponent as AdminLayoutComponent} from '@layout/admin/admin.component';
-import {EnqueteurComponent as EnqueteurLayoutComponent} from "@layout/enqueteur/enqueteur.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminComponent as AdminLayoutComponent } from '@layout/admin/admin.component';
+import { EnqueteurComponent as EnqueteurLayoutComponent } from "@layout/enqueteur/enqueteur.component";
+import { DemandeurComponent as DemandeurLayoutComponent } from "@layout/demandeur/demandeur.component";
+
 
 const routes: Routes = [
   {
@@ -48,6 +50,27 @@ const routes: Routes = [
         path: 'profil',
         loadChildren: () =>
           import('@modules/enqueteur/parametrage/profil/profil.module').then(m => m.ProfilModule),
+      },
+      {
+        path: '**',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: "demandeur",
+    component: DemandeurLayoutComponent,
+    children: [
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import("@modules/demandeur/dashboard/dashboard.module").then(m => m.DashboardModule)
+      },
+      {
+        path: "demandes",
+        loadChildren: () =>
+          import("@modules/demandeur/demandes/demandes.module").then(m => m.DemandesModule)
       },
       {
         path: '**',

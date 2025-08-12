@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {IParams} from "@core/interfaces/http-options.interface";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
 import {EtatDemande, EtatDemandeData} from "@modules/admin/parametrage/etat-demande/etat-demande";
 import {ApiCrudService} from "@core/api/api-crud.service";
@@ -25,15 +25,18 @@ export class EtatDemandeService extends ApiCrudService<EtatDemande, EtatDemandeD
   }
 
   override create(data: EtatDemandeData): Observable<EtatDemande> {
-    return this.responsePostOne<EtatDemande>(data);
+    return of();
+    // return this.responsePostOne<EtatDemande>(data);
   }
 
   override update(id: number, data: EtatDemandeData): Observable<EtatDemande> {
-    return this.responsePutOne<EtatDemande>(`/${id}`, data);
+    return of();
+    // return this.responsePutOne<EtatDemande>(`/${id}`, data);
   }
 
   override deleteOne(id: number): Observable<boolean> {
-    return this.responseDeleteOne(`/${id}`);
+    return of();
+    // return this.responseDeleteOne(`/${id}`);
   }
 }
 

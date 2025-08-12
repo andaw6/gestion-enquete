@@ -46,7 +46,7 @@
         <div class="max-h-56 overflow-y-auto custom-scrollbar py-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
           <ng-container *ngIf="filteredOptions.length > 0; else noResults">
             <div
-              *ngFor="let option of filteredOptions"
+              *ngFor="let option of filteredOptions; trackBy: trackByOptionId"
               class="px-5 py-3 cursor-pointer transition-all duration-200 mx-2 rounded-lg mb-2 hover:bg-gray-100"
               [class]="isSelected(option.value) ? 'bg-primary-100 font-medium text-primary-600' : ''"
               (click)="selectOption(option)">
@@ -97,5 +97,11 @@
         </div>
       </div>
     </div>
+
+    <!-- Pour le ng content -->
+    <div class="mt-4 text-sm text-red-600">
+      <ng-content></ng-content>
+    </div>
+
   </div>
 </div>

@@ -1,0 +1,61 @@
+<main class="flex-1 p-8 bg-gradient-to-br from-gray-50 to-blue-50">
+  <!-- Welcome Section -->
+  <div class="mb-8 animate-fade-in">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          Bonjour, {{ user.username }} 👋
+        </h1>
+        <p class="text-gray-600">Voici un aperçu de vos demandes d'enquêtes</p>
+      </div>
+      <div class="mt-4 lg:mt-0">
+        <button
+          (click)="onNewRequest()"
+          class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+        >
+          <i class="fas fa-plus mr-2"></i>
+          Nouvelle demande
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="mb-8">
+    <app-stats-cards [statsData]="statsData"></app-stats-cards>
+  </div>
+
+  <!-- Charts and Recent Activity -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <!-- Chart -->
+    <div class="lg:col-span-2">
+      <app-chart></app-chart>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="h-full">
+      <app-recent-activity
+        [activities]="recentActivities"
+      ></app-recent-activity>
+    </div>
+  </div>
+
+  <!-- Recent Requests Table -->
+  <div
+    class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 animate-fade-in"
+  >
+    <div class="px-6 py-4 border-b border-gray-200/50">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-900">Demandes récentes</h2>
+        <button
+          [routerLink]="['/demandeur/demandes']"
+          class="text-primary-600 hover:text-primary-700 font-medium text-sm"
+        >
+          Voir tout
+        </button>
+      </div>
+    </div>
+
+    <app-demande-table [demandes]="recentRequests"></app-demande-table>
+  </div>
+</main>

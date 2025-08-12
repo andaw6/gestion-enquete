@@ -1,3 +1,7 @@
-<app-base [user]="user" [navigation]="navigation" [isSidebarOpen]="isSidebarOpen">
-  <app-header class="flex-shrink-0 sticky top-0 z-30" (toggleSidebar)="toggleSidebar()"></app-header>
+<app-base
+  [navigation]="navigation"
+  [isSidebarOpen]="isSidebarOpen"
+  [isOpenDesktopMode]="isDesktopMode()"
+  (forceDesktopModeOff)="isDesktopMode.set(false)">
+  <app-header class="flex-shrink-0 sticky top-0 z-30"  (toggleDesktopMode)="toggleDesktopMode()" (toggleSidebar)="toggleSidebar()"></app-header>
 </app-base>

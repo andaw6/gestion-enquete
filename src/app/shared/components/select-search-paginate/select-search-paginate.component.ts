@@ -1,5 +1,5 @@
-import { CommonModule } from "@angular/common";
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import { CommonModule, NgForOf, NgIf } from "@angular/common";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { OptionSelect } from "@core/interfaces/option.interface";
 import { Pagination } from "@core/interfaces/pagination.interface";
@@ -8,15 +8,18 @@ import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
 @Component({
   selector: 'app-select-search-paginate',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgIf, NgForOf],
   templateUrl: './select-search-paginate.component.html',
   styleUrls: ['./select-search-paginate.component.css']
 })
-export class SelectSearchPaginateComponent implements OnInit {
+export class SelectSearchPaginateComponent implements OnInit, OnChanges {
   @Input() title: string = 'Sélecteur Avancé';
   @Input() options: OptionSelect[] = [];
-  @Input() selected:OptionSelect[] = [];
+  @Input() selected: OptionSelect[] = [];
+  @Input() selectPlaceholder: string = "Sélectionnez une option";
   @Input() activePagination: boolean = false;
+  @Input() multiple: boolean = true; // Par défaut en mode multiple
+
   @Input() pagination: Pagination = {
     totalItem: 1,
     totalPage: 1,
@@ -34,7 +37,7 @@ export class SelectSearchPaginateComponent implements OnInit {
   private searchSubject = new Subject<string>();
 
   ngOnInit() {
-    if(this.selected.length) {
+    if (this.selected.length) {
       this.selected.forEach((option: OptionSelect) => this.selectOption(option));
     }
     this.filteredOptions = [...this.options];
@@ -50,6 +53,28 @@ export class SelectSearchPaginateComponent implements OnInit {
       this.filterOptions(term);
     });
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selected'] && !changes['selected'].firstChange) {
+      // Réinitialiser les options sélectionnées
+      this.selectedOptions = [];
+
+      // Appliquer les nouvelles options sélectionnées
+      this.selected.forEach((option: OptionSelect) => {
+        this.selectOption(option);
+      });
+
+      // Mettre à jour la liste filtrée
+      this.filteredOptions = [...this.options];
+    }
+
+    if (changes['options'] && !changes['options'].firstChange) {
+      // Si les options changent, on réapplique le filtre
+      this.filteredOptions = [...this.options];
+      this.filterOptions(this.searchTerm); // re-filtrer selon le terme actuel
+    }
+  }
+
 
   toggleDropdown(event: Event) {
     event.stopPropagation();
@@ -82,7 +107,7 @@ export class SelectSearchPaginateComponent implements OnInit {
     } else {
       this.filteredOptions = this.options.filter(option =>
         option.label.toLowerCase().includes(term.toLowerCase()) ||
-        option.description.toLowerCase().includes(term.toLowerCase())
+        (option.description ?? "").toLowerCase().includes(term.toLowerCase())
       );
     }
 
@@ -91,12 +116,18 @@ export class SelectSearchPaginateComponent implements OnInit {
   }
 
   selectOption(option: OptionSelect) {
-    const index = this.selectedOptions.indexOf(option.value);
+    if (this.multiple) {
 
-    if (index >= 0) {
-      this.selectedOptions.splice(index, 1);
+      const index = this.selectedOptions.indexOf(option.value);
+
+      if (index >= 0) {
+        this.selectedOptions.splice(index, 1);
+      } else {
+        this.selectedOptions.push(option.value);
+      }
     } else {
-      this.selectedOptions.push(option.value);
+      this.selectedOptions = [option.value];
+      this.isOpen = false; // Fermer le dropdown en sélection simple
     }
 
     const selected = this.options.filter(opt => this.selectedOptions.includes(opt.value));
@@ -107,14 +138,30 @@ export class SelectSearchPaginateComponent implements OnInit {
     return this.selectedOptions.includes(value);
   }
 
+  // getSelectedOptionLabel(): string {
+  //   if (this.selectedOptions.length === 0) return 'Sélectionnez une option';
+  //   if (this.selectedOptions.length === 1) {
+  //     const opt = this.options.find(o => o.value === this.selectedOptions[0]);
+  //     return opt ? opt.label : '1 sélectionné';
+  //   }
+  //   return `${this.selectedOptions.length} sélectionnés`;
+  // }
   getSelectedOptionLabel(): string {
-    if (this.selectedOptions.length === 0) return 'Sélectionnez une option';
+    if (this.selectedOptions.length === 0) return this.selectPlaceholder;
+
+    if (!this.multiple) {
+      const opt = this.options.find(o => o.value === this.selectedOptions[0]);
+      return opt ? opt.label : '1 sélectionné';
+    }
+
     if (this.selectedOptions.length === 1) {
       const opt = this.options.find(o => o.value === this.selectedOptions[0]);
       return opt ? opt.label : '1 sélectionné';
     }
+
     return `${this.selectedOptions.length} sélectionnés`;
   }
+
 
   nextPage() {
     if (this.pagination.page < this.pagination.totalPage) {
@@ -135,4 +182,9 @@ export class SelectSearchPaginateComponent implements OnInit {
       this.onPaginationChange.emit(this.pagination);
     }
   }
+
+  trackByOptionId(index: number, option: OptionSelect): string | number {
+    return option.id; // ou option.value si c’est plus unique
+  }
+
 }

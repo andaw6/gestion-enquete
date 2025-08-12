@@ -1,4 +1,4 @@
-import {Option} from "@core/interfaces/option.interface";
+import { Option } from "@core/interfaces/option.interface";
 
 export const FILE_ICON_CLASS_MAP: Record<string, string> = {
   'pdf': 'fas fa-file-pdf text-red-500',
@@ -108,10 +108,10 @@ export const FILE_TYPE_CATEGORY_MAP: Record<string, string[]> = {
 };
 
 export const FILE_CATEGORIES: Option[] = [
-  {label: '🖼️ Images', value: 'image'},
-  {label: '🎵 Audios', value: 'audio'},
-  {label: '🎬 Vidéos', value: 'video'},
-  {label: '📄 Documents', value: 'document'},
+  { label: '🖼️ Images', value: 'image' },
+  { label: '🎵 Audios', value: 'audio' },
+  { label: '🎬 Vidéos', value: 'video' },
+  { label: '📄 Documents', value: 'document' },
   // {label: '🧳 Archives', value: 'archive'},
   // {label: '💻 Code', value: 'code'},
   // {label: '⚙️ Exécutables', value: 'executable'},
@@ -119,22 +119,39 @@ export const FILE_CATEGORIES: Option[] = [
 ];
 
 export const FILE_TRI: Option[] = [
-  {value: "date", label: "Trier par date"},
-  {value: "name", label: "Trier par nom"},
-  {value: "size", label: "Trier par taille"},
-  {value: "type", label: "Trier par type"},
+  { value: "date", label: "Trier par date" },
+  { value: "name", label: "Trier par nom" },
+  { value: "size", label: "Trier par taille" },
+  { value: "type", label: "Trier par type" },
 ];
 
 export const RELIABILITY_LEVELS = [
-  {value: "5", label: "5 - Très élevée"}, // (Source officielle vérifiée)
-  {value: "4", label: "4 - Élevée"}, // (Source reconnue et fiable)
-  {value: "3", label: "3 - Moyenne"}, // (Source généralement fiable)
-  {value: "2", label: "2 - Faible"}, // (Source à vérifier)
-  {value: "1", label: "1 - Très faible"}, // (Source douteuse)
+  { value: "5", label: "5 - Très élevée" }, // (Source officielle vérifiée)
+  { value: "4", label: "4 - Élevée" }, // (Source reconnue et fiable)
+  { value: "3", label: "3 - Moyenne" }, // (Source généralement fiable)
+  { value: "2", label: "2 - Faible" }, // (Source à vérifier)
+  { value: "1", label: "1 - Très faible" }, // (Source douteuse)
 ] as const;
 
 export const SOURCE_INFO_TRI = [
-  {value: "date", label: "Trier par date"},
-  {value: "name", label: "Trier par nom"},
-  {value: "reliability", label: "Trier par fiabilité"},
+  { value: "date", label: "Trier par date" },
+  { value: "name", label: "Trier par nom" },
+  { value: "reliability", label: "Trier par fiabilité" },
 ] as const;
+
+
+export const PRIORITE_LEVELS: Option[] = [
+  { value: 1, label: "1 - Très élevée" },
+  { value: 2, label: "2 - Élevée" },
+  { value: 3, label: "3 - Normale" },
+  { value: 4, label: "4 - Faible" },
+  { value: 5, label: "5 - Très faible" }
+];
+
+export const PRIORITE_LEVELS_LABEL: { [key: number]: string } = {
+  1: "Très élevée",
+  2: "Élevée",
+  3: "Normale",
+  4: "Faible",
+  5: "Très faible"
+};

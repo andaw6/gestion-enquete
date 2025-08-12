@@ -1,0 +1,87 @@
+.gradient-bg {
+  background: linear-gradient(135deg, #17abdd 0%, #293f76 100%);
+}
+
+.input-focus:focus {
+  border-color: #17abdd;
+  box-shadow: 0 0 0 3px rgba(23, 171, 221, 0.1);
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Couleurs personnalisées */
+.text-primary-600 {
+  color: #17abdd;
+}
+.text-secondary-500 {
+  color: #293f76;
+}
+.text-dark-700 {
+  color: #3e3e3e;
+}
+.text-dark-800 {
+  color: #303030;
+}
+.text-dark-500 {
+  color: #5c5c5c;
+}
+
+.bg-primary-500 {
+  background-color: #17abdd;
+}
+.bg-secondary-500 {
+  background-color: #293f76;
+}
+.bg-secondary-600 {
+  background-color: #233565;
+}
+
+.border-primary-500 {
+  border-color: #17abdd;
+}
+.border-secondary-500 {
+  border-color: #293f76;
+}
+
+.focus\:ring-primary-500:focus {
+  --tw-ring-color: rgba(23, 171, 221, 0.5);
+}
+
+.shadow-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-card-hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-soft {
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Animation de rotation pour le spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

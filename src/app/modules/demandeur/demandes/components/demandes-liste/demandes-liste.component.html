@@ -1,0 +1,212 @@
+<!-- Table -->
+<div class="bg-white rounded-lg shadow overflow-hidden">
+  <table class="min-w-full">
+    <thead class="bg-gray-50">
+      <tr>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div class="flex items-center space-x-1">
+            <span>RÉFÉRENCE</span>
+            <i class="fas fa-sort text-gray-400"></i>
+          </div>
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div class="flex items-center space-x-1">
+            <span>OBJET</span>
+            <i class="fas fa-sort text-gray-400"></i>
+          </div>
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div class="flex items-center space-x-1">
+            <span>DATE Début</span>
+            <i class="fas fa-sort text-gray-400"></i>
+          </div>
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div class="flex items-center space-x-1">
+            <span>ÉCHÉANCE</span>
+            <i class="fas fa-sort text-gray-400"></i>
+          </div>
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div class="flex items-center space-x-1">
+            <span>PRIORITÉ</span>
+            <i class="fas fa-sort text-gray-400"></i>
+          </div>
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          <div class="flex items-center space-x-1">
+            <span>STATUT</span>
+            <i class="fas fa-sort text-gray-400"></i>
+          </div>
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          CENTRE
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          ACTIONS
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200" *ngIf="!loading">
+      <tr
+        *ngFor="let demande of demandes; trackBy: trackByDemande"
+        class="hover:bg-gray-50 transition-colors duration-200"
+        [class.border-l-4]="true"
+        [class.border-red-500]="demande.urgent"
+        [class.border-transparent]="!demande.urgent"
+      >
+        <!-- Référence -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="w-8 h-8 bg-blue-100 rounded flex items-center justify-center"
+              >
+                <i class="fas fa-file-alt text-blue-600"></i>
+              </div>
+            </div>
+            <div class="ml-3">
+              <div class="text-sm font-medium text-gray-900">
+                {{ demande.enquete?.reference ?? demande.reference }}
+              </div>
+              <div *ngIf="demande.urgent" class="flex items-center mt-1">
+                <i
+                  class="fas fa-exclamation-triangle text-red-500 text-xs mr-1"
+                ></i>
+                <span class="text-xs text-red-600">Urgent</span>
+              </div>
+            </div>
+          </div>
+        </td>
+
+        <!-- Objet -->
+        <td class="px-6 py-4">
+          <div class="text-sm font-medium text-gray-900 line-clamp-1">
+            {{ demande.objet }}
+          </div>
+          <div class="text-sm text-gray-500 line-clamp-1">{{ demande.description }}</div>
+          <div *ngIf="demande.enquete" class="mt-2">
+            <div class="w-full bg-gray-200 rounded-full h-1.5">
+              <div
+                class="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                [style.width.%]="demande.enquete.progression"
+              ></div>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">
+              {{ demande.enquete.progression }}% complété
+            </div>
+          </div>
+        </td>
+
+        <!-- Date création -->
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {{ (demande?.enquete?.dateDebut | date : "dd/MM/yyyy")??"Pas Encore" }}
+        </td>
+
+        <!-- Échéance -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div
+            class="flex items-center text-sm"
+            [class.text-red-600]="isEcheanceDepassee(demande.dateEcheance)"
+            [class.text-gray-500]="!isEcheanceDepassee(demande.dateEcheance)"
+          >
+            <span>{{ demande.dateEcheance | date : "dd/MM/yyyy" }}</span>
+            <i
+              *ngIf="isEcheanceDepassee(demande.dateEcheance)"
+              class="fas fa-exclamation-triangle ml-2"
+            ></i>
+          </div>
+        </td>
+
+        <!-- Priorité -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span
+            class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+            [class]="getPrioriteClass(demande.priorite)"
+          >
+            {{ getPrioriteLabel(demande.priorite) }}
+          </span>
+        </td>
+
+        <!-- Statut -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="flex items-center">
+            <span
+              class="w-2 h-2 rounded-full mr-2"
+              [class]="getStatutClass(demande.enquete?.etat?.code ?? '00')"
+            ></span>
+            <span class="text-sm text-gray-900">{{
+              demande.enquete?.etat?.libelle
+            }}</span>
+          </div>
+        </td>
+
+        <!-- Centre -->
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <!-- {{ demande.centre.libelle }} -->
+          Afrilins
+        </td>
+
+        <!-- Actions -->
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <div class="flex space-x-2">
+            <button
+              (click)="onVoir(demande)"
+              class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+              title="Voir"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+            <!-- <button
+              (click)="onModifier(demande)"
+              class="text-green-600 hover:text-green-900 transition-colors duration-200"
+              title="Modifier"
+            >
+              <i class="fas fa-edit"></i>
+            </button> -->
+            <button
+              (click)="onTelecharger(demande)"
+              class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200"
+              title="Télécharger"
+            >
+              <i class="fas fa-download"></i>
+            </button>
+            <!-- <button
+              (click)="onSupprimer(demande)"
+              class="text-red-600 hover:text-red-900 transition-colors duration-200"
+              title="Supprimer"
+            >
+              <i class="fas fa-trash"></i>
+            </button> -->
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="flex justify-center items-center mb-2">
+    <app-loader [show]="loading" />
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="demandes.length === 0 && !loading" class="text-center py-12">
+    <i class="fas fa-inbox text-gray-400 text-4xl mb-4"></i>
+    <p class="text-gray-500 text-lg">Aucune demande trouvée</p>
+  </div>
+</div>

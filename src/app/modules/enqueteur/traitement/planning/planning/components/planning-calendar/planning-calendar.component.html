@@ -51,7 +51,7 @@
              [class]="getEventClass(event)"
              [title]="getEventTooltip(event)"
              (click)="onEventClick($event, event.id)">
-          {{ event.title }}
+          {{ event.titre }}
         </div>
       </div>
     </div>
@@ -89,8 +89,8 @@
                [class]="getWeekEventClass(event)"
                [title]="getEventTooltip(event)"
                (click)="onEventClick($event, event.id)">
-            <div class="font-medium text-xs">{{ event.title }}</div>
-            <div class="text-xs opacity-75">{{ event.time }}</div>
+            <div class="font-medium text-xs">{{ event.titre }}</div>
+            <div class="text-xs opacity-75">{{ event.heure }}</div>
           </div>
         </div>
       </div>
@@ -126,8 +126,8 @@
                [class]="getDayEventClass(event)"
                [title]="getEventTooltip(event)"
                (click)="onEventClick($event, event.id)">
-            <div class="font-medium text-sm">{{ event.title }}</div>
-            <div class="text-xs text-gray-600 mt-1">{{ event.time }} - {{ getEndTime(event) }}</div>
+            <div class="font-medium text-sm">{{ event.titre }}</div>
+            <div class="text-xs text-gray-600 mt-1">{{ event.heure }} - {{ getEndTime(event) }}</div>
             <div class="text-xs text-gray-500 mt-1">{{ event.description }}</div>
           </div>
         </div>

@@ -1,9 +1,12 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
-import {tap, catchError, map} from 'rxjs/operators';
-import {environment} from '@env/environment';
-import {HttpOptions, IParams} from '@core/interfaces/http-options.interface';
-import {ApiResponse} from '@core/interfaces/api-response.interface';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError, map } from 'rxjs/operators';
+import { environment } from '@env/environment';
+import { HttpOptions, IParams } from '@core/interfaces/http-options.interface';
+import { ApiResponse } from '@core/interfaces/api-response.interface';
+import { Logger } from '@core/services/logger.service';
+import { SpringPaginationAdapter } from './adapters/spring-pagination.adapter';
+import { PaginationAdapter } from './adapters/pagination-adapter.interface';
 
 /**
  * Service abstrait fournissant une couche d'accès HTTP générique et sécurisée.
@@ -35,9 +38,10 @@ import {ApiResponse} from '@core/interfaces/api-response.interface';
  * }
  * ```
  */
-export abstract class ApiService {
+export abstract class ApiService<T = any> {
   /** URL de base complète de l'API (dépend de l'environnement). */
   private _baseUrl = environment.apiUrl;
+  private readonly paginationAdapter: PaginationAdapter = new SpringPaginationAdapter<T>();
 
   constructor(protected http: HttpClient) {
   }
@@ -84,7 +88,7 @@ export abstract class ApiService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     headers = headers.set('Accept', 'application/json');
-    return {...options, headers, withCredentials: true};
+    return { ...options, headers, withCredentials: true };
   }
 
   /**
@@ -101,15 +105,30 @@ export abstract class ApiService {
     options?: HttpOptions
   ): Observable<T> {
     let fullUrl = `${this.baseUrl}${endpoint}`;
+
     if (params) {
-      const queryString = this.formatQueryParams(params);
-      fullUrl += `?${queryString}`;
+      const validParams: IParams = {};
+
+      // Ne garder que les paramètres définis et non vides
+      Object.keys(params).forEach((key) => {
+        const value = params[key];
+        if (value !== null && value !== undefined && value !== '') {
+          validParams[key] = value;
+        }
+      });
+
+      const queryString = this.formatQueryParams(validParams);
+      if (queryString) {
+        fullUrl += `?${queryString}`;
+      }
     }
+
     return this.http.get<T>(fullUrl, this.addAuthHeader(options)).pipe(
       tap((response) => this.logResponse('GET', fullUrl, response)),
       catchError((error) => this.handleError(error))
     );
   }
+
 
   /**
    * Effectue une requête HTTP POST générique.
@@ -167,7 +186,8 @@ export abstract class ApiService {
    */
   private logResponse(method: string, url: string, response: unknown): void {
     if (!environment.production) {
-      console.info(`[${method}] ${url}:`, response);
+      Logger.info({ message: url, data: response }, method)
+      // console.info(`[${method}] ${url}:`, response);
     }
   }
 
@@ -240,36 +260,12 @@ export abstract class ApiService {
     params?: IParams,
     url?: string
   ): Observable<ApiResponse<T>> {
-    const springParams: IParams = {...params};
-
-    if (params?.["page"] !== undefined && params?.["limit"] !== undefined) {
-      springParams['page'] = Math.max(0, params?.["page"] - 1);
-      springParams['size'] = params["limit"];
-      delete springParams['limit'];
-      delete springParams['totalItem'];
-      delete springParams['totalPage'];
-    }
-
-    return this.get<T>(url ?? '/', springParams).pipe(
-      map((response: any) => {
-        if (response && response.content) {
-          return {
-            data: response.content as T[],
-            pagination: {
-              totalItem: response.totalElements,
-              page: response.number + 1,
-              limit: response.size,
-              totalPage: response.totalPages,
-            },
-          } as ApiResponse<T>;
-        }
-        throw new Error('Réponse inattendue du backend');
-      }),
-      catchError((error) => {
-        // eslint-disable-next-line no-console
-        console.error('Erreur de récupération des données', error);
-        return throwError(() => error);
-      })
+    return this.get<T>(
+      url ?? '/',
+      this.paginationAdapter.transformParams(params ?? {})
+    ).pipe(
+      map((response) => this.paginationAdapter.normalize(response)),
+      catchError((error) => throwError(() => error))
     );
   }
 

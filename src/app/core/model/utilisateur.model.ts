@@ -4,4 +4,5 @@ export interface UtilisateurModel {
 
   username: string;
 
+  test:string;
 }

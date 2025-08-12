@@ -1,0 +1,57 @@
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+  [buttonIcon]="'fas fa-plus'"
+  [buttonText]="'Nouvelle Demande'"
+  [buttonLink]="['/demandeur/demandes/nouveau']"
+></app-page-header>
+
+<div class="container mx-auto pb-8">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+  >
+    <div
+      *ngFor="let stat of statsData; let i = index"
+      class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 card-hover animate-fade-in"
+      [style.animation-delay]="i * 0.1 + 's'"
+    >
+      <app-stat-card [stat]="stat"></app-stat-card>
+    </div>
+  </div>
+</div>
+
+<app-search-filter
+  [filters]="filterConfig"
+  (filtersChanged)="onFiltersChanged($event)"
+  (searchChanged)="onSearchChanged($event)"
+  (reset)="onResetFilters()"
+></app-search-filter>
+
+<div
+  class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 animate-fade-in"
+>
+  <div class="px-6 py-4 border-b border-gray-200/50">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold text-gray-900">
+        Liste de tous mes demandes
+      </h2>
+      <!-- <button
+        [routerLink]="['/demandeur/demandes']"
+        class="text-primary-600 hover:text-primary-700 font-medium text-sm"
+      >
+        Voir tout
+      </button> -->
+    </div>
+  </div>
+
+  <app-demande-table
+    [demandes]="demandes()"
+    [loading]="loading()"
+  ></app-demande-table>
+
+  <app-pagination
+    *ngIf="!loading()"
+    [pagination]="pagination"
+    (pageChanged)="setPagination($event)"
+  />
+</div>

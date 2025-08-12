@@ -270,6 +270,7 @@ export class FormSourceInfoComponent implements OnInit {
   }
 
   goBack(): void {
+    history.back();
     if (this.isEditingMode()) {
       const raw = localStorage.getItem("sourceInfo");
       if (raw) {
@@ -280,5 +281,14 @@ export class FormSourceInfoComponent implements OnInit {
       }
     }
   }
+
+  pageTitle(): string {
+    return `${this.isEditingMode() ? 'Modifier' : 'Ajouter'} une Source d'Information`;
+  }
+
+  pageSubtitle(): string {
+    return `${this.isEditingMode() ? 'Modifier une' : 'Créez une nouvelle'} source d'information pour vos enquêtes`;
+  }
+
 
 }

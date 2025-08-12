@@ -1,4 +1,5 @@
 import {TypeDocument} from "@modules/admin/parametrage/type-document/type-document";
+import {ViewMode} from "@core/types";
 
 export interface Document {
   id: number
@@ -26,7 +27,7 @@ export interface DocumentFilterOptions {
   searchTerm: string
   filterType: string
   sortBy: string
-  viewMode: "grid" | "list"
+  viewMode: ViewMode
 }
 
 export interface DocumentUpload {

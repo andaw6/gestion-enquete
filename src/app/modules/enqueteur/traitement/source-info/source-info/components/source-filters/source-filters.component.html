@@ -1,11 +1,13 @@
 <div class="bg-white rounded-lg shadow border border-gray-200 p-4 mb-6">
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex items-center space-x-2">
-      <div class="relative">
+  <div class="flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-between gap-4">
+
+    <!-- Barre de recherche -->
+    <div class="w-full md:w-auto flex items-center">
+      <div class="relative w-full md:w-80">
         <input
           type="text"
           placeholder="Rechercher une source..."
-          class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 w-80"
+          class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 w-full"
           [formControl]="searchControl"
         >
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -14,27 +16,28 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <!-- Filtres et boutons -->
+    <div class="w-full md:w-auto flex flex-wrap items-center gap-2">
       <select
-        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
         [(ngModel)]="filter.typeCode"
         (ngModelChange)="onFilterChange()"
       >
-        <option value="">Toutes les catégories</option>
+        <option value="">Tous les types</option>
         <option *ngFor="let type of typeSources" [value]="type.code">{{type.libelle}}</option>
       </select>
 
       <select
-        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
         [(ngModel)]="filter.etatCode"
         (ngModelChange)="onFilterChange()"
       >
-        <option value="">Toutes les catégories</option>
+        <option value="">Tous les états</option>
         <option *ngFor="let etat of etatSources" [value]="etat.code">{{etat.libelle}}</option>
       </select>
 
       <select
-        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
         [(ngModel)]="filter.niveauFiabilite"
         (ngModelChange)="onFilterChange()"
       >
@@ -43,12 +46,27 @@
       </select>
 
       <select
-        class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
+        class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900"
         [(ngModel)]="filter.sortBy"
         (ngModelChange)="onFilterChange()"
       >
         <option *ngFor="let opt of sourceInfoTrie" [value]="opt.value">{{ opt.label }}</option>
       </select>
+
+      <!-- Boutons de vue -->
+      <button
+        (click)="setViewMode('grid')"
+        [class]="'px-3 py-2 rounded-md transition-colors ' + (filter.viewMode === 'grid' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200')"
+      >
+        <i class="fas fa-th-large"></i>
+      </button>
+
+      <button
+        (click)="setViewMode('list')"
+        [class]="'px-3 py-2 rounded-md transition-colors ' + (filter.viewMode === 'list' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200')"
+      >
+        <i class="fas fa-list"></i>
+      </button>
     </div>
   </div>
 </div>

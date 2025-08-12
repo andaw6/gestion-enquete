@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {NavigationItem} from "@core/interfaces/navigation.interface";
 import {CommonModule} from "@angular/common";
 import {Router} from "@angular/router";
+import {environment} from "@env/environment";
 
 @Component({
   selector: 'app-sidebar-item',
@@ -13,17 +14,47 @@ import {Router} from "@angular/router";
 export class SidebarItemComponent {
   @Input() item!: NavigationItem;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   handleClick(event: Event): void {
-    event.stopPropagation();
     event.preventDefault();
+    event.stopPropagation();
 
-    if (this.item.children?.length) {
-      this.item.expanded = !this.item.expanded;
-    } else if (this.item.route) {
-      this.router.navigate([this.item.route]);
-      console.log("Navigate to:", this.item.label, this.item.route);
+    const route = this.item.route;
+    if (!route) return;
+
+    const isCurrentRoute = this.router.url === route;
+    const hasChildren = Array.isArray(this.item.children) && this.item.children.length > 0;
+
+    if (hasChildren) {
+      // Si on n'est pas déjà sur un sous-menu lié à la route principale
+      if (!this.router.url.includes(route)) {
+        this.navigateTo(route);
+      }
+      this.toggleExpanded();
+    } else {
+      // Si ce n’est pas déjà la route actuelle, on y va
+      if (!isCurrentRoute) {
+        this.navigateTo(route);
+      }
     }
+  }
+
+
+  private navigateTo(route: string): void {
+    this.router.navigate([route]).then(success => {
+      if (!environment.production) {
+        if (success) {
+          console.info(`Navigated to: ${route}`);
+        } else {
+          console.warn(`Navigation failed to: ${route}`);
+        }
+      }
+    });
+  }
+
+  private toggleExpanded(): void {
+    this.item.expanded = !this.item.expanded;
   }
 }

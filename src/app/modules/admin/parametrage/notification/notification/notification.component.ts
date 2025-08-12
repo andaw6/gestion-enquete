@@ -227,7 +227,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     const ids = Array.from(this.selectedNotifications);
     if (ids.length === 0) return;
 
-    const sub = this.notificationService.deleateMany(ids).subscribe({
+    const sub = this.notificationService.deleteMany(ids).subscribe({
       next: () => {
         this.loadData();
         this.toastService.showNotification(`${ids.length} notifications supprimées`, "success");

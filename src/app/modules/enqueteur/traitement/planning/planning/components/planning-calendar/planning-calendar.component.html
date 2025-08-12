@@ -1,0 +1,164 @@
+<div class="p-6 overflow-y-auto custom-scrollbar h-full">
+  <!-- Calendar header -->
+  <div class="flex items-center justify-between mb-6 border-2 p-4 rounded-lg ">
+    <div class="flex items-center space-x-4">
+      <button
+        (click)="navigatePrevious()"
+        class="p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg ">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <h3 class="text-xl font-semibold text-gray-900">
+        {{ getHeaderTitle() }}
+      </h3>
+      <button
+        (click)="navigateNext()"
+        class="p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <button
+        (click)="goToToday()"
+        class="px-3 py-1 text-sm font-medium text-primary-600 hover:bg-primary-50 rounded-lg focus:outline-none border-2 border-primary-500 focus:ring-1 focus:ring-primary-500">
+        Aujourd'hui
+      </button>
+    </div>
+  </div>
+
+  <!-- Month View -->
+  <div *ngIf="currentView === 'month'" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Days header -->
+    <div class="grid grid-cols-7 bg-gray-50">
+      <div *ngFor="let day of dayNames"
+           class="px-4 py-3 text-center text-sm font-medium text-gray-500">
+        {{ day }}
+      </div>
+    </div>
+
+    <!-- Calendar days -->
+    <div class="grid grid-cols-7">
+      <div *ngFor="let day of calendarDays()"
+           [class]="getDayCellClass(day)"
+           (click)="onDayClick(day.date)">
+        <!-- Day number -->
+        <div [class]="getDayNumberClass(day)">
+          {{ day.date.getDate() }}
+        </div>
+
+        <!-- Events -->
+        <div *ngFor="let event of day.events"
+             [class]="getEventClass(event)"
+             [title]="getEventTooltip(event)"
+             (click)="onEventClick($event, event.id)">
+          {{ event.titre }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week View -->
+  <div *ngIf="currentView === 'week'" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Week header -->
+    <div class="grid grid-cols-8 bg-gray-50 border-b border-gray-200">
+      <div class="px-4 py-3 text-center text-sm font-medium text-gray-500"></div>
+      <div *ngFor="let day of weekDays()"
+           class="px-4 py-3 text-center text-sm font-medium text-gray-500">
+        <div class="font-medium">{{ getDayName(day.date) }}</div>
+        <div [class]="day.isToday ? 'bg-primary-600 text-white rounded-full w-6 h-6 flex items-center justify-center mx-auto mt-1' : 'text-gray-900'">
+          {{ day.date.getDate() }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Week grid -->
+    <div class="relative">
+      <div *ngFor="let timeSlot of timeSlots" class="grid grid-cols-8 border-b border-gray-100">
+        <!-- Time label -->
+        <div class="px-4 py-2 text-xs text-gray-500 bg-gray-50 border-r border-gray-200">
+          {{ timeSlot.label }}
+        </div>
+
+        <!-- Day columns -->
+        <div *ngFor="let day of weekDays()"
+             class="relative min-h-[60px] border-r border-gray-100 hover:bg-gray-50 cursor-pointer"
+             (click)="onWeekDayTimeClick(day.date, timeSlot.hour)">
+
+          <!-- Events for this time slot -->
+          <div *ngFor="let event of getEventsForDayAndHour(day, timeSlot.hour)"
+               [class]="getWeekEventClass(event)"
+               [title]="getEventTooltip(event)"
+               (click)="onEventClick($event, event.id)">
+            <div class="font-medium text-xs">{{ event.titre }}</div>
+            <div class="text-xs opacity-75">{{ event.heure }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day View -->
+  <div *ngIf="currentView === 'day'" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Day header -->
+    <div class="bg-gray-50 border-b border-gray-200 p-4">
+      <div class="text-center">
+        <div class="text-sm font-medium text-gray-500">{{ getDayName(currentDate()) }}</div>
+        <div [class]="isToday(currentDate()) ? 'bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center mx-auto mt-1' : 'text-2xl font-bold text-gray-900 mt-1'">
+          {{ currentDate().getDate() }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Day timeline -->
+    <div class="relative">
+      <div *ngFor="let timeSlot of extendedTimeSlots" class="flex border-b border-gray-100">
+        <!-- Time label -->
+        <div class="w-20 px-4 py-3 text-xs text-gray-500 bg-gray-50 border-r border-gray-200">
+          {{ timeSlot.label }}
+        </div>
+
+        <!-- Event area -->
+        <div class="flex-1 relative min-h-[80px] hover:bg-gray-50 cursor-pointer"
+             (click)="onDayTimeClick(timeSlot.hour)">
+
+          <!-- Events for this hour -->
+          <div *ngFor="let event of getEventsForHour(timeSlot.hour)"
+               [class]="getDayEventClass(event)"
+               [title]="getEventTooltip(event)"
+               (click)="onEventClick($event, event.id)">
+            <div class="font-medium text-sm">{{ event.titre }}</div>
+            <div class="text-xs text-gray-600 mt-1">{{ event.heure }} - {{ getEndTime(event) }}</div>
+            <div class="text-xs text-gray-500 mt-1">{{ event.description }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Légende -->
+  <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h4 class="text-sm font-medium text-gray-900 mb-3">Légende</h4>
+    <div class="flex flex-wrap gap-4">
+      <div class="flex items-center">
+        <div class="w-3 h-3 bg-primary-500 rounded-full mr-2"></div>
+        <span class="text-sm text-gray-600">Enquête terrain</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+        <span class="text-sm text-gray-600">Rendez-vous</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+        <span class="text-sm text-gray-600">Échéance</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+        <span class="text-sm text-gray-600">Urgent</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+        <span class="text-sm text-gray-600">Réunion</span>
+      </div>
+    </div>
+  </div>
+</div>

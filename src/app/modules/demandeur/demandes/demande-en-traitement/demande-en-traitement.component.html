@@ -1,0 +1,65 @@
+<div>
+  <app-page-header
+    [title]="pageTitle"
+    [subtitle]="pageSubTitle"
+    [buttonIcon]="'fas fa-plus'"
+    [buttonText]="'Nouvelle Demande'"
+    [buttonLink]="['/demandeur/demandes/nouveau']"
+  ></app-page-header>
+
+  <div class="container mx-auto pb-8">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    >
+      <div
+        *ngFor="let stat of statsData; let i = index"
+        class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 card-hover animate-fade-in"
+        [style.animation-delay]="i * 0.1 + 's'"
+      >
+        <app-stat-card [stat]="stat"></app-stat-card>
+      </div>
+    </div>
+  </div>
+
+  <app-search-filter
+    [filters]="filterConfig"
+    (filtersChanged)="onFiltersChanged($event)"
+    (searchChanged)="onSearchChanged($event)"
+    (reset)="onResetFilters()"
+  ></app-search-filter>
+
+  <div
+    class="bg-white rounded-2xl shadow-lg border border-white/20 overflow-hidden"
+  >
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">
+          Liste des demandes en investigation.
+        </h3>
+        <div class="flex items-center space-x-2 text-sm text-gray-500">
+          <span id="results-count">{{ demandes().length }} résultats</span>
+          <button
+            class="ml-4 text-blue-600 hover:text-blue-700"
+            (click)="toggleView()"
+          >
+            <i class="fas fa-th-large" id="view-toggle"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- <app-table-demandes [demandes]="demandes()"></app-table-demandes> -->
+    <app-demandes-liste
+      [demandes]="demandes()"
+      [loading]="loading()"
+      (voirDemande)="onVoirDemande($event)"
+      (telechargerDemande)="onTelechargerDemande($event)"
+    ></app-demandes-liste>
+
+    <app-pagination
+    *ngIf="!loading() && demandes().length"
+    [pagination]="pagination"
+    (pageChanged)="setPagination($event)"
+  />
+  </div>
+</div>

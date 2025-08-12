@@ -25,7 +25,8 @@ export class SourceFiltersComponent implements OnInit {
     etatCode: "",
     typeCode: "",
     niveauFiabilite: "",
-    sortBy: "date"
+    sortBy: "date",
+    viewMode: 'grid',
   }
 
   etatSources: EtatSourceInfo[] = [];
@@ -41,15 +42,12 @@ export class SourceFiltersComponent implements OnInit {
 
   searchControl = new FormControl('');
 
+
   private setupSearchListener(): void {
     this.utilService.setupSearchListener(this.searchControl, query => {
       this.filter.searchTerm = query;
       this.onFilterChange();
     });
-  }
-
-  onSearchChange() {
-    this.emitFilters()
   }
 
   onFilterChange() {
@@ -70,6 +68,8 @@ export class SourceFiltersComponent implements OnInit {
         this.etatSources = etat.data;
         this.typeSources = type.data;
       },
+      complete: () => {
+      },
       error: (err) => {
         console.error(err);
         this.notificationService.showNotification("Erreur lors du chargement des donnés", "error");
@@ -80,5 +80,10 @@ export class SourceFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
     this.setupSearchListener();
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.filter.viewMode = mode;
+    this.onFilterChange();
   }
 }

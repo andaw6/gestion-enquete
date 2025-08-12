@@ -1,18 +1,14 @@
-<!-- Header Section -->
-<div class="mb-8">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-3xl font-bold text-dark-900 mb-2">Mes Documents non classés</h1>
-      <p class="text-dark-500">Retrouvez et organisez facilement vos documents d'enquêtes non classés</p>
-    </div>
-  </div>
-</div>
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+></app-page-header>
 
 
 <div class="bg-gray-50">
 
   <!-- Filters -->
   <app-document-sans-enquete-filtre
+    [filters]="currentFilters"
     (filtersChange)="onFiltersChange($event)"
     (uploadClick)="onUploadClick()"
   ></app-document-sans-enquete-filtre>

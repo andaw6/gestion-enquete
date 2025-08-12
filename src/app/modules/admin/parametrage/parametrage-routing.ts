@@ -2,15 +2,15 @@ import {Routes} from "@angular/router";
 
 export const PARAMETRAGE_ROUTES: Routes = [
   {
+    path: "notification",
+    loadChildren: () => import("@modules/admin/parametrage/notification/notification.module").then(m => m.NotificationModule),
+  },
+  {
     path: "systeme",
     children: [
       {
         path: "type-document",
         loadChildren: () => import("@modules/admin/parametrage/type-document/type-document.module").then(m => m.TypeDocumentModule)
-      },
-      {
-        path: "notification",
-        loadChildren: () => import("@modules/admin/parametrage/notification/notification.module").then(m => m.NotificationModule),
       },
       {
         path: "type-source",

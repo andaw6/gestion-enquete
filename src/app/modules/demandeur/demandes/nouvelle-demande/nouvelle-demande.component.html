@@ -1,0 +1,441 @@
+<div class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+  <!-- Header -->
+
+  <app-page-header
+    [title]="pageTitle"
+    [subtitle]="pageSubTitle"
+    [buttonIcon]="'fas fa-long-arrow-alt-left'"
+    [buttonText]="'Retour'"
+    [buttonAction]="onGoBack"
+  ></app-page-header>
+
+
+  <!-- Contenu principal -->
+  <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <form [formGroup]="demandeForm" (ngSubmit)="onSubmit()" class="space-y-8">
+      <!-- Section Informations générales -->
+      <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+        <div class="border-l-4 border-primary-500 pl-4 mb-6">
+          <h2 class="text-xl font-semibold text-dark-800">
+            Informations Générales
+          </h2>
+          <p class="text-dark-500">
+            Renseignez les détails de votre demande d'enquête
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Objet -->
+          <div class="md:col-span-2">
+            <label
+              for="objet"
+              class="block text-sm font-medium text-dark-700 mb-2"
+            >
+              Objet <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="objet"
+              formControlName="objet"
+              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+              [class.border-red-500]="isFieldInvalid('objet')"
+              [class.border-gray-300]="!isFieldInvalid('objet')"
+              placeholder="Saisissez l'objet de l'enquête"
+            />
+            <div
+              *ngIf="getFieldError('objet')"
+              class="mt-1 text-sm text-red-600"
+            >
+              {{ getFieldError("objet") }}
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="md:col-span-2">
+            <label
+              for="description"
+              class="block text-sm font-medium text-dark-700 mb-2"
+            >
+              Description <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              id="description"
+              formControlName="description"
+              rows="4"
+              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+              [class.border-red-500]="isFieldInvalid('description')"
+              [class.border-gray-300]="!isFieldInvalid('description')"
+              placeholder="Décrivez en détail votre demande d'enquête"
+            ></textarea>
+            <div
+              *ngIf="getFieldError('description')"
+              class="mt-1 text-sm text-red-600"
+            >
+              {{ getFieldError("description") }}
+            </div>
+          </div>
+
+          <!-- Priorité -->
+          <div>
+            <label
+              for="priorite"
+              class="block text-sm font-medium text-dark-700 mb-2"
+            >
+              Priorité <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="priorite"
+              formControlName="priorite"
+              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+              [class.border-red-500]="isFieldInvalid('priorite')"
+              [class.border-gray-300]="!isFieldInvalid('priorite')"
+            >
+              <option value="">Sélectionner une priorité</option>
+              <option
+                *ngFor="let option of prioriteOptions"
+                [value]="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+            <div
+              *ngIf="getFieldError('priorite')"
+              class="mt-1 text-sm text-red-600"
+            >
+              {{ getFieldError("priorite") }}
+            </div>
+          </div>
+
+          <!-- Date d'échéance -->
+          <div>
+            <label
+              for="dateEcheance"
+              class="block text-sm font-medium text-dark-700 mb-2"
+            >
+              Date d'échéance <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="datetime-local"
+              id="dateEcheance"
+              formControlName="dateEcheance"
+              [min]="getMinDateTime()"
+              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+              [class.border-red-500]="isFieldInvalid('dateEcheance')"
+              [class.border-gray-300]="!isFieldInvalid('dateEcheance')"
+            />
+            <div
+              *ngIf="getFieldError('dateEcheance')"
+              class="mt-1 text-sm text-red-600"
+            >
+              {{ getFieldError("dateEcheance") }}
+            </div>
+          </div>
+
+          <!-- Urgent -->
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              id="urgent"
+              formControlName="urgent"
+              class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            />
+            <label for="urgent" class="ml-2 block text-sm text-dark-700">
+              Marquer comme urgent
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Concerné -->
+      <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+        <div class="border-l-4 border-secondary-500 pl-4 mb-6">
+          <h2 class="text-xl font-semibold text-dark-800">
+            Informations du Concerné
+          </h2>
+          <p class="text-dark-500">
+            Choisissez un concerné existant ou créez-en un nouveau
+          </p>
+        </div>
+
+        <!-- Choix du mode -->
+        <div class="mb-6">
+          <div class="flex space-x-4">
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="concerneMode"
+                value="existing"
+                [checked]="concerneMode === 'existing'"
+                (change)="onConcerneModeChange('existing')"
+                class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+              />
+              <span class="ml-2 text-sm font-medium text-dark-700"
+                >Concerné existant</span
+              >
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="concerneMode"
+                value="new"
+                [checked]="concerneMode === 'new'"
+                (change)="onConcerneModeChange('new')"
+                class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+              />
+              <span class="ml-2 text-sm font-medium text-dark-700"
+                >Nouveau concerné</span
+              >
+            </label>
+          </div>
+        </div>
+
+        <!-- Concerné existant -->
+        <ng-container *ngIf="!isLoadingConcerne()"; else loadingConcerne>
+          <app-select-search-paginate
+            *ngIf="concerneMode === 'existing'"
+            [title]="'Sélectionner un concerné existant*'"
+            [options]="mesOptions()"
+            [selected]="selectedConcerne()"
+            [selectPlaceholder]="'Sélectionner le concerné'"
+            [multiple]="false"
+            (optionSelected)="onSelected($event)"
+          >
+            <div
+              *ngIf="getFieldError('concerneId')"
+              class="mt-1 text-sm text-red-600"
+            >
+              {{ getFieldError("concerneId") }}
+            </div>
+          </app-select-search-paginate>
+        </ng-container>
+
+        <ng-template #loadingConcerne>
+          <div class="mt-2 text-gray-500 text-sm flex items-center space-x-2">
+            <i class="fas fa-spinner fa-spin text-primary-500"></i>
+            <span>Chargement des concernés en cours...</span>
+          </div>
+        </ng-template>
+
+        <!-- Nouveau concerné -->
+        <div *ngIf="concerneMode === 'new'" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Type -->
+            <div>
+              <label
+                for="type"
+                class="block text-sm font-medium text-dark-700 mb-2"
+              >
+                Type <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="type"
+                formControlName="type"
+                class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                [class.border-red-500]="isFieldInvalid('type')"
+                [class.border-gray-300]="!isFieldInvalid('type')"
+              >
+                <option value="">Sélectionner le type</option>
+                <option
+                  *ngFor="let option of typeOptions"
+                  [value]="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+              <div
+                *ngIf="getFieldError('type')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("type") }}
+              </div>
+            </div>
+
+            <!-- Numéro -->
+            <div>
+              <label
+                for="numero"
+                class="block text-sm font-medium text-dark-700 mb-2"
+              >
+                Numéro <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="numero"
+                formControlName="numero"
+                class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                [class.border-red-500]="isFieldInvalid('numero')"
+                [class.border-gray-300]="!isFieldInvalid('numero')"
+                placeholder="Numéro d'identification"
+              />
+              <div
+                *ngIf="getFieldError('numero')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("numero") }}
+              </div>
+            </div>
+
+            <!-- Région Sociale -->
+            <div>
+              <label
+                for="regionSocial"
+                class="block text-sm font-medium text-dark-700 mb-2"
+              >
+                Région Sociale <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="regionSocial"
+                formControlName="regionSocial"
+                class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                [class.border-red-500]="isFieldInvalid('regionSocial')"
+                [class.border-gray-300]="!isFieldInvalid('regionSocial')"
+                placeholder="Région sociale"
+              />
+              <div
+                *ngIf="getFieldError('regionSocial')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("regionSocial") }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Utilisateur -->
+      <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+        <div class="border-l-4 border-primary-500 pl-4 mb-6">
+          <h2 class="text-xl font-semibold text-dark-800">Centre de gestion</h2>
+          <p class="text-dark-500">Assignation de la demande</p>
+        </div>
+        <div>
+          <label
+            for="centreId"
+            class="block text-sm font-medium text-dark-700 mb-2"
+          >
+            Centre de gestion assigné <span class="text-red-500">*</span>
+          </label>
+          <select
+            id="centreId"
+            formControlName="centreId"
+            class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+            [class.border-red-500]="isFieldInvalid('centreId')"
+            [class.border-gray-300]="!isFieldInvalid('centreId')"
+          >
+            <option value="">Sélectionner le centre de gestion</option>
+            <option value="afrilins">Afrilins</option>
+            <!-- <option
+              *ngFor="let utilisateur of utilisateursList"
+              [value]="utilisateur.id"
+            >
+              {{ utilisateur.label }}
+            </option> -->
+          </select>
+          <div
+            *ngIf="getFieldError('centreId')"
+            class="mt-1 text-sm text-red-600"
+          >
+            {{ getFieldError("centreId") }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-end">
+        <button
+          type="button"
+          (click)="showConfirmModal = true"
+          class="px-6 py-3 border border-gray-300 text-dark-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center"
+        >
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          Réinitialiser
+        </button>
+
+        <button
+          type="button"
+          (click)="onSaveDraft()"
+          class="px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 transition-colors duration-200 flex items-center justify-center"
+        >
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+            />
+          </svg>
+          Sauvegarder comme brouillon
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="px-8 py-3 gradient-bg text-white rounded-lg hover:shadow-card-hover transition-all duration-200 flex items-center justify-center font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg
+            *ngIf="!isSubmitting"
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+            />
+          </svg>
+          <svg
+            *ngIf="isSubmitting"
+            class="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          {{ isSubmitting ? "Soumission..." : "Soumettre la demande" }}
+        </button>
+      </div>
+    </form>
+
+    <app-confirmation-modal
+      [isVisible]="showConfirmModal"
+      [data]="confirmationData"
+      [isLoading]="isActionLoading"
+      (confirm)="resetForm(); showConfirmModal = false"
+      (cancel)="showConfirmModal = false"
+    ></app-confirmation-modal>
+  </main>
+</div>

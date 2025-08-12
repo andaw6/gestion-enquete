@@ -19,6 +19,7 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
 import {
   DocumentPreviewModalComponent
 } from "@shared/components/document-preview-modal/document-preview-modal.component";
+import {PageHeaderComponent} from "@shared/components/page-header/page-header.component";
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import {
         DocumentPreviewModalComponent,
         ReactiveFormsModule,
         RouterModule.forChild(DOCUMENT_ROUTE),
+        PageHeaderComponent,
     ]
 })
 export class DocumentModule {

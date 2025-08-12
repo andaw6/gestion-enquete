@@ -20,6 +20,9 @@ import {SourceSidebarComponent} from './detail-source-info/components/source-sid
 import {
   DocumentPreviewModalComponent
 } from "@shared/components/document-preview-modal/document-preview-modal.component";
+import {PageHeaderComponent} from "@shared/components/page-header/page-header.component";
+import { SourceListComponent } from './source-info/components/source-list/source-list.component';
+import {LoaderComponent} from "@shared/components/loader/loader.component";
 
 
 @NgModule({
@@ -32,7 +35,8 @@ import {
     DocumentsSectionComponent,
     SourceDetailsComponent,
     SourceHeaderComponent,
-    SourceSidebarComponent
+    SourceSidebarComponent,
+    SourceListComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +47,9 @@ import {
     SelectSearchPaginateComponent,
     ButtonBackComponent,
     DocumentPreviewModalComponent,
+    PageHeaderComponent,
     RouterModule.forChild(SOURCE_INFO_ROUTE),
+    LoaderComponent,
   ]
 })
 export class SourceInfoModule {

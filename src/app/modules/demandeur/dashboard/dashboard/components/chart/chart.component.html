@@ -1,0 +1,23 @@
+<div
+  class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 animate-fade-in"
+>
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl font-bold text-gray-900">Évolution des demandes</h2>
+    <div class="flex space-x-2">
+      <button
+        *ngFor="let period of periods"
+        (click)="selectPeriod(period)"
+        [ngClass]="
+          period.active
+            ? 'px-3 py-1 text-sm bg-primary-100 text-primary-600 rounded-lg'
+            : 'px-3 py-1 text-sm text-gray-500 hover:bg-gray-100 rounded-lg'
+        "
+      >
+        {{ period.label }}
+      </button>
+    </div>
+  </div>
+  <div class="relative h-80 w-full">
+    <canvas #chartCanvas></canvas>
+  </div>
+</div>

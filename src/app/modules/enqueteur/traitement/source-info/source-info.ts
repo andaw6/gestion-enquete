@@ -3,6 +3,7 @@ import {EntityType} from "@core/interfaces/entity-type.interface";
 import {TypeSource} from "@modules/admin/parametrage/type-source/type-source";
 import {Utilisateur} from "@core/interfaces/utilisateur.interface";
 import {RELIABILITY_LEVELS, SOURCE_INFO_TRI} from "@config/constant";
+import {ViewMode} from "@core/types";
 
 export interface SourceInfo {
   id: number;
@@ -27,6 +28,8 @@ export interface SourceFiltersOption {
   typeCode: string;
   niveauFiabilite: SourceNiveauFiabilite | "";
   sortBy: SourceSortBy;
+  viewMode: ViewMode;
+
 }
 
 export interface EtatSourceInfo extends EntityType {

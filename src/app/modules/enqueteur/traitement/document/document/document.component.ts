@@ -10,6 +10,8 @@ import {DocumentService} from "@modules/enqueteur/traitement/document/document.s
 export class DocumentComponent {
   currentPage = 1
   totalPages = 2
+  pageTitle: string = "Mes Documents";
+  pageSubTitle: string = "Gérez tous vos documents d'enquêtes de manière efficace";
 
   constructor(private documentService: DocumentService) {}
 

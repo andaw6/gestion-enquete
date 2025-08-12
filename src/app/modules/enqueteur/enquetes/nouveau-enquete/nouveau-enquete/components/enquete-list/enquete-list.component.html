@@ -1,0 +1,51 @@
+<div class="space-y-6">
+  <app-filters (filtersChanged)="onFiltersChanged($event)"></app-filters>
+
+  <div class="space-y-6">
+    <ng-container *ngFor="let demande of filteredDemandes">
+      <app-enquete-card
+        [demande]="demande"
+        (accepter)="onAccepterDemande($event)"
+        (refuser)="onRefuserDemande($event)"
+      ></app-enquete-card>
+    </ng-container>
+  </div>
+
+  <!-- Actions Groupées -->
+  <div class="mt-6 bg-white rounded-lg shadow border border-gray-200 p-4">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center">
+        <input type="checkbox" id="select-all"
+               class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+        <label for="select-all" class="ml-2 text-sm font-medium text-gray-700">Sélectionner tout</label>
+      </div>
+      <div class="flex space-x-2">
+        <button class="px-4 py-2 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors">
+          <i class="fas fa-check mr-1"></i>Accepter la sélection
+        </button>
+        <button class="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors">
+          <i class="fas fa-times mr-1"></i>Refuser la sélection
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-6 flex items-center justify-between">
+    <div class="text-sm text-gray-700">
+      Affichage de <span class="font-medium">{{ filteredDemandes.length }}</span> enquêtes sur <span
+      class="font-medium">{{ demandes.length }}</span>
+    </div>
+    <div class="flex space-x-1">
+      <button class="px-3 py-1 bg-white text-gray-500 border border-gray-300 rounded-md disabled:opacity-50">
+        Précédent
+      </button>
+      <button class="px-3 py-1 bg-blue-500 text-white border border-blue-500 rounded-md">
+        1
+      </button>
+      <button class="px-3 py-1 bg-white text-gray-500 border border-gray-300 rounded-md disabled:opacity-50">
+        Suivant
+      </button>
+    </div>
+  </div>
+</div>

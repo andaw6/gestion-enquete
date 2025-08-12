@@ -1,0 +1,9 @@
+.table-container {
+  @apply overflow-x-auto;
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    @apply block overflow-x-auto whitespace-nowrap;
+  }
+}

@@ -7,6 +7,7 @@ import {NotificationAlertService} from "@core/services/notification-alert.servic
 import {ResponseError} from "@core/interfaces/response-error.interface";
 import {ActivatedRoute, Router} from "@angular/router";
 import {IParams} from "@core/interfaces/http-options.interface";
+import {ViewMode} from "@core/types";
 
 @Component({
   selector: 'app-source-info',
@@ -29,9 +30,14 @@ export class SourceInfoComponent implements OnInit {
     typeCode: "",
     niveauFiabilite: "",
     sortBy: "date",
+    viewMode: 'grid'
   }
   showSourceId: number | null = null;
   private highlightedId: number | null = null;
+
+  pageTitle: string = "Sources d'Informations";
+  pageDescription: string = "Gérez vos sources d'informations pour les enquêtes";
+  private readonly key: string = "sourceInfo.viewMode";
 
   constructor(
     private sourceInfoService: SourceInfoService,
@@ -42,6 +48,10 @@ export class SourceInfoComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (window != undefined) {
+      this.filter.viewMode = localStorage.getItem(this.key) as ViewMode ?? 'grid';
+    }
+
     this.route.queryParamMap.subscribe(params => {
       const show = params.get("show");
       if (show !== null) {
@@ -87,6 +97,7 @@ export class SourceInfoComponent implements OnInit {
 
   onFiltersChange(filters: SourceFiltersOption) {
     this.filter = filters;
+    localStorage.setItem(this.key, filters.viewMode);
     this.applyFilter();
   }
 
@@ -96,7 +107,7 @@ export class SourceInfoComponent implements OnInit {
   }
 
   actionClick($event: SourceInfo) {
-    this.router.navigate(["/enqueteur/traitement/source-info", $event.id]).then(console.info);
+    this.router.navigate(["/enqueteur/traitement/source-info", $event.id]).then(_ => _);
   }
 
   updatedClick($event: SourceInfo): void {
@@ -129,7 +140,7 @@ export class SourceInfoComponent implements OnInit {
     if (this.filter.typeCode != "") {
       filter["type"] = this.filter.typeCode;
     }
-    if(this.filter.niveauFiabilite != ""){
+    if (this.filter.niveauFiabilite != "") {
       filter["niveauFiabilite"] = this.filter.niveauFiabilite;
     }
     switch (this.filter.sortBy) {

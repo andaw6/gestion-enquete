@@ -1,10 +1,10 @@
-import {Injectable, Renderer2} from '@angular/core';
-import {NavigationItem, NavigationSection} from "@core/interfaces/navigation.interface";
-import {FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP, FILE_TYPE_CATEGORY_MAP} from "@config/constant";
-import {Document} from "@modules/enqueteur/traitement/document/document";
-import {NotificationAlertService} from "@core/services/notification-alert.service";
-import {debounceTime, distinctUntilChanged, filter, Subject, takeUntil} from "rxjs";
-import {FormControl} from "@angular/forms";
+import { Injectable, Renderer2 } from '@angular/core';
+import { NavigationItem, NavigationSection } from "@core/interfaces/navigation.interface";
+import { FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP, FILE_TYPE_CATEGORY_MAP } from "@config/constant";
+import { Document } from "@modules/enqueteur/traitement/document/document";
+import { NotificationAlertService } from "@core/services/notification-alert.service";
+import { debounceTime, distinctUntilChanged, filter, Subject, takeUntil } from "rxjs";
+import { FormControl } from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,6 @@ export class UtilService extends NotificationAlertService {
   private destroy$ = new Subject<void>();
 
   updateActiveLink(navigation: NavigationSection[], url: string) {
-
     const updateItem = (item: NavigationItem): boolean => {
 
 
@@ -24,11 +23,8 @@ export class UtilService extends NotificationAlertService {
       if (item.children?.length) {
         childActive = item.children.map(updateItem).some(active => active);
       }
-
-      // Déplie si lui-même ou un enfant est actif
       item.expanded = item.active || childActive;
 
-      // Retourne true si ce lien ou un de ses enfants est actif
       return item.active || childActive;
     };
 
@@ -40,9 +36,9 @@ export class UtilService extends NotificationAlertService {
 
   }
 
-
-  getIcon(extension: string): string {
-    return (FILE_ICON_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"]).split(" ").splice(0, 2).join(" ");
+  getIcon(extension: string, color: boolean = true): string {
+    let result: string = FILE_ICON_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
+    return color ? result.split(" ").splice(0, 2).join(" ") : result;
   }
 
   getDocumentActionIcon(document: Document): string {
@@ -132,6 +128,23 @@ export class UtilService extends NotificationAlertService {
       .subscribe((query: string) => {
         onSearch(query);
       });
+  }
+
+  getPrioriteLabel(priority: number): string {
+    switch (priority) {
+      case 1:
+        return " Très haute"
+      case 2:
+        return "Haute"
+      case 3:
+        return "Moyenne"
+      case 4:
+        return "Faible"
+      case 5:
+        return "Très faible"
+      default:
+        return "Moyenne"
+    }
   }
 
   private isValidQuery(query: string | null): boolean {

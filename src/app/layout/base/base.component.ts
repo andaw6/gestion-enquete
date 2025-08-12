@@ -1,36 +1,55 @@
-import {Component, ContentChild, Input, OnInit, TemplateRef} from '@angular/core';
+import {Component, ContentChild, EventEmitter, HostListener, Input, OnInit, Output, TemplateRef} from '@angular/core';
 import {NavigationSection} from "@core/interfaces/navigation.interface";
 import {NavigationEnd, Router, RouterModule} from "@angular/router";
 import {UtilService} from "@core/services/util.service";
 import {SidebarComponent} from "@layout/base/components/sidebar/sidebar.component";
 import {OverlayComponent} from "@layout/base/components/overlay/overlay.component";
 import {CommonModule} from "@angular/common";
+import {User} from "@core/interfaces/utilisateur.interface";
 
 @Component({
   selector: 'app-base',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.css'],
   standalone: true,
-  imports:[SidebarComponent, RouterModule, OverlayComponent, CommonModule]
+  imports: [SidebarComponent, RouterModule, OverlayComponent, CommonModule]
 })
 export class BaseComponent implements OnInit {
-  @Input() isSidebarOpen = false;
+  @Input() isSidebarOpen: boolean = false;
   @Input() navigation: NavigationSection[] = [];
+  @Input() isOpenDesktopMode: boolean = true;
+  @Output() forceDesktopModeOff: EventEmitter<void> = new EventEmitter<void>();
   @ContentChild("header") header!: TemplateRef<any>
 
-
-  constructor(private router: Router, private utilService: UtilService) {
+  constructor(
+    private router: Router,
+    private utilService: UtilService
+  ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.navigation = this.utilService.updateActiveLink(this.navigation, event.urlAfterRedirects);
       }
     });
   }
+
   ngOnInit() {
     this.navigation = this.utilService.updateActiveLink(this.navigation, this.router.url);
   }
 
   closeSidebar(): void {
     this.isSidebarOpen = false
+  }
+
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize(): void {
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 1024) {
+      this.forceDesktopModeOff.emit()
+    }
   }
 }

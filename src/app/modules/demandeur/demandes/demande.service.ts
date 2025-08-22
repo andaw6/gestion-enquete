@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { DemandeEnquete } from '../dashboard/dashboard';
 import { HttpClient } from '@angular/common/http';
 import { ApiCrudService } from '@core/api/api-crud.service';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
 import { Observable } from 'rxjs';
 import { IParams } from '@core/interfaces/http-options.interface';
-import { DemandeEnqueteData } from './model';
+import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DemandeService extends ApiCrudService<DemandeEnquete> {
+export class DemandeService extends ApiCrudService<DemandeEnqueteModel> {
 
   constructor(http: HttpClient) {
     super(http);
@@ -18,20 +17,20 @@ export class DemandeService extends ApiCrudService<DemandeEnquete> {
   }
 
 
-  override getAll(params?: IParams): Observable<ApiResponse<DemandeEnquete>> {
-    return this.responseGetMany<DemandeEnquete>(params, "/all");
+  override getAll(params?: IParams): Observable<ApiResponse<DemandeEnqueteModel>> {
+    return this.responseGetMany<DemandeEnqueteModel>(params, "/all");
   }
 
-  override getOne(id: number): Observable<DemandeEnquete | null> {
-    return this.responseGetOne<DemandeEnquete>(`/${id}`);
+  override getOne(id: number): Observable<DemandeEnqueteModel | null> {
+    return this.responseGetOne<DemandeEnqueteModel>(`/${id}`);
   }
 
-  override create(data: DemandeEnqueteData): Observable<DemandeEnquete> {
-    return this.responsePostOne<DemandeEnquete>(data);
+  override create(data: any): Observable<DemandeEnqueteModel> {
+    return this.responsePostOne<DemandeEnqueteModel>(data);
   }
 
-  override update(id: number, data: any): Observable<DemandeEnquete> {
-    return this.responsePutOne<DemandeEnquete>(`/${id}`, data);
+  override update(id: number, data: any): Observable<DemandeEnqueteModel> {
+    return this.responsePutOne<DemandeEnqueteModel>(`/${id}`, data);
   }
 
   override deleteOne(id: number): Observable<boolean> {

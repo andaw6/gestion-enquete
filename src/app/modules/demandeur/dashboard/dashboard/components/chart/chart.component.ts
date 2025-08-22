@@ -1,3 +1,4 @@
+import { CommonModule, NgClass, NgForOf } from "@angular/common"
 import { Component, type OnInit, type AfterViewInit, ViewChild, type ElementRef } from "@angular/core"
 import { Chart, type ChartConfiguration, registerables } from "chart.js"
 
@@ -6,9 +7,15 @@ Chart.register(...registerables)
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.css']
+  styleUrls: ['./chart.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgForOf,
+    NgClass
+  ],
 })
-export class ChartComponent  implements OnInit, AfterViewInit{
+export class ChartComponent implements OnInit, AfterViewInit {
   @ViewChild("chartCanvas", { static: true }) chartCanvas!: ElementRef<HTMLCanvasElement>
 
   private chart!: Chart

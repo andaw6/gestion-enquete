@@ -45,8 +45,9 @@
   </div>
 
   <app-demande-table
-    [demandes]="demandes()"
+   [demandes]="demandes()"
     [loading]="loading()"
+    (viewDetail)="onViewDetail($event)"
   ></app-demande-table>
 
   <app-pagination

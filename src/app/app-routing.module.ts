@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent as AdminLayoutComponent } from '@layout/admin/admin.component';
 import { EnqueteurComponent as EnqueteurLayoutComponent } from "@layout/enqueteur/enqueteur.component";
 import { DemandeurComponent as DemandeurLayoutComponent } from "@layout/demandeur/demandeur.component";
+import { ChefEnqueteurComponent as ChefEnqueteurLayoutComponent } from "@layout/chef-enqueteur/chef-enqueteur.component";
 
 
 const routes: Routes = [
@@ -71,6 +72,27 @@ const routes: Routes = [
         path: "demandes",
         loadChildren: () =>
           import("@modules/demandeur/demandes/demandes.module").then(m => m.DemandesModule)
+      },
+      {
+        path: '**',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: "chef-enqueteur",
+    component: ChefEnqueteurLayoutComponent,
+    children: [
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import("@modules/chef-enqueteur/dashboard/dashboard.module").then(m => m.DashboardModule)
+      },
+      {
+        path: "enquetes",
+        loadChildren: () =>
+          import("@modules/chef-enqueteur/enquetes/enquetes.module").then(m => m.EnquetesModule)
       },
       {
         path: '**',

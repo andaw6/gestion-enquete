@@ -1,47 +1,52 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiCrudService } from '@core/api/api-crud.service';
-import {Observable, of} from "rxjs";
+import { Observable, of } from "rxjs";
 import { map } from 'rxjs/operators';
 import { IParams } from '@core/interfaces/http-options.interface';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
+import { EnqueteModel } from '@core/model/enquete.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class EnqueteService  extends ApiCrudService<any>{
+export class EnqueteService extends ApiCrudService<EnqueteModel> {
 
-   /** CRUD API */
-    override create(data: any): Observable<DemandeEnquete> {
-      return this.responsePostOne<DemandeEnquete>(data).pipe(
-        map(created => {
-          return created;
-        })
-      );
-    }
+  constructor(http: HttpClient) {
+    super(http);
+    this.setBaseUrl("/enquete");
+  }
 
-    override update(id: number, data: any): Observable<DemandeEnquete> {
-      return this.responsePutOne<DemandeEnquete>(`/${id}`, data).pipe(
-        map(updated => {
-          return updated;
-        })
-      );
-    }
+  /** CRUD API */
+  override create(data: any): Observable<EnqueteModel> {
+    return this.responsePostOne<EnqueteModel>(data).pipe(
+      map(created => {
+        return created;
+      })
+    );
+  }
 
-    override deleteOne(id: number): Observable<boolean> {
-      return this.responseDeleteOne(`/${id}`).pipe(
-        map(success => {
-          return success;
-        })
-      );
-    }
+  override update(id: number, data: any): Observable<EnqueteModel> {
+    return this.responsePutOne<EnqueteModel>(`/${id}`, data).pipe(
+      map(updated => {
+        return updated;
+      })
+    );
+  }
 
-    override getAll(params: IParams = {}): Observable<ApiResponse<DemandeEnquete>> {
-      params["utilisateurId"] = this.USER_ID;
-      return this.responseGetMany<DemandeEnquete>(params, "/all");
-    }
+  override deleteOne(id: number): Observable<boolean> {
+    return this.responseDeleteOne(`/${id}`).pipe(
+      map(success => {
+        return success;
+      })
+    );
+  }
 
-    override getOne(id: number): Observable<DemandeEnquete | null> {
-      return this.responseGetOne<DemandeEnquete>(`/${id}`);
-    }
+  override getAll(params: IParams = {}): Observable<ApiResponse<EnqueteModel>> {
+    return this.responseGetMany<EnqueteModel>(params, "/all/avec/demande");
+  }
+
+  override getOne(id: number): Observable<EnqueteModel | null> {
+    return this.responseGetOne<EnqueteModel>(`/${id}`);
+  }
 }

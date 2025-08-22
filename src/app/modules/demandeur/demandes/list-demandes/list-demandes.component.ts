@@ -1,23 +1,79 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { PRIORITE_LEVELS } from '@config/constant';
 import { FilterConfig } from '@core/interfaces/filter-config.interface';
-import { StatCard } from '@shared/components/stat-card/stat-card.component';
+import { StatCard, StatCardComponent } from '@shared/components/stat-card/stat-card.component';
 import { DemandeService } from '../demande.service';
 import { NotificationAlertService } from '@core/services/notification-alert.service';
 import { Router } from '@angular/router';
 import { IParams } from '@core/interfaces/http-options.interface';
 import { Pagination } from '@core/interfaces/pagination.interface';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
-import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
 import { ResponseError } from '@core/interfaces/response-error.interface';
 import { EtatDemandeService } from '@modules/admin/parametrage/etat-demande/etat-demande.service';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+import { Logger } from '@core/services/logger.service';
+import { PageHeaderConfig } from '@shared/components/page-header-1/page-header-1.component';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { SearchFilterComponent } from '@shared/components/search-filter/search-filter.component';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { DemandeTableComponent } from '../components/demande-table/demande-table.component';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+
+
+const FILTERS: FilterConfig[] = [
+  {
+    key: 'etat',
+    label: 'Statut',
+    placeholder: 'Tous les statuts',
+    options: [
+    ],
+  },
+  {
+    key: 'type',
+    label: 'Type de Conerné',
+    placeholder: 'Tous les types',
+    options: [
+      { value: "employeur", label: "Employeur" },
+      { value: "travailleur", label: "Travailleur" },
+      { value: "beneficiaire", label: "Bénéficiaire" },
+    ],
+  },
+  {
+    key: 'priorite',
+    label: 'Priorité',
+    placeholder: 'Toutes priorités',
+    options: [
+      ...PRIORITE_LEVELS,
+      { value: 6, label: 'Urgente' },
+    ],
+  },
+  // {
+  //   key: 'center',
+  //   label: 'Centre',
+  //   placeholder: 'Tous les centres',
+  //   options: [
+  //     { value: 'CG001', label: 'Afrilins' },
+  //   ],
+  // },
+];
 
 @Component({
   selector: 'app-list-demandes',
   templateUrl: './list-demandes.component.html',
-  styleUrls: ['./list-demandes.component.css']
+  styleUrls: ['./list-demandes.component.css'],
+  standalone: true,
+  imports: [
+    PageHeaderComponent,
+    CommonModule,
+    SearchFilterComponent,
+    StatCardComponent,
+    PaginationComponent,
+    NgIf,
+    NgForOf,
+      DemandeTableComponent
+],
 })
 export class ListDemandesComponent implements OnInit {
   // UI labels
@@ -67,47 +123,33 @@ export class ListDemandesComponent implements OnInit {
     },
   ];
 
-  filterConfig: FilterConfig[] = [
-    {
-      key: 'etat',
-      label: 'Statut',
-      placeholder: 'Tous les statuts',
-      options: [
-      ],
-    },
-    {
-      key: 'type',
-      label: 'Type de Conerné',
-      placeholder: 'Tous les types',
-      options: [
-        { value: "employeur", label: "Employeur" },
-        { value: "travailleur", label: "Travailleur" },
-        { value: "beneficiaire", label: "Bénéficiaire" },
-      ],
-    },
-    {
-      key: 'priorite',
-      label: 'Priorité',
-      placeholder: 'Toutes priorités',
-      options: [
-        ...PRIORITE_LEVELS,
-        { value: 6, label: 'Urgente' },
-      ],
-    },
-    // {
-    //   key: 'center',
-    //   label: 'Centre',
-    //   placeholder: 'Tous les centres',
-    //   options: [
-    //     { value: 'CG001', label: 'Afrilins' },
-    //   ],
-    // },
-  ];
+  filterConfig: FilterConfig[] = FILTERS;
+
+  headerConfig: PageHeaderConfig = {
+    title: 'Gestion des Utilisateurs',
+    subtitle: 'Gérez les comptes utilisateurs de votre garage',
+    buttons: [
+      {
+        label: 'Exporter',
+        icon: 'fas fa-download',
+        type: 'secondary',
+        action: () => { }
+      },
+      {
+        label: 'Nouveau Utilisateur',
+        icon: 'fas fa-plus',
+        type: 'primary',
+        action: () => {
+          // this.router.navigate([formatRoute(ADMIN_PATH, ADMIN_NAVIGATION.utilisateurs.nouveau)]).then(_ => _);
+        }
+      }
+    ]
+  };
 
 
   filter: Record<string, string | number> = {};
   loading = signal<boolean>(false);
-  demandes = signal<DemandeEnquete[]>([])
+  demandes = signal<DemandeEnqueteModel[]>([])
   user!: Utilisateur;
   pagination: Pagination = {
     limit: 10,
@@ -141,6 +183,11 @@ export class ListDemandesComponent implements OnInit {
     this.applyFilter();
   }
 
+  onViewDetail(demande: DemandeEnqueteModel) {
+    Logger.info({ message: "Afficher detail demande", data: demande }, "ListDemandesComponents:onViewDetail");
+    this.router.navigate(["/demandeur/demandes/detail", demande.id]);
+  }
+
 
 
   loadData(filter: IParams = {}) {
@@ -151,7 +198,7 @@ export class ListDemandesComponent implements OnInit {
       sort: 'updatedAt,desc',
       utilisateurId: this.user.id
     }).subscribe({
-      next: (response: ApiResponse<DemandeEnquete>) => {
+      next: (response: ApiResponse<DemandeEnqueteModel>) => {
         this.pagination = response.pagination;
         this.demandes.set(response.data);
       },

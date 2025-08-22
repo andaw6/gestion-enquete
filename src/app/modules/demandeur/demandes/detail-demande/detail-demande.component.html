@@ -1,1 +1,64 @@
-<p>detail-demande works!</p>
+<div
+  class="mb-8 bg-white/80 glass-effect shadow-glass border-b border-secondary-200/50 sticky top-0 z-50 p-4 rounded-xl"
+>
+  <app-page-header-1 [config]="headerConfig()" />
+</div>
+
+<app-entity-loader
+  [fetchDataFn]="loadDemande"
+  (goBack)="goBack()"
+  (dataLoaded)="onDemandeLoaded($event)"
+  (loadingState)="onLoadingStateChanged($event)"
+  (errorState)="onLoadingError($event)"
+>
+  <ng-template let-car>
+    <ng-container *ngIf="car as v">
+      <main class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <!-- <app-breadcrumb [reference]="demande().reference"></app-breadcrumb> -->
+
+        <app-demande-status-indicators
+          [etat]="demande()!.etat"
+          [urgent]="demande()!.urgent"
+          [priorite]="demande()!.priorite"
+        >
+        </app-demande-status-indicators>
+
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          <div class="xl:col-span-3 space-y-8">
+            <div class="my-2">
+              <app-demande-summary [demande]="demande()!"></app-demande-summary>
+            </div>
+            <div class="my-2">
+              <app-demande-description-details
+                [demande]="demande()!"
+              ></app-demande-description-details>
+            </div>
+            <div class="my-2">
+              <app-demande-documents-section
+                [documents]="demande()!.documents ?? []"
+              ></app-demande-documents-section>
+            </div>
+          </div>
+
+          <div class="xl:col-span-1 space-y-6">
+            <div class="my-2">
+              <app-demande-concerne-info
+                [concerne]="demande()!.concerne"
+              ></app-demande-concerne-info>
+            </div>
+            <div class="my-2">
+              <app-demande-timeline
+                [demande]="demande()!"
+              ></app-demande-timeline>
+            </div>
+            <div class="my-2">
+              <app-demande-quick-actions
+                (action)="onQuickAction($event)"
+              ></app-demande-quick-actions>
+            </div>
+          </div>
+        </div>
+      </main>
+    </ng-container>
+  </ng-template>
+</app-entity-loader>

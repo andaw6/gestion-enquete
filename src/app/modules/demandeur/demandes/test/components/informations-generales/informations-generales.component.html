@@ -1,0 +1,49 @@
+<div class="bg-white rounded-lg shadow-card p-6">
+  <h2 class="text-xl font-semibold text-secondary-900 mb-4 flex items-center">
+    <svg
+      class="w-5 h-5 mr-2 text-primary-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      ></path>
+    </svg>
+    Informations Générales
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label class="block text-sm font-medium text-secondary-700 mb-1"
+        >Objet</label
+      >
+      <p class="text-secondary-900 bg-gray-50 p-3 rounded-md">
+        {{ demande.objet }}
+      </p>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-secondary-700 mb-1"
+        >Priorité</label
+      >
+      <div class="flex items-center">
+        <span
+          [ngClass]="getPrioriteClass(demande.priorite)"
+          class="px-2 py-1 rounded-full text-sm font-medium"
+        >
+          {{ getPrioriteLabel(demande.priorite) }}
+        </span>
+      </div>
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-sm font-medium text-secondary-700 mb-1"
+        >Description</label
+      >
+      <p class="text-secondary-900 bg-gray-50 p-3 rounded-md">
+        {{ demande.description }}
+      </p>
+    </div>
+  </div>
+</div>

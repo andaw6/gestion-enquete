@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { PRIORITE_LEVELS } from '@config/constant';
 import { FilterConfig } from '@core/interfaces/filter-config.interface';
-import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
 import { StatCard } from '@shared/components/stat-card/stat-card.component';
 import { DemandeService } from '../demande.service';
 import { NotificationAlertService } from '@core/services/notification-alert.service';
@@ -13,11 +12,29 @@ import { ResponseError } from '@core/interfaces/response-error.interface';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
 import { EtatEnqueteService } from '@modules/admin/parametrage/etat-enquete/etat-enquete.service';
+import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { StatCardComponent } from '@shared/components/stat-card/stat-card.component';
+import { SearchFilterComponent } from '@shared/components/search-filter/search-filter.component';
+import { DemandesListeComponent } from '../components/demandes-liste/demandes-liste.component';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-demande-en-traitement',
   templateUrl: './demande-en-traitement.component.html',
-  styleUrls: ['./demande-en-traitement.component.css']
+  styleUrls: ['./demande-en-traitement.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    PageHeaderComponent,
+    StatCardComponent,
+    SearchFilterComponent,
+    DemandesListeComponent,
+    PaginationComponent,
+    NgIf,
+    NgForOf
+  ],
 })
 export class DemandeEnTraitementComponent implements OnInit {
   pageTitle = "Demandes En Cours";
@@ -91,7 +108,7 @@ export class DemandeEnTraitementComponent implements OnInit {
 
   filter: Record<string, string | number> = {};
   loading = signal<boolean>(false);
-  demandes = signal<DemandeEnquete[]>([])
+  demandes = signal<DemandeEnqueteModel[]>([])
   user!: Utilisateur;
   pagination: Pagination = {
     limit: 10,
@@ -130,7 +147,7 @@ export class DemandeEnTraitementComponent implements OnInit {
       utilisateurId: this.user.id,
       etat: "01"
     }).subscribe({
-      next: (response: ApiResponse<DemandeEnquete>) => {
+      next: (response: ApiResponse<DemandeEnqueteModel>) => {
         this.pagination = response.pagination;
         this.demandes.set(response.data);
       },

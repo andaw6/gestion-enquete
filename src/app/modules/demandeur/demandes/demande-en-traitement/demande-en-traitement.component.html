@@ -57,9 +57,9 @@
     ></app-demandes-liste>
 
     <app-pagination
-    *ngIf="!loading() && demandes().length"
-    [pagination]="pagination"
-    (pageChanged)="setPagination($event)"
-  />
+      *ngIf="!loading() && demandes().length"
+      [pagination]="pagination"
+      (pageChanged)="setPagination($event)"
+    />
   </div>
 </div>

@@ -1,0 +1,33 @@
+<div
+  class="bg-white rounded-lg shadow-card p-6 animate-slide-up"
+  [style.animation-delay]="animationDelay + 's'"
+>
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm font-medium text-gray-600">{{ title }}</p>
+      <p class="text-3xl font-bold text-gray-900">{{ value }}</p>
+      <p class="text-sm mt-1" [ngClass]="subtitleColor">
+        <i
+          class="fas fa-arrow-up mr-1"
+          *ngIf="subtitleColor === 'text-green-600'"
+        ></i>
+        <i
+          class="fas fa-clock mr-1"
+          *ngIf="subtitleColor === 'text-blue-600'"
+        ></i>
+        <i
+          class="fas fa-exclamation-triangle mr-1"
+          *ngIf="subtitleColor === 'text-orange-600'"
+        ></i>
+        <i class="fas fa-users mr-1" *ngIf="icon === 'fas fa-users'"></i>
+        {{ subtitle }}
+      </p>
+    </div>
+    <div
+      class="w-12 h-12 rounded-lg flex items-center justify-center"
+      [ngClass]="bgColor"
+    >
+      <i class="text-xl" [ngClass]="[icon, iconColor]"></i>
+    </div>
+  </div>
+</div>

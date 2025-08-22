@@ -1,17 +1,31 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { DemandeEnquete, ActivityItem } from '@modules/demandeur/dashboard/dashboard';
-import { DashboardService } from '../dashboard.service';
+import { ActivityItem } from '@modules/demandeur/dashboard/dashboard';
 import { UtilService } from '@core/services/util.service';
-import { Router } from '@angular/router';
-import { StatCard } from '@shared/components/stat-card/stat-card.component';
+import { Router, RouterLink } from '@angular/router';
+import { StatCard, StatCardComponent } from '@shared/components/stat-card/stat-card.component';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
-
+import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+import { DemandeService } from '@modules/demandeur/demandes/demande.service';
+import { ChartComponent } from './components/chart/chart.component';
+import { RecentActivityComponent } from './components/recent-activity/recent-activity.component';
+import { DemandeTableComponent } from '@modules/demandeur/demandes/components/demande-table/demande-table.component';
+import { CommonModule, NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    StatCardComponent,
+    ChartComponent,
+    RecentActivityComponent,
+    DemandeTableComponent,
+    RouterLink,
+    NgForOf
+  ],
 })
 export class DashboardComponent implements OnInit {
   statsData: StatCard[] = [
@@ -80,12 +94,12 @@ export class DashboardComponent implements OnInit {
     },
   ]
 
-  recentRequests: DemandeEnquete[] = []
+  recentRequests: DemandeEnqueteModel[] = []
 
   loading = signal<boolean>(false);
 
   constructor(
-    private readonly service: DashboardService,
+    private readonly service: DemandeService,
     private readonly utilService: UtilService,
     private utilisateurState: UtilisateurStateService,
     private router: Router,
@@ -93,6 +107,8 @@ export class DashboardComponent implements OnInit {
 
   user$ = this.utilisateurState.user$;
   user!: Utilisateur;
+
+  getSalutationWithName = this.utilService.getSalutationWithName;
 
   ngOnInit(): void {
     this.user$.subscribe(user => {

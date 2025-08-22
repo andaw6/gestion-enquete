@@ -1,21 +1,36 @@
 import { Component, computed, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { Option, OptionSelect } from '@core/interfaces/option.interface';
-import { Concerne, DemandeEnqueteData } from '../model';
 import { ConcerneService } from '../concerne.service';
 import { UtilService } from '@core/services/util.service';
 import { DemandeService } from '../demande.service';
-import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
 import { CustomValidators } from '@shared/validators/custom-validators';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { DemandeEnqueteData, DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { SelectSearchPaginateComponent } from '@shared/components/select-search-paginate/select-search-paginate.component';
+import { ConfirmationModalComponent } from '@shared/components/confirmation-modal/confirmation-modal.component';
+import { ConcerneModel } from '@core/model/concerne.model';
+
 
 @Component({
   selector: 'app-nouvelle-demande',
   templateUrl: './nouvelle-demande.component.html',
-  styleUrls: ['./nouvelle-demande.component.css']
+  styleUrls: ['./nouvelle-demande.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    PageHeaderComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgForOf,
+    SelectSearchPaginateComponent,
+    ConfirmationModalComponent
+  ],
 })
 export class NouvelleDemandeComponent {
   // UI labels
@@ -42,7 +57,7 @@ export class NouvelleDemandeComponent {
 
   // Concernés
   isLoadingConcerne = signal<boolean>(false);
-  concernes = signal<Concerne[]>([]);
+  concernes = signal<ConcerneModel[]>([]);
   selectedConcerne = signal<OptionSelect[]>([]);
 
   mesOptions = computed<OptionSelect[]>(() =>
@@ -211,7 +226,7 @@ export class NouvelleDemandeComponent {
     };
 
     this.demandeService.create(demande).subscribe({
-      next: (data: DemandeEnquete) => {
+      next: (data: DemandeEnqueteModel) => {
         console.log("Nouvelle demande créée", data);
         this.utilService.showNotification("Demande d'enquête soumise avec succès");
         this.resetForm();

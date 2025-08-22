@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
 import { UtilService } from '@core/services/util.service';
 import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
@@ -13,8 +14,10 @@ import { LoaderComponent } from '@shared/components/loader/loader.component';
 })
 export class DemandeTableComponent {
 
-  @Input() demandes: DemandeEnquete[] = [];
+  @Input() demandes: DemandeEnqueteModel[] = [];
   @Input() loading: boolean = false;
+  @Output() viewDetail = new EventEmitter<DemandeEnqueteModel>();
+  @Output() update = new EventEmitter<DemandeEnqueteModel>();
 
   constructor(
     private readonly utilService: UtilService,
@@ -129,11 +132,13 @@ export class DemandeTableComponent {
 
 
 
-  viewRequest(request: DemandeEnquete): void {
-    console.log("Voir la demande:", request)
+  viewRequest(request: DemandeEnqueteModel): void {
+    this.viewDetail.emit(request);
+    // console.log("Voir la demande:", request)
   }
 
-  downloadRequest(request: DemandeEnquete): void {
-    console.log("Télécharger/Éditer la demande:", request)
+  downloadRequest(request: DemandeEnqueteModel): void {
+    this.update.emit(request);
+    // console.log("Télécharger/Éditer la demande:", request)
   }
 }

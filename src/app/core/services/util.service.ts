@@ -147,6 +147,16 @@ export class UtilService extends NotificationAlertService {
     }
   }
 
+getSalutationWithName(name: string, date: Date = new Date()): string {
+  const hour = date.getHours();
+
+  if (hour >= 5 && hour < 12) return `Bonjour, ${name}`;
+  if (hour >= 12 && hour < 18) return `Bon après-midi, ${name}`;
+  if (hour >= 18 && hour < 22) return `Bonsoir, ${name}`;
+  return `Bonne nuit, ${name}`;
+}
+
+
   private isValidQuery(query: string | null): boolean {
     return query !== null && query.trim() !== '' && query.length >= 3;
   }

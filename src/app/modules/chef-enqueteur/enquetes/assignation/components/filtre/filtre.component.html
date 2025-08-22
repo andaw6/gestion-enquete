@@ -1,0 +1,59 @@
+<div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+  <div
+    class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0"
+  >
+    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+      <div class="relative">
+        <i
+          class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        ></i>
+        <input
+          type="text"
+          [(ngModel)]="filters.searchTerm"
+          (ngModelChange)="onFilterChange()"
+          placeholder="Rechercher une enquête..."
+          class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+      </div>
+
+      <select
+        [(ngModel)]="filters.priorite"
+        (ngModelChange)="onFilterChange()"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      >
+        <option value="">Toutes les priorités</option>
+        <option value="urgente">Urgente</option>
+        <option value="haute">Haute</option>
+        <option value="normale">Normale</option>
+        <option value="basse">Basse</option>
+      </select>
+
+      <select
+        [(ngModel)]="filters.type"
+        (ngModelChange)="onFilterChange()"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      >
+        <option value="">Tous les types</option>
+        <option value="fraude">Fraude</option>
+        <option value="vol">Vol</option>
+        <option value="corruption">Corruption</option>
+        <option value="autre">Autre</option>
+      </select>
+    </div>
+
+    <div class="flex space-x-2">
+      <button
+        (click)="onFilterChange()"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+      >
+        <i class="fas fa-filter mr-2"></i>Filtrer
+      </button>
+      <button
+        (click)="onReset()"
+        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        <i class="fas fa-redo mr-2"></i>Réinitialiser
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+></app-page-header>
+
+<!-- Stats Cards -->
+<app-stats-card [stats]="stats"></app-stats-card>
+
+<!-- Filters -->
+<!-- <app-filtre
+  (filterChange)="onFilterChange($event)"
+  (resetFilters)="onResetFilters()"
+>
+</app-filtre> -->
+
+<!-- Enquêtes Table -->
+<app-enquetes-table
+  [enquetes]="filteredEnquetes"
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
+  [totalItems]="filteredEnquetes.length"
+  [itemsPerPage]="itemsPerPage"
+  (assignEnquete)="onAssignEnquete($event)"
+  (viewDetails)="onViewDetails($event)"
+  (pageChange)="onPageChange($event)"
+>
+</app-enquetes-table>
+
+<!-- Assignment Modal -->
+<app-assign-modal
+  [isOpen]="isAssignModalOpen"
+  [enquete]="selectedEnquete"
+  [enqueteurs]="enqueteurs"
+  (close)="onCloseAssignModal()"
+  (assign)="onAssign($event)"
+>
+</app-assign-modal>

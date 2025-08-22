@@ -1,9 +1,9 @@
-import {Route} from "@angular/router";
-import { DashboardComponent } from "./dashboard/dashboard.component";
+import { Route } from "@angular/router";
 
-export const DASHBOARD_ROUTES:Route[] = [
+export const DASHBOARD_ROUTES: Route[] = [
   {
     path: '',
-    component: DashboardComponent,
+    loadComponent: () =>
+      import("@modules/demandeur/dashboard/dashboard/dashboard.component").then(c => c.DashboardComponent)
   }
 ]

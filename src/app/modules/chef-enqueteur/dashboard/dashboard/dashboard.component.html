@@ -1,0 +1,77 @@
+<main class="flex-1 p-4 bg-gradient-to-br from-gray-50 to-blue-50">
+  <!-- Welcome Section -->
+  <div class="mb-8 animate-fade-in">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          {{ getSalutationWithName(user.username) }} 👋
+        </h1>
+        <p class="text-gray-600">
+          Voici un aperçu des enquêtes en cours et non assigné, destiné à
+          faciliter la supervision.
+        </p>
+      </div>
+      <div class="mt-4 lg:mt-0">
+        <button
+          class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+        >
+          <i class="fas fa-plus mr-2"></i>
+          Nouvelle Assignation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <app-stats-card
+      *ngFor="let stat of statsData; let i = index"
+      [title]="stat.title"
+      [value]="stat.value"
+      [subtitle]="stat.subtitle"
+      [icon]="stat.icon"
+      [bgColor]="stat.bgColor"
+      [iconColor]="stat.iconColor"
+      [subtitleColor]="stat.subtitleColor"
+      [animationDelay]="i * 0.1"
+    >
+    </app-stats-card>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Progress Chart -->
+    <div class="bg-white rounded-lg shadow-card p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">
+        Progression des Enquêtes
+      </h3>
+      <canvas
+        #progressChart
+        width="400"
+        height="200"
+        style="max-height: 400px"
+      ></canvas>
+    </div>
+
+    <!-- Priority Distribution -->
+    <div class="bg-white rounded-lg shadow-card p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">
+        Répartition par Priorité
+      </h3>
+      <canvas
+        #priorityChart
+        width="400"
+        height="200"
+        style="max-height: 400px"
+      ></canvas>
+    </div>
+  </div>
+
+  <!-- Recent Activities and Quick Actions -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+      <app-recent-activities></app-recent-activities>
+    </div>
+    <app-quick-actions></app-quick-actions>
+  </div>
+</main>

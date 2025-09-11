@@ -1,0 +1,111 @@
+<div
+  class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200 p-6 mb-8"
+>
+  <div
+    class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6"
+  >
+    <div class="flex-1">
+      <div class="relative">
+        <input
+          [(ngModel)]="filters.searchTerm"
+          (ngModelChange)="onFilterChange()"
+          type="text"
+          placeholder="Rechercher par ID, titre, organisation..."
+          class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+        />
+        <svg
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
+        </svg>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+      <select
+        [(ngModel)]="filters.status"
+        (ngModelChange)="onFilterChange()"
+        class="px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+      >
+        <option value="">Tous les statuts</option>
+        <option value="En cours">En cours</option>
+        <option value="Investigation">Investigation</option>
+        <option value="Analyse">Analyse</option>
+        <option value="Finalisation">Finalisation</option>
+      </select>
+
+      <select
+        [(ngModel)]="filters.priority"
+        (ngModelChange)="onFilterChange()"
+        class="px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+      >
+        <option value="">Toutes les priorités</option>
+        <option value="Urgent">Urgent</option>
+        <option value="Importante">Importante</option>
+        <option value="Normale">Normale</option>
+      </select>
+
+      <select
+        [(ngModel)]="filters.type"
+        (ngModelChange)="onFilterChange()"
+        class="px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+      >
+        <option value="">Tous les types</option>
+        <option value="Fraude">Fraude</option>
+        <option value="Harcèlement">Harcèlement</option>
+        <option value="Conformité">Conformité</option>
+        <option value="Audit">Audit</option>
+        <option value="Sécurité">Sécurité</option>
+      </select>
+
+      <div class="flex space-x-2">
+        <button
+          (click)="onSort('priority')"
+          class="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors text-sm font-medium"
+        >
+          <svg
+            class="w-4 h-4 inline mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 11l5-5m0 0l5 5m-5-5v12"
+            ></path>
+          </svg>
+          Priorité
+        </button>
+        <button
+          (click)="onSort('deadline')"
+          class="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors text-sm font-medium"
+        >
+          <svg
+            class="w-4 h-4 inline mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          Échéance
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div
+  class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-card border border-orange-200/50 animate-slide-up"
+>
+  <div
+    class="px-8 py-6 border-b border-orange-200/50 bg-gradient-to-r from-orange-50/50 to-orange-100/50 rounded-t-2xl"
+  >
+    <div class="flex items-center justify-between">
+      <h3 class="text-xl font-bold text-gray-900 flex items-center">
+        <div
+          class="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center mr-3"
+        >
+          <i class="fas fa-inbox text-white text-sm"></i>
+        </div>
+        Nouvelles Assignations - Action Requise
+      </h3>
+      <span
+        class="px-4 py-2 text-sm font-bold bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-full shadow-card"
+      >
+        {{ assignations.length }} en attente
+      </span>
+    </div>
+  </div>
+  <div class="p-8">
+    <div class="space-y-6">
+      <div
+        *ngFor="let assignment of assignations"
+        class="border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl p-6 card-hover"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div
+              class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-card"
+              [ngClass]="getGradient(assignment)"
+            >
+              <i class="text-white text-xl" [ngClass]="getIcon(assignment)"></i>
+            </div>
+            <div class="ml-6">
+              <h4 class="text-lg font-bold text-gray-900">
+                {{ getTitle(assignment.demande!.concerne) }}
+              </h4>
+              <p class="text-sm text-gray-600 mt-1">
+                Assignée le {{ assignment.dateAssignation }} • Échéance:
+                {{ assignment.demande!.dateEcheance }}
+              </p>
+              <div class="flex items-center mt-2">
+                <span class="text-sm text-gray-600">Priorité:</span>
+                <span
+                  class="ml-2 px-3 py-1 text-xs font-bold rounded-full"
+                  [ngClass]="getPrioriteClass(assignment.demande!.priorite)"
+                >
+                  {{ assignment.demande!.priorite }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="flex space-x-3">
+            <button
+              class="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-card card-hover"
+              (click)="demandeEnquete(assignment)"
+            >
+              <i class="fas fa-check mr-2"></i>Démarrer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

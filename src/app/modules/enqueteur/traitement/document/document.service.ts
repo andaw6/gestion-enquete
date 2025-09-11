@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
-import {ApiService} from "@core/api/api.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IParams} from "@core/interfaces/http-options.interface";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
-import {Document, DocumentData, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
+import { DocumentData, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
 import {ApiCrudService} from "@core/api/api-crud.service";
+import { DocumentModel } from '@core/model/document.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentService extends ApiCrudService<Document, DocumentData> {
+export class DocumentService extends ApiCrudService<DocumentModel, DocumentData> {
 
   constructor(http: HttpClient) {
     super(http);
@@ -23,16 +23,16 @@ export class DocumentService extends ApiCrudService<Document, DocumentData> {
     });
   }
 
-  override getAll(params: IParams= {}): Observable<ApiResponse<Document>> {
-    return this.responseGetMany<Document>(params, "/all");
+  override getAll(params: IParams= {}): Observable<ApiResponse<DocumentModel>> {
+    return this.responseGetMany<DocumentModel>(params, "/all");
   }
 
-  override getOne(id: number): Observable<Document | null> {
-    return this.responseGetOne<Document>(`/${id}`);
+  override getOne(id: number): Observable<DocumentModel | null> {
+    return this.responseGetOne<DocumentModel>(`/${id}`);
   }
 
-  override create(data: DocumentData): Observable<Document> {
-    return this.responsePostOne<Document>(this.toFormData(data));
+  override create(data: DocumentData): Observable<DocumentModel> {
+    return this.responsePostOne<DocumentModel>(this.toFormData(data));
   }
 
   private toFormData(data:DocumentData):FormData{
@@ -41,11 +41,14 @@ export class DocumentService extends ApiCrudService<Document, DocumentData> {
     formData.append("description", data.description);
     formData.append("typeId", data.typeId.toString());
     formData.append("file", data.file);
+    if(data.utilisateurId){
+      formData.append("utilisateurId", data.utilisateurId.toString());
+    }
     return formData;
   }
 
-  override update(id: number, data: DocumentData): Observable<Document> {
-    return this.responsePutOne<Document>(`/${id}`, data);
+  override update(id: number, data: DocumentData): Observable<DocumentModel> {
+    return this.responsePutOne<DocumentModel>(`/${id}`, data);
   }
 
   override deleteOne(id: number): Observable<boolean> {

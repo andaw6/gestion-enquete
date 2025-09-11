@@ -1,441 +1,731 @@
 <div class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
   <!-- Header -->
-
   <app-page-header
-    [title]="pageTitle"
-    [subtitle]="pageSubTitle"
-    [buttonIcon]="'fas fa-long-arrow-alt-left'"
-    [buttonText]="'Retour'"
+    [title]="pageTitle()"
+    [subtitle]="pageSubTitle()"
+    [buttonIcon]="pageButtonIcon()"
+    [buttonText]="pageButtonText()"
     [buttonAction]="onGoBack"
   ></app-page-header>
 
-
-  <!-- Contenu principal -->
-  <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <form [formGroup]="demandeForm" (ngSubmit)="onSubmit()" class="space-y-8">
-      <!-- Section Informations générales -->
-      <div class="bg-white rounded-xl shadow-card p-6 slide-in">
-        <div class="border-l-4 border-primary-500 pl-4 mb-6">
-          <h2 class="text-xl font-semibold text-dark-800">
-            Informations Générales
-          </h2>
-          <p class="text-dark-500">
-            Renseignez les détails de votre demande d'enquête
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Objet -->
-          <div class="md:col-span-2">
-            <label
-              for="objet"
-              class="block text-sm font-medium text-dark-700 mb-2"
+  <ng-container *ngIf="false">
+    <div class="animate-fade-in mb-8">
+      <!-- Alerte principale -->
+      <div
+        class="bg-green-50 border-l-4 border-green-400 p-6 mb-6 rounded-r-lg shadow-card"
+      >
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <!-- Icône de validation -->
+            <svg
+              class="h-8 w-8 text-green-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              Objet <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="objet"
-              formControlName="objet"
-              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-              [class.border-red-500]="isFieldInvalid('objet')"
-              [class.border-gray-300]="!isFieldInvalid('objet')"
-              placeholder="Saisissez l'objet de l'enquête"
-            />
-            <div
-              *ngIf="getFieldError('objet')"
-              class="mt-1 text-sm text-red-600"
-            >
-              {{ getFieldError("objet") }}
-            </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
           </div>
-
-          <!-- Description -->
-          <div class="md:col-span-2">
-            <label
-              for="description"
-              class="block text-sm font-medium text-dark-700 mb-2"
-            >
-              Description <span class="text-red-500">*</span>
-            </label>
-            <textarea
-              id="description"
-              formControlName="description"
-              rows="4"
-              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-              [class.border-red-500]="isFieldInvalid('description')"
-              [class.border-gray-300]="!isFieldInvalid('description')"
-              placeholder="Décrivez en détail votre demande d'enquête"
-            ></textarea>
-            <div
-              *ngIf="getFieldError('description')"
-              class="mt-1 text-sm text-red-600"
-            >
-              {{ getFieldError("description") }}
+          <div class="ml-4 flex-1">
+            <h3 class="text-lg font-semibold text-green-800 mb-2">
+              Demande d'enquête validée
+            </h3>
+            <div class="text-green-700">
+              <p class="mb-2">
+                Cette demande d'enquête a été
+                <strong>validée et approuvée</strong>. Elle ne peut plus être
+                modifiée à ce stade du processus.
+              </p>
+              <div class="text-sm bg-green-100 p-3 rounded-lg mt-3">
+                <p class="font-medium text-green-800 mb-1">
+                  Informations de validation :
+                </p>
+                <ul class="text-green-700 space-y-1">
+                  <li>
+                    • <strong>Validée le :</strong> 15 décembre 2024 à 14:30
+                  </li>
+                  <li>
+                    • <strong>Validée par :</strong> Marie Dubois (Responsable
+                    Enquêtes)
+                  </li>
+                  <li>
+                    • <strong>Statut :</strong>
+                    <span
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                      >Approuvée</span
+                    >
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-
-          <!-- Priorité -->
-          <div>
-            <label
-              for="priorite"
-              class="block text-sm font-medium text-dark-700 mb-2"
-            >
-              Priorité <span class="text-red-500">*</span>
-            </label>
-            <select
-              id="priorite"
-              formControlName="priorite"
-              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-              [class.border-red-500]="isFieldInvalid('priorite')"
-              [class.border-gray-300]="!isFieldInvalid('priorite')"
-            >
-              <option value="">Sélectionner une priorité</option>
-              <option
-                *ngFor="let option of prioriteOptions"
-                [value]="option.value"
-              >
-                {{ option.label }}
-              </option>
-            </select>
-            <div
-              *ngIf="getFieldError('priorite')"
-              class="mt-1 text-sm text-red-600"
-            >
-              {{ getFieldError("priorite") }}
-            </div>
-          </div>
-
-          <!-- Date d'échéance -->
-          <div>
-            <label
-              for="dateEcheance"
-              class="block text-sm font-medium text-dark-700 mb-2"
-            >
-              Date d'échéance <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="datetime-local"
-              id="dateEcheance"
-              formControlName="dateEcheance"
-              [min]="getMinDateTime()"
-              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-              [class.border-red-500]="isFieldInvalid('dateEcheance')"
-              [class.border-gray-300]="!isFieldInvalid('dateEcheance')"
-            />
-            <div
-              *ngIf="getFieldError('dateEcheance')"
-              class="mt-1 text-sm text-red-600"
-            >
-              {{ getFieldError("dateEcheance") }}
-            </div>
-          </div>
-
-          <!-- Urgent -->
-          <div class="flex items-center">
-            <input
-              type="checkbox"
-              id="urgent"
-              formControlName="urgent"
-              class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-            />
-            <label for="urgent" class="ml-2 block text-sm text-dark-700">
-              Marquer comme urgent
-            </label>
           </div>
         </div>
       </div>
 
-      <!-- Section Concerné -->
-      <div class="bg-white rounded-xl shadow-card p-6 slide-in">
-        <div class="border-l-4 border-secondary-500 pl-4 mb-6">
-          <h2 class="text-xl font-semibold text-dark-800">
-            Informations du Concerné
-          </h2>
-          <p class="text-dark-500">
-            Choisissez un concerné existant ou créez-en un nouveau
+      <!-- Informations complémentaires -->
+      <div
+        class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg shadow-card"
+      >
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <!-- Icône d'information -->
+            <svg
+              class="h-6 w-6 text-blue-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h4 class="text-base font-medium text-blue-800 mb-2">
+              Que se passe-t-il maintenant ?
+            </h4>
+            <div class="text-blue-700 text-sm space-y-2">
+              <p>• L'enquête va être programmée et assignée à une équipe</p>
+              <p>
+                • Vous recevrez une notification dès le début des investigations
+              </p>
+              <p>• Un rapport de suivi vous sera envoyé régulièrement</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="true">
+    <!-- Contenu principal -->
+    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div
+        *ngIf="isEditMode() && demandeAModifier()?.commentaireValidation"
+        class="mb-6 bg-white rounded-lg shadow-card p-6 animate-slide-up"
+      >
+        <h3 class="text-xl font-semibold text-dark-900 mb-6 flex items-center">
+          <i class="fas fa-comments text-primary-500 mr-3"></i>
+          Commentaires de validation
+        </h3>
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+          <p class="text-yellow-800">
+            <i class="fas fa-info-circle mr-2"></i>
+            {{ demandeAModifier()!.commentaireValidation }}
           </p>
         </div>
+      </div>
 
-        <!-- Choix du mode -->
-        <div class="mb-6">
-          <div class="flex space-x-4">
-            <label class="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="concerneMode"
-                value="existing"
-                [checked]="concerneMode === 'existing'"
-                (change)="onConcerneModeChange('existing')"
-                class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-              />
-              <span class="ml-2 text-sm font-medium text-dark-700"
-                >Concerné existant</span
-              >
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="concerneMode"
-                value="new"
-                [checked]="concerneMode === 'new'"
-                (change)="onConcerneModeChange('new')"
-                class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-              />
-              <span class="ml-2 text-sm font-medium text-dark-700"
-                >Nouveau concerné</span
-              >
-            </label>
+      <form [formGroup]="demandeForm" (ngSubmit)="onSubmit()" class="space-y-8">
+        <!-- Section Informations générales -->
+        <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+          <div class="border-l-4 border-primary-500 pl-4 mb-6">
+            <h2 class="text-xl font-semibold text-dark-800">
+              Informations Générales
+            </h2>
+            <p class="text-dark-500">
+              Renseignez les détails de votre demande d'enquête
+            </p>
           </div>
-        </div>
 
-        <!-- Concerné existant -->
-        <ng-container *ngIf="!isLoadingConcerne()"; else loadingConcerne>
-          <app-select-search-paginate
-            *ngIf="concerneMode === 'existing'"
-            [title]="'Sélectionner un concerné existant*'"
-            [options]="mesOptions()"
-            [selected]="selectedConcerne()"
-            [selectPlaceholder]="'Sélectionner le concerné'"
-            [multiple]="false"
-            (optionSelected)="onSelected($event)"
-          >
-            <div
-              *ngIf="getFieldError('concerneId')"
-              class="mt-1 text-sm text-red-600"
-            >
-              {{ getFieldError("concerneId") }}
-            </div>
-          </app-select-search-paginate>
-        </ng-container>
-
-        <ng-template #loadingConcerne>
-          <div class="mt-2 text-gray-500 text-sm flex items-center space-x-2">
-            <i class="fas fa-spinner fa-spin text-primary-500"></i>
-            <span>Chargement des concernés en cours...</span>
-          </div>
-        </ng-template>
-
-        <!-- Nouveau concerné -->
-        <div *ngIf="concerneMode === 'new'" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Type -->
-            <div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Objet -->
+            <div class="md:col-span-2">
               <label
-                for="type"
+                for="objet"
                 class="block text-sm font-medium text-dark-700 mb-2"
               >
-                Type <span class="text-red-500">*</span>
+                Objet <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="objet"
+                formControlName="objet"
+                class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                [class.border-red-500]="isFieldInvalid('objet')"
+                [class.border-gray-300]="!isFieldInvalid('objet')"
+                placeholder="Saisissez l'objet de l'enquête"
+              />
+              <div
+                *ngIf="getFieldError('objet')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("objet") }}
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="md:col-span-2">
+              <label
+                for="description"
+                class="block text-sm font-medium text-dark-700 mb-2"
+              >
+                Description <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="description"
+                formControlName="description"
+                rows="4"
+                class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                [class.border-red-500]="isFieldInvalid('description')"
+                [class.border-gray-300]="!isFieldInvalid('description')"
+                placeholder="Décrivez en détail votre demande d'enquête"
+              ></textarea>
+              <div
+                *ngIf="getFieldError('description')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("description") }}
+              </div>
+            </div>
+
+            <!-- Priorité -->
+            <div>
+              <label
+                for="priorite"
+                class="block text-sm font-medium text-dark-700 mb-2"
+              >
+                Priorité <span class="text-red-500">*</span>
               </label>
               <select
-                id="type"
-                formControlName="type"
+                id="priorite"
+                formControlName="priorite"
                 class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-                [class.border-red-500]="isFieldInvalid('type')"
-                [class.border-gray-300]="!isFieldInvalid('type')"
+                [class.border-red-500]="isFieldInvalid('priorite')"
+                [class.border-gray-300]="!isFieldInvalid('priorite')"
               >
-                <option value="">Sélectionner le type</option>
+                <option value="">Sélectionner une priorité</option>
                 <option
-                  *ngFor="let option of typeOptions"
+                  *ngFor="let option of prioriteOptions"
                   [value]="option.value"
                 >
                   {{ option.label }}
                 </option>
               </select>
               <div
-                *ngIf="getFieldError('type')"
+                *ngIf="getFieldError('priorite')"
                 class="mt-1 text-sm text-red-600"
               >
-                {{ getFieldError("type") }}
+                {{ getFieldError("priorite") }}
               </div>
             </div>
 
-            <!-- Numéro -->
+            <!-- Date d'échéance -->
             <div>
               <label
-                for="numero"
+                for="dateEcheance"
                 class="block text-sm font-medium text-dark-700 mb-2"
               >
-                Numéro <span class="text-red-500">*</span>
+                Date d'échéance <span class="text-red-500">*</span>
               </label>
               <input
-                type="text"
-                id="numero"
-                formControlName="numero"
+                type="datetime-local"
+                id="dateEcheance"
+                formControlName="dateEcheance"
+                [min]="getMinDateTime()"
                 class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-                [class.border-red-500]="isFieldInvalid('numero')"
-                [class.border-gray-300]="!isFieldInvalid('numero')"
-                placeholder="Numéro d'identification"
+                [class.border-red-500]="isFieldInvalid('dateEcheance')"
+                [class.border-gray-300]="!isFieldInvalid('dateEcheance')"
               />
               <div
-                *ngIf="getFieldError('numero')"
+                *ngIf="getFieldError('dateEcheance')"
                 class="mt-1 text-sm text-red-600"
               >
-                {{ getFieldError("numero") }}
+                {{ getFieldError("dateEcheance") }}
               </div>
             </div>
 
-            <!-- Région Sociale -->
-            <div>
-              <label
-                for="regionSocial"
-                class="block text-sm font-medium text-dark-700 mb-2"
-              >
-                Région Sociale <span class="text-red-500">*</span>
-              </label>
+            <!-- Urgent -->
+            <div class="flex items-center">
               <input
-                type="text"
-                id="regionSocial"
-                formControlName="regionSocial"
-                class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-                [class.border-red-500]="isFieldInvalid('regionSocial')"
-                [class.border-gray-300]="!isFieldInvalid('regionSocial')"
-                placeholder="Région sociale"
+                type="checkbox"
+                id="urgent"
+                formControlName="urgent"
+                class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
               />
+              <label for="urgent" class="ml-2 block text-sm text-dark-700">
+                Marquer comme urgent
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Concerné -->
+        <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+          <div class="border-l-4 border-secondary-500 pl-4 mb-6">
+            <h2 class="text-xl font-semibold text-dark-800">
+              Informations du Concerné
+            </h2>
+            <p class="text-dark-500">
+              Choisissez un concerné existant ou créez-en un nouveau
+            </p>
+          </div>
+
+          <!-- Choix du mode -->
+          <div class="mb-6">
+            <div class="flex space-x-4">
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="concerneMode"
+                  value="existing"
+                  [checked]="concerneMode === 'existing'"
+                  (change)="onConcerneModeChange('existing')"
+                  class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                />
+                <span class="ml-2 text-sm font-medium text-dark-700"
+                  >Concerné existant</span
+                >
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="concerneMode"
+                  value="new"
+                  [checked]="concerneMode === 'new'"
+                  (change)="onConcerneModeChange('new')"
+                  class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                />
+                <span class="ml-2 text-sm font-medium text-dark-700"
+                  >Nouveau concerné</span
+                >
+              </label>
+            </div>
+          </div>
+
+          <!-- Concerné existant -->
+          <ng-container *ngIf="!isLoadingConcerne()" ; else loadingConcerne>
+            <app-select-search-paginate
+              *ngIf="concerneMode === 'existing'"
+              [title]="'Sélectionner un concerné existant*'"
+              [options]="mesOptions()"
+              [selected]="defaultConcerne()"
+              [selectPlaceholder]="'Sélectionner le concerné'"
+              [multiple]="false"
+              (optionSelected)="onSelected($event)"
+            >
               <div
-                *ngIf="getFieldError('regionSocial')"
+                *ngIf="getFieldError('concerneId')"
                 class="mt-1 text-sm text-red-600"
               >
-                {{ getFieldError("regionSocial") }}
+                {{ getFieldError("concerneId") }}
+              </div>
+            </app-select-search-paginate>
+          </ng-container>
+
+          <ng-template #loadingConcerne>
+            <div class="mt-2 text-gray-500 text-sm flex items-center space-x-2">
+              <i class="fas fa-spinner fa-spin text-primary-500"></i>
+              <span>Chargement des concernés en cours...</span>
+            </div>
+          </ng-template>
+
+          <!-- Nouveau concerné -->
+          <div *ngIf="concerneMode === 'new'" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Type -->
+              <div>
+                <label
+                  for="type"
+                  class="block text-sm font-medium text-dark-700 mb-2"
+                >
+                  Type <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="type"
+                  formControlName="type"
+                  class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                  [class.border-red-500]="isFieldInvalid('type')"
+                  [class.border-gray-300]="!isFieldInvalid('type')"
+                >
+                  <option value="">Sélectionner le type</option>
+                  <option
+                    *ngFor="let option of typeOptions"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="getFieldError('type')"
+                  class="mt-1 text-sm text-red-600"
+                >
+                  {{ getFieldError("type") }}
+                </div>
+              </div>
+
+              <!-- Numéro -->
+              <div>
+                <label
+                  for="numero"
+                  class="block text-sm font-medium text-dark-700 mb-2"
+                >
+                  Numéro <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="numero"
+                  formControlName="numero"
+                  class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                  [class.border-red-500]="isFieldInvalid('numero')"
+                  [class.border-gray-300]="!isFieldInvalid('numero')"
+                  placeholder="Numéro d'identification"
+                />
+                <div
+                  *ngIf="getFieldError('numero')"
+                  class="mt-1 text-sm text-red-600"
+                >
+                  {{ getFieldError("numero") }}
+                </div>
+              </div>
+
+              <!-- Région Sociale -->
+              <div>
+                <label
+                  for="regionSocial"
+                  class="block text-sm font-medium text-dark-700 mb-2"
+                >
+                  Région Sociale <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="regionSocial"
+                  formControlName="regionSocial"
+                  class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+                  [class.border-red-500]="isFieldInvalid('regionSocial')"
+                  [class.border-gray-300]="!isFieldInvalid('regionSocial')"
+                  placeholder="Région sociale"
+                />
+                <div
+                  *ngIf="getFieldError('regionSocial')"
+                  class="mt-1 text-sm text-red-600"
+                >
+                  {{ getFieldError("regionSocial") }}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Section Utilisateur -->
-      <div class="bg-white rounded-xl shadow-card p-6 slide-in">
-        <div class="border-l-4 border-primary-500 pl-4 mb-6">
-          <h2 class="text-xl font-semibold text-dark-800">Centre de gestion</h2>
-          <p class="text-dark-500">Assignation de la demande</p>
+        <!-- Section upload document -->
+        <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+          <div class="border-l-4 border-primary-500 pl-4 mb-6">
+            <h2 class="text-xl font-semibold text-dark-800">
+              Téléversement de Documents
+            </h2>
+            <p class="text-dark-500">
+              Ajoutez un ou plusieurs fichiers pour compléter votre demande
+            </p>
+          </div>
+
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors"
+            (drop)="onDrop($event)"
+            (dragover)="onDragOver($event)"
+          >
+            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              Glissez-déposez vos fichiers ici ou
+              <button
+                type="button"
+                (click)="fileInput.value = ''; fileInput.click()"
+                class="text-blue-500 hover:text-blue-600 font-medium"
+              >
+                parcourez
+              </button>
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Formats acceptés: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, MP3, MP4
+              (Max: 50MB)
+            </p>
+
+            <input
+              #fileInput
+              type="file"
+              multiple
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.mp3,.mp4"
+              class="hidden"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div *ngIf="selectedFiles.length > 0" class="space-y-2 mt-4">
+            <h4 class="text-sm font-medium text-gray-900">
+              Fichiers sélectionnés ({{ selectedFiles.length }}) :
+            </h4>
+
+            <div
+              *ngFor="let file of selectedFiles; let i = index"
+              class="flex items-center justify-between p-2 bg-gray-50 rounded"
+            >
+              <span class="text-sm text-gray-700 truncate">
+                {{ file.name }}
+              </span>
+              <button
+                (click)="removeFile(i)"
+                class="text-red-500 hover:text-red-700"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="pt-2">
+              <button
+                (click)="removeAllFiles()"
+                class="text-xs text-gray-500 hover:text-gray-700 underline"
+              >
+                Tout retirer
+              </button>
+            </div>
+          </div>
         </div>
-        <div>
-          <label
-            for="centreId"
-            class="block text-sm font-medium text-dark-700 mb-2"
-          >
-            Centre de gestion assigné <span class="text-red-500">*</span>
-          </label>
-          <select
-            id="centreId"
-            formControlName="centreId"
-            class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
-            [class.border-red-500]="isFieldInvalid('centreId')"
-            [class.border-gray-300]="!isFieldInvalid('centreId')"
-          >
-            <option value="">Sélectionner le centre de gestion</option>
-            <option value="afrilins">Afrilins</option>
-            <!-- <option
+
+        <app-select-search-paginate
+          *ngIf="!isLoadingConcerne()"
+          [title]="
+            'Ajouter des Documents en pièces jointes depuis vos documents'
+          "
+          [options]="documentOptions()"
+          [selected]="selectedDocument()"
+          (optionSelected)="onSelectDocument($event)"
+        ></app-select-search-paginate>
+
+        <!-- Section Utilisateur -->
+        <div class="bg-white rounded-xl shadow-card p-6 slide-in">
+          <div class="border-l-4 border-primary-500 pl-4 mb-6">
+            <h2 class="text-xl font-semibold text-dark-800">
+              Centre de gestion
+            </h2>
+            <p class="text-dark-500">Assignation de la demande</p>
+          </div>
+          <div>
+            <label
+              for="centreId"
+              class="block text-sm font-medium text-dark-700 mb-2"
+            >
+              Centre de gestion assigné <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="centreId"
+              formControlName="centreId"
+              class="w-full px-4 py-3 border rounded-lg input-focus transition-all duration-200"
+              [class.border-red-500]="isFieldInvalid('centreId')"
+              [class.border-gray-300]="!isFieldInvalid('centreId')"
+            >
+              <option value="">Sélectionner le centre de gestion</option>
+              <option value="afrilins">Afrilins</option>
+              <!-- <option
               *ngFor="let utilisateur of utilisateursList"
               [value]="utilisateur.id"
             >
               {{ utilisateur.label }}
             </option> -->
-          </select>
-          <div
-            *ngIf="getFieldError('centreId')"
-            class="mt-1 text-sm text-red-600"
-          >
-            {{ getFieldError("centreId") }}
+            </select>
+            <div
+              *ngIf="getFieldError('centreId')"
+              class="mt-1 text-sm text-red-600"
+            >
+              {{ getFieldError("centreId") }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Actions -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-end">
-        <button
-          type="button"
-          (click)="showConfirmModal = true"
-          class="px-6 py-3 border border-gray-300 text-dark-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center"
-        >
-          <svg
-            class="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-end">
+          <button
+            type="button"
+            (click)="reset()"
+            class="px-6 py-3 border border-gray-300 text-dark-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          Réinitialiser
-        </button>
-
-        <button
-          type="button"
-          (click)="onSaveDraft()"
-          class="px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 transition-colors duration-200 flex items-center justify-center"
-        >
-          <svg
-            class="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-            />
-          </svg>
-          Sauvegarder comme brouillon
-        </button>
-
-        <button
-          type="submit"
-          [disabled]="isSubmitting"
-          class="px-8 py-3 gradient-bg text-white rounded-lg hover:shadow-card-hover transition-all duration-200 flex items-center justify-center font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <svg
-            *ngIf="!isSubmitting"
-            class="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-            />
-          </svg>
-          <svg
-            *ngIf="isSubmitting"
-            class="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
               stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          {{ isSubmitting ? "Soumission..." : "Soumettre la demande" }}
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            Réinitialiser
+          </button>
+
+          <button
+            *ngIf="false"
+            type="button"
+            (click)="onSaveDraft()"
+            class="px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 transition-colors duration-200 flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+              />
+            </svg>
+            Sauvegarder comme brouillon
+          </button>
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="px-8 py-3 gradient-bg text-white rounded-lg hover:shadow-card-hover transition-all duration-200 flex items-center justify-center font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <!-- Icône normale -->
+            <i
+              *ngIf="!isSubmitting"
+              class="fas fa-paper-plane w-4 h-4 mr-2"
+            ></i>
+
+            <!-- Icône de chargement -->
+            <i
+              *ngIf="isSubmitting"
+              class="fas fa-spinner fa-spin -ml-1 mr-3 h-4 w-4"
+            ></i>
+
+            {{
+              isSubmitting
+                ? this.isEditMode()
+                  ? "Modification..."
+                  : "Soumission..."
+                : this.isEditMode()
+                ? "Modifier la demande"
+                : "Soumettre la demande"
+            }}
+          </button>
+        </div>
+      </form>
+
+      <app-confirmation-modal
+        [isVisible]="showConfirmModal"
+        [data]="confirmationData"
+        [isLoading]="isActionLoading"
+        (confirm)="resetForm(); showConfirmModal = false"
+        (cancel)="showConfirmModal = false"
+      ></app-confirmation-modal>
+    </main>
+  </ng-container>
+</div>
+
+<div
+  *ngIf="isSuccess"
+  class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+>
+  <div
+    class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 text-center shadow-2xl animate-fade-in-scale"
+  >
+    <!-- Icône de succès améliorée -->
+    <div class="relative mx-auto mb-6">
+      <div
+        class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center shadow-lg"
+      >
+        <div
+          class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-inner"
+        >
+          <i
+            class="fas fa-check text-green-600 text-3xl animate-bounce-once"
+          ></i>
+        </div>
+      </div>
+      <!-- Animation de particules de succès -->
+      <div
+        class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping opacity-75"
+      ></div>
+    </div>
+
+    <!-- Titre et description -->
+    <h3 class="text-2xl font-bold text-gray-900 mb-3 leading-tight">
+      {{
+        isEditMode()
+          ? "Demande mise à jour avec succès !"
+          : "Demande soumise avec succès !"
+      }}
+    </h3>
+
+    <p class="text-gray-600 mb-6 leading-relaxed">
+      Votre demande d'enquête a été enregistrée avec succès et sera traitée dans
+      les plus brefs délais.
+    </p>
+
+    <!-- Référence avec style amélioré -->
+    <div class="bg-gray-50 rounded-xl p-4 mb-8 border-l-4 border-green-500">
+      <p class="text-sm text-gray-600 mb-1">Référence de votre demande</p>
+      <p class="font-mono font-bold text-lg text-gray-900">
+        {{ demandeCreer?.reference }}
+      </p>
+    </div>
+
+    <!-- Boutons avec design moderne -->
+    <div class="flex flex-col sm:flex-row gap-3">
+      <!-- Bouton principal - Nouvelle demande -->
+      <button
+        (click)="nouveauDemande()"
+        class="group flex-1 relative px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:-translate-y-0.5"
+      >
+        <div class="flex items-center justify-center space-x-2">
+          <i
+            class="fas fa-plus text-sm group-hover:scale-110 transition-transform"
+          ></i>
+          <span>Nouvelle demande</span>
+        </div>
+        <!-- Effet de brillance -->
+        <div
+          class="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 group-hover:animate-slide-right"
+        ></div>
+      </button>
+
+      <!-- Boutons secondaires -->
+      <div class="flex gap-3 flex-1">
+        <button
+          (click)="resetForm(); onGoBack()"
+          class="flex-1 group px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all duration-200 border-2 border-transparent hover:border-gray-300"
+        >
+          <div class="flex items-center justify-center space-x-2">
+            <i
+              class="fas fa-arrow-left text-sm group-hover:-translate-x-1 transition-transform"
+            ></i>
+            <span>Retour</span>
+          </div>
+        </button>
+
+        <button
+          (click)="resetForm(); showDetail()"
+          class="flex-1 group px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all duration-200 border-2 border-transparent hover:border-gray-300"
+        >
+          <div class="flex items-center justify-center space-x-2">
+            <i
+              class="fas fa-eye text-sm group-hover:scale-110 transition-transform"
+            ></i>
+            <span>Voir</span>
+          </div>
         </button>
       </div>
-    </form>
+    </div>
 
-    <app-confirmation-modal
-      [isVisible]="showConfirmModal"
-      [data]="confirmationData"
-      [isLoading]="isActionLoading"
-      (confirm)="resetForm(); showConfirmModal = false"
-      (cancel)="showConfirmModal = false"
-    ></app-confirmation-modal>
-  </main>
+    <!-- Bouton de fermeture optionnel -->
+    <button
+      (click)="resetForm(); onGoBack()"
+      class="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors group"
+    >
+      <i
+        class="fas fa-times text-gray-500 text-sm group-hover:text-gray-700"
+      ></i>
+    </button>
+  </div>
 </div>

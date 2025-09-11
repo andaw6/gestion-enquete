@@ -1,23 +1,32 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Document} from "@modules/enqueteur/traitement/document/document";
-import {Observable} from "rxjs";
-import {FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP} from "@config/constant";
-import {Pagination} from "@core/interfaces/pagination.interface";
-import {formatDate} from "date-fns";
-import {UtilService} from "@core/services/util.service";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Observable } from "rxjs";
+import { Pagination } from "@core/interfaces/pagination.interface";
+import { UtilService } from "@core/services/util.service";
+import { AsyncPipe, CommonModule, DatePipe, NgForOf, NgIf } from "@angular/common";
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { DocumentModel } from '@core/model/document.model';
 
 @Component({
   selector: 'app-document-grid',
   templateUrl: './document-grid.component.html',
-  styleUrls: ['./document-grid.component.css']
+  styleUrls: ['./document-grid.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    PaginationComponent,
+    NgIf,
+    NgForOf,
+    AsyncPipe,
+    DatePipe
+  ]
 })
 export class DocumentGridComponent {
-  @Input() documents!: Observable<Document[]>;
+  @Input() documents!: Observable<DocumentModel[]>;
   @Input() viewMode: "grid" | "list" = "grid";
   @Input() pagination!: Pagination;
-  @Output() previewClick = new EventEmitter<Document>();
-  @Output() downloadClick = new EventEmitter<Document>();
-  @Output() deleteClick = new EventEmitter<Document>();
+  @Output() previewClick = new EventEmitter<DocumentModel>();
+  @Output() downloadClick = new EventEmitter<DocumentModel>();
+  @Output() deleteClick = new EventEmitter<DocumentModel>();
   @Output() paginationChange = new EventEmitter<Pagination>();
   @Input() loading: boolean = false;
 
@@ -32,17 +41,17 @@ export class DocumentGridComponent {
     this.showMenu = null
   }
 
-  onPreview(doc: Document): void {
+  onPreview(doc: DocumentModel): void {
     this.closeMenu()
     this.previewClick.emit(doc)
   }
 
-  onDownload(doc: Document): void {
+  onDownload(doc: DocumentModel): void {
     this.closeMenu()
     this.downloadClick.emit(doc)
   }
 
-  onDelete(doc: Document): void {
+  onDelete(doc: DocumentModel): void {
     this.closeMenu()
     this.deleteClick.emit(doc)
   }

@@ -1,0 +1,139 @@
+<div class="space-y-6">
+  <div
+    *ngFor="let enquete of enquetes"
+    (click)="onEnqueteClick(enquete)"
+    [class]="
+      'enquete-card cursor-pointer border-l-4 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-white to-white ' +
+      getPriorityClass(enquete.demande!.priorite)
+    "
+  >
+    <div class="flex justify-between items-start mb-4">
+      <div class="flex-1">
+        <div class="flex items-center space-x-3 mb-2">
+          <h3 class="text-lg font-bold text-gray-900">
+            {{ enquete.reference }}
+          </h3>
+          <span
+            [class]="
+              'px-3 py-1 rounded-full text-xs font-semibold ' +
+              getStatusClass(enquete.etat.code)
+            "
+          >
+            {{ enquete.etat.libelle }}
+          </span>
+          <span
+            class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
+          >
+            {{ enquete.demande!.concerne.type }}
+          </span>
+        </div>
+        <h4 class="text-base font-semibold text-gray-800 mb-2">
+          {{ enquete.demande!.objet }}
+        </h4>
+        <p class="text-sm text-gray-600 mb-3">
+          {{ enquete.demande!.description }}
+        </p>
+        <div class="flex items-center space-x-4 text-xs text-gray-500">
+          <span
+            ><strong>Date création:</strong>
+            {{ formatDate(enquete.createdAt) }}</span
+          >
+          <span
+            ><strong>Date assignation:</strong>
+            {{ formatDate(enquete.dateAssignation) }}</span
+          >
+          <span
+            ><strong>Date démarrage:</strong>
+            {{ formatDate(enquete.dateDebut) }}</span
+          >
+          <span
+            ><strong>Échéance:</strong>
+            {{
+              formatDate(enquete.dateLimite ?? enquete.demande!.dateEcheance)
+            }}</span
+          >
+          <span
+            ><strong>Temps:</strong> {{ tempsEcoule(enquete.dateDebut) }}</span
+          >
+        </div>
+      </div>
+
+      <div class="flex flex-col items-end space-y-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-medium text-gray-600">Priorité:</span>
+          <span
+            [class]="
+              'px-2 py-1 rounded-full text-xs font-semibold ' +
+              getPriorityBadgeClass(enquete.demande!.priorite)
+            "
+          >
+            {{ getPriorityLabel(enquete.demande!.priorite) }}
+          </span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-1 text-xs text-gray-500">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            <span>{{ enquete.demande?.documents?.length }}</span>
+          </div>
+          <div class="flex items-center space-x-1 text-xs text-gray-500">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              ></path>
+            </svg>
+            <!-- <span>{{ "test" }}</span> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-sm">
+        <span class="text-gray-600">Progression</span>
+        <span [class]="'font-bold ' + getProgressColor(enquete.progression)"
+          >{{ enquete.progression }}%</span
+        >
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div
+          [class]="
+            'h-2 rounded-full transition-all duration-500 ' +
+            getProgressBgColor(enquete.progression)
+          "
+          [style.width.%]="enquete.progression"
+        ></div>
+      </div>
+      <div class="flex justify-between items-center text-xs text-gray-500">
+        <span>Dernière activité: {{ formatDateTime(enquete.updatedAt) }}</span>
+        <div class="flex space-x-1">
+          <!-- <span
+            *ngFor="let tag of enquete.tags"
+            class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs"
+          >
+            {{ tag }}
+          </span> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

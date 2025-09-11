@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { UtilisateurModel } from '@core/model/utilisateur.model';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface UtilisateurState {
-  user: Utilisateur | null;
+  user: UtilisateurModel | null;
   loading: boolean;
   error: any;
 }
@@ -33,7 +33,7 @@ export class UtilisateurStateService {
     this._setState({ loading: true, error: null });
   }
 
-  loadUserSuccess(user: Utilisateur) {
+  loadUserSuccess(user: UtilisateurModel) {
     this._setState({ user, loading: false, error: null });
   }
 

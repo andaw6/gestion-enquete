@@ -11,7 +11,7 @@
     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
   >
     <div
-      *ngFor="let stat of statsData; let i = index"
+      *ngFor="let stat of statsData(); let i = index"
       class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 card-hover animate-fade-in"
       [style.animation-delay]="i * 0.1 + 's'"
     >
@@ -47,11 +47,12 @@
   <app-demande-table
    [demandes]="demandes()"
     [loading]="loading()"
-    (viewDetail)="onViewDetail($event)"
+    (action)="onAction($event)"
   ></app-demande-table>
 
+  
   <app-pagination
-    *ngIf="!loading()"
+    *ngIf="!loading() && demandes().length"
     [pagination]="pagination"
     (pageChanged)="setPagination($event)"
   />

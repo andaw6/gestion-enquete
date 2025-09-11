@@ -1,16 +1,20 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivityItem } from '@modules/demandeur/dashboard/dashboard';
 import { UtilService } from '@core/services/util.service';
 import { Router, RouterLink } from '@angular/router';
 import { StatCard, StatCardComponent } from '@shared/components/stat-card/stat-card.component';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
-import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+import { DemandeEnqueteEvolution, DemandeEnqueteModel, DemandeEnqueteStat } from '@core/model/demande-enquete.model';
 import { DemandeService } from '@modules/demandeur/demandes/demande.service';
 import { ChartComponent } from './components/chart/chart.component';
 import { RecentActivityComponent } from './components/recent-activity/recent-activity.component';
 import { DemandeTableComponent } from '@modules/demandeur/demandes/components/demande-table/demande-table.component';
 import { CommonModule, NgForOf } from '@angular/common';
+import { Logger } from '@core/services/logger.service';
+import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActionMode } from '@core/types';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,10 +32,19 @@ import { CommonModule, NgForOf } from '@angular/common';
   ],
 })
 export class DashboardComponent implements OnInit {
-  statsData: StatCard[] = [
+
+  // Injection des dépendances
+  private readonly utilisateurState = inject(UtilisateurStateService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly service = inject(DemandeService);
+  private readonly utilService = inject(UtilService);
+
+
+  statsData = computed<StatCard[]>(() => [
     {
       title: "Total des demandes",
-      value: 24,
+      value: this.stats().totalDemandes,
       change: "+12% ce mois",
       changeType: "positive",
       icon: "fas fa-file-alt",
@@ -39,7 +52,7 @@ export class DashboardComponent implements OnInit {
     },
     {
       title: "En cours",
-      value: 8,
+      value: this.stats().enCours,
       change: "En traitement",
       changeType: "neutral",
       icon: "fas fa-hourglass-half",
@@ -47,7 +60,7 @@ export class DashboardComponent implements OnInit {
     },
     {
       title: "Terminées",
-      value: 16,
+      value: this.stats().termines ?? 0,
       change: "Complétées",
       changeType: "positive",
       icon: "fas fa-check-circle",
@@ -55,13 +68,13 @@ export class DashboardComponent implements OnInit {
     },
     {
       title: "Taux de réussite",
-      value: "94%",
+      value: `${this.stats().tauxReussite}%`,
       change: "Excellent",
       changeType: "positive",
       icon: "fas fa-chart-line",
       gradient: "from-purple-500 to-pink-500",
     },
-  ]
+  ]);
 
   recentActivities: ActivityItem[] = [
     {
@@ -94,16 +107,18 @@ export class DashboardComponent implements OnInit {
     },
   ]
 
-  recentRequests: DemandeEnqueteModel[] = []
+  demandeRecentes = signal<DemandeEnqueteModel[]>([]);
+
+  stats = signal<DemandeEnqueteStat>({
+    totalDemandes: 0,
+    enCours: 0,
+    termines: 0,
+    tauxReussite: 0,
+  });
+
+  evolutions = signal<DemandeEnqueteEvolution[]>([]);
 
   loading = signal<boolean>(false);
-
-  constructor(
-    private readonly service: DemandeService,
-    private readonly utilService: UtilService,
-    private utilisateurState: UtilisateurStateService,
-    private router: Router,
-  ) { }
 
   user$ = this.utilisateurState.user$;
   user!: Utilisateur;
@@ -115,6 +130,7 @@ export class DashboardComponent implements OnInit {
       if (user) {
         this.user = user;
         this.loadDemande();
+        this.loadEvolution();
       }
     })
   }
@@ -125,21 +141,61 @@ export class DashboardComponent implements OnInit {
 
   loadDemande() {
     this.loading.set(true);
-    this.service.getAll({
-      limit: 5,
-      page: 1,
-      sort: 'updatedAt,desc',
-      utilisateurId: this.user.id
-    }).subscribe({
-      next: response => {
-        this.recentRequests = response.data;
-      },
-      error: err => {
-        this.utilService.showNotification(err.message ?? "Erreur lors du chargement des données", "error");
-      },
-      complete: () => {
-        this.loading.set(false);
-      }
+
+    forkJoin({
+      stats: this.service.stats(this.user.id),
+      demandes: this.service.getAll({
+        limit: 3,
+        page: 1,
+        sort: 'updatedAt,desc',
+        utilisateurId: this.user.id
+      })
     })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ stats, demandes }) => {
+          this.stats.set(stats);
+          this.demandeRecentes.set(demandes.data);
+          this.loading.set(false);
+        },
+        error: _ => {
+          this.utilService.showNotification("Erreur lors de la chargement des données", "error");
+          this.loading.set(false);
+        }
+      });
   }
+
+  loadEvolution(date?: string) {
+    this.service.evolution(this.user.id, date)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: response => {
+          this.evolutions.set(response);
+        },
+        error: _ => {
+          this.utilService.showNotification("Erreur lors de la chargement des statistiques d'évolutions", "error");
+        }
+      })
+  }
+
+  onDateChange(event: string) {
+    this.loadEvolution(event);
+  }
+
+
+  onAction(event: { action: ActionMode, demande: DemandeEnqueteModel }) {
+    switch (event.action) {
+      case "view":
+        this.router.navigate(["/demandeur/demandes/detail", event.demande.id]);
+        break;
+      case "delete":
+        break;
+      case "download":
+        break;
+      case "update":
+        this.router.navigate(["/demandeur/demandes/modifier", event.demande.id]);
+        break;
+    }
+  }
+
 }

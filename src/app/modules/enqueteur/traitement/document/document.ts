@@ -1,5 +1,5 @@
-import {TypeDocument} from "@modules/admin/parametrage/type-document/type-document";
-import {ViewMode} from "@core/types";
+import { TypeDocument } from "@modules/admin/parametrage/type-document/type-document";
+import { ViewMode } from "@core/types";
 
 export interface Document {
   id: number
@@ -43,5 +43,6 @@ export interface DocumentData {
   nom: string;
   description: string;
   typeId: number;
-  file: File
+  file: File;
+  utilisateurId?: number;
 }

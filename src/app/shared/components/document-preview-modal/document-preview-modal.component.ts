@@ -9,27 +9,33 @@ import {
   Renderer2, SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {DocumentService} from '@modules/enqueteur/traitement/document/document.service';
-import {of, Subscription, switchMap} from 'rxjs';
-import {DocumentUrl, Document} from '@modules/enqueteur/traitement/document/document';
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
-import {NotificationAlertService} from "@core/services/notification-alert.service";
-import {ResponseError} from "@core/interfaces/response-error.interface";
-import {CommonModule} from "@angular/common";
-import {catchError, map} from "rxjs/operators";
-import {SpinnerComponent} from "@shared/components/spinner/spinner.component";
+import { DocumentService } from '@modules/enqueteur/traitement/document/document.service';
+import { of, Subscription, switchMap } from 'rxjs';
+import { DocumentUrl, Document } from '@modules/enqueteur/traitement/document/document';
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { NotificationAlertService } from "@core/services/notification-alert.service";
+import { CommonModule, NgIf } from "@angular/common";
+import { catchError, map } from "rxjs/operators";
+import { SpinnerComponent } from "@shared/components/spinner/spinner.component";
+import { DocumentModel } from '@core/model/document.model';
+import { Logger } from '@core/services/logger.service';
+import { UtilService } from '@core/services/util.service';
 
 @Component({
   selector: 'app-document-preview-modal',
   templateUrl: './document-preview-modal.component.html',
   styleUrls: ['./document-preview-modal.component.css'],
   standalone: true,
-  imports: [CommonModule, SpinnerComponent]
+  imports: [
+    CommonModule,
+    SpinnerComponent,
+    NgIf,
+  ]
 })
 export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChanges {
   @Output() modalClosed = new EventEmitter<void>();
   @Input() isModalOpen = false;
-  @Input() document: Document | null = null;
+  @Input() document: Document | DocumentModel | null = null;
 
   @ViewChild('documentEmbed') documentEmbedRef!: ElementRef<HTMLEmbedElement>;
 
@@ -40,13 +46,13 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
   documentUrl!: DocumentUrl;
   isLoading = true;
   hasError = false;
-  documentData?: Document;
+  documentData?: Document | DocumentModel;
 
   constructor(
     private renderer: Renderer2,
     private sanitizer: DomSanitizer,
-    private notificationService: NotificationAlertService,
     private documentService: DocumentService,
+    private utilService:UtilService,
   ) {
   }
 
@@ -56,41 +62,41 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
     this.embedUrl = "";
 
     this.documentService.getUrl(this.documentId).pipe(
-        switchMap((url: DocumentUrl | null) => {
-          if (!url) {
-            throw new Error("Document introuvable");
-          }
+      switchMap((url: DocumentUrl | null) => {
+        if (!url) {
+          throw new Error("Document introuvable");
+        }
 
-          this.documentUrl = url;
-          this.contentType = url.contentType;
+        this.documentUrl = url;
+        this.contentType = url.contentType;
 
-          if (!url.canPreview) {
-            this.notificationService.showNotification("Le document ne peut pas être affiché", "info");
-            this.isLoading = false;
-            return of(null);
-          }
-
-          return this.documentService.getBlob(this.documentId).pipe(
-              map((blob) => {
-                const objectUrl = URL.createObjectURL(blob);
-                return this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
-              })
-          );
-        }),
-        catchError((err: any) => {
+        if (!url.canPreview) {
+          this.utilService.showNotification("Le document ne peut pas être affiché", "info");
           this.isLoading = false;
-          this.hasError = true;
-          const message = err?.message || "Erreur lors du chargement du document";
-          this.notificationService.showNotification(message, "error");
           return of(null);
-        })
+        }
+
+        return this.documentService.getBlob(this.documentId).pipe(
+          map((blob) => {
+            const objectUrl = URL.createObjectURL(blob);
+            return this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
+          })
+        );
+      }),
+      catchError((err: any) => {
+        this.isLoading = false;
+        this.hasError = true;
+        const message = "Erreur lors du chargement du document";
+        this.utilService.showNotification(message, "error");
+        return of(null);
+      })
     ).subscribe((safeUrl) => {
-     // setTimeout(()=>{
-       if(safeUrl) {
-         this.embedUrl = safeUrl;
-       }
-       this.isLoading = false;
-     // }, 3000)
+      // setTimeout(()=>{
+      if (safeUrl) {
+        this.embedUrl = safeUrl;
+      }
+      this.isLoading = false;
+      // }, 3000)
     });
   }
 
@@ -110,7 +116,7 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["document"]) {
-      let doc: Document | null = changes["document"].currentValue as Document | null;
+      let doc: Document | DocumentModel | null = changes["document"].currentValue as Document | DocumentModel | null;
       console.log("this is a test to document change", doc)
       if (doc) {
         this.documentData = doc;
@@ -139,11 +145,11 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
   }
 
   onPdfLoad(): void {
-    this.notificationService.showNotification("Document affiché avec succès!", "success")
+    Logger.info("Document affiché avec succès!", "DocumentPreviewModalComponent:onPdfLoad")
   }
 
   onPdfError(): void {
-    this.notificationService.showNotification("Erreur lors de l\'affichage du document", "error");
+    this.utilService.showNotification("Erreur lors de l\'affichage du document", "error");
   }
 
   downloadDocument(): void {
@@ -153,9 +159,9 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
       this.renderer.setAttribute(link, 'href', downloadUrl);
       this.renderer.setAttribute(link, 'download', this.getFileName());
       link.click();
-      this.notificationService.showNotification('Document Télécharger', "success");
+      this.utilService.showNotification('Document Télécharger', "success");
     } else {
-      this.notificationService.showNotification("Impossible de télécharger le document", "info");
+      this.utilService.showNotification("Impossible de télécharger le document", "info");
     }
   }
 
@@ -176,20 +182,12 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
 
   getFileSize(): string {
     if (this.documentData?.taille) {
-      return this.formatFileSize(this.documentData.taille);
+      return this.utilService.formatFileSize(this.documentData.taille);
     }
     return 'Taille inconnue';
   }
 
-  private formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-
+  
   getDocumentType(): string {
     return this.documentData?.extension?.toUpperCase() || 'Document';
   }

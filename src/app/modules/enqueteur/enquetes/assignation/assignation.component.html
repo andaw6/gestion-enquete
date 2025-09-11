@@ -1,0 +1,151 @@
+<main class="p-8 space-y-8">
+  <app-page-header
+    [title]="pageTitle"
+    [subtitle]="pageSubTitle"
+  ></app-page-header>
+
+  <!-- Stats Cards -->
+  <div class="my-3">
+    <!-- <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in"
+    >
+      <ng-container *ngFor="let state of stats(); trackBy: trackByStat">
+        <app-state-card [state]="state"></app-state-card>
+      </ng-container>
+    </div> -->
+
+    <!-- Template HTML amélioré -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in"
+    >
+      <div
+        *ngFor="let stat of stats(); trackBy: trackByStat"
+        class="group relative bg-white/90 backdrop-blur-md rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-out p-5 border border-white/20 overflow-hidden transform hover:-translate-y-1 cursor-pointer"
+        [ngClass]="stat.borderColor"
+      >
+        <!-- Effet de fond animé -->
+        <div
+          class="absolute inset-0 opacity-0 group-hover:opacity-8 transition-opacity duration-300"
+          [ngClass]="stat.bgOverlay"
+        ></div>
+
+        <div class="relative z-10">
+          <div class="flex items-center justify-between">
+            <!-- Icône compacte -->
+            <div class="relative">
+              <div
+                class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-all duration-200 group-hover:scale-105"
+                [ngClass]="stat.gradient"
+              >
+                <i class="text-white text-lg" [ngClass]="stat.icon"></i>
+              </div>
+            </div>
+
+            <!-- Badge de tendance compact -->
+            <span
+              class="text-xs font-medium px-2 py-1 rounded-md transition-all duration-200"
+              [ngClass]="stat.trendBadge"
+            >
+              {{ stat.trend }}
+            </span>
+          </div>
+
+          <!-- Contenu principal compact -->
+          <div class="mt-4">
+            <p
+              class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+            >
+              {{ stat.title }}
+            </p>
+            <div class="flex items-baseline space-x-1 mt-1">
+              <p
+                class="text-2xl font-bold transition-colors duration-200"
+                [ngClass]="stat.valueColor"
+              >
+                {{ stat.value }}
+              </p>
+              <span
+                class="text-xs font-medium text-gray-400"
+                *ngIf="stat.unit"
+                >{{ stat.unit }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-card border border-orange-200/50 animate-slide-up"
+  >
+    <div
+      class="px-8 py-6 border-b border-orange-200/50 bg-gradient-to-r from-orange-50/50 to-orange-100/50 rounded-t-2xl"
+    >
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+          <div
+            class="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center mr-3"
+          >
+            <i class="fas fa-inbox text-white text-sm"></i>
+          </div>
+          Nouvelles Assignations - Action Requise
+        </h3>
+        <span
+          class="px-4 py-2 text-sm font-bold bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-full shadow-card"
+        >
+          {{ getEnqueteAssigner().length }} en attente
+        </span>
+      </div>
+    </div>
+    <div [ngClass]="{ 'p-8 pb-2': !!pagination.totalItem }">
+      <div class="space-y-6">
+        <ng-container *ngFor="let enquete of getEnqueteAssigner()">
+          <div class="my-4">
+            <app-enquete-card
+              [enquete]="enquete"
+              (demarrer)="demarrerEnquete($event)"
+              (viewDoc)="afficherDocument($event)"
+            ></app-enquete-card>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div *ngIf="loading()" class="flex justify-center my-6">
+      <app-spinner />
+    </div>
+
+    <div *ngIf="!loading()">
+      <app-pagination [pagination]="pagination"></app-pagination>
+    </div>
+  </div>
+</main>
+
+<app-document-preview-modal
+  [isModalOpen]="isPreviewModalOpen"
+  [document]="selectedDocument"
+  (modalClosed)="isPreviewModalOpen = false; selectedDocument = null"
+></app-document-preview-modal>
+
+<!-- <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden">
+  <div class="lg:col-span-2">
+    <app-enquete-en-cours
+      [enquetes]="getEnqueteEnCours()"
+    ></app-enquete-en-cours>
+  </div>
+
+
+  <div class="space-y-8">
+    <div class="my-3">
+    <app-quick-actions></app-quick-actions>
+    </div>
+    <div class="my-3">
+      <app-notification></app-notification>
+    </div>
+  </div>
+</div>
+<div class="my-3 hidden">
+  <app-historique-enquete
+    [enquetes]="getHistoriqueEnquete()"
+  ></app-historique-enquete>
+</div> -->

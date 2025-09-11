@@ -1,26 +1,42 @@
-import {NavigationSection} from "@core/interfaces/navigation.interface";
+import { NavigationSection } from "@core/interfaces/navigation.interface";
 
 export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
   {
-    title: "mes enquêtes",
+    title: "Dashboard",
     items: [
       {
         label: "Tableau de bord",
         icon: "fas fa-tachometer-alt",
         route: "/enqueteur/dashboard",
       },
+    ]
+  },
+  {
+    title: "mes enquêtes",
+    items: [
       {
         label: "Mes enquêtes",
-        icon: "fas fa-tasks",
-
+        icon: "fas fa-list",              // liste d'enquêtes
+        route: "/enqueteur/enquetes/liste"
       },
       {
-        label: "Nouvelle enquête",
-        icon: "fas fa-folder-plus",
-        route: "/enqueteur/enquetes/nouveau",
-      }
+        label: "Enquêtes assignées",
+        icon: "fas fa-user-check",        // assignation à l'utilisateur
+        route: "/enqueteur/enquetes/assignation",
+      },
+      {
+        label: "Enquêtes en cours",
+        icon: "fas fa-hourglass-half",    // en cours / en attente
+        route: "/enqueteur/enquetes/en-cours",
+      },
+      // {
+      //   label: "Nouvelle enquête",
+      //   icon: "fas fa-plus-circle",    // pour une future création
+      //   route: "/enqueteur/enquetes/nouveau",
+      // }
     ],
   },
+
   {
     title: "traitement",
     items: [
@@ -62,7 +78,7 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
         route: "/enqueteur/profil",
       },
       {
-        label:"Mes Notifications",
+        label: "Mes Notifications",
         icon: "fas fa-bell",
         route: "",
       },
@@ -87,7 +103,7 @@ export const ENQUETEUR_NAVIGATION: NavigationSection[] = [
             route: "/enqueteur/parametrage/enquete",
           },
           {
-            label:"Notification",
+            label: "Notification",
             icon: "fas fa-tools",
             route: "/enqueteur/parametrage/notification",
           },

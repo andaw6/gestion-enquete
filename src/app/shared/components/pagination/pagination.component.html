@@ -52,7 +52,7 @@
             <div class="relative">
               <select [(ngModel)]="pagination.limit" (change)="updateResultsPerPage()"
                 class="appearance-none w-16 sm:w-20 pl-2 sm:pl-3 pr-6 sm:pr-8 py-1 sm:py-2 text-sm text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
-                <option *ngFor="let count of [5, 10, 20, 50, 100]" [value]="count">{{ count }}</option>
+                <option *ngFor="let count of paginationLimits" [value]="count">{{ count }}</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

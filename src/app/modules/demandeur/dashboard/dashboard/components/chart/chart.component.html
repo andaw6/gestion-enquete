@@ -3,17 +3,28 @@
 >
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-xl font-bold text-gray-900">Évolution des demandes</h2>
-    <div class="flex space-x-2">
+    <div class="flex items-center space-x-2">
+      <!-- Date de début -->
+      <input
+        type="date"
+        [(ngModel)]="startDate"
+        [value]="startDate"
+        class="px-3 py-1 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-400"
+      />
+
+      <!-- Bouton d'application -->
       <button
-        *ngFor="let period of periods"
-        (click)="selectPeriod(period)"
-        [ngClass]="
-          period.active
-            ? 'px-3 py-1 text-sm bg-primary-100 text-primary-600 rounded-lg'
-            : 'px-3 py-1 text-sm text-gray-500 hover:bg-gray-100 rounded-lg'
-        "
+        (click)="applyDateRange()"
+        class="px-3 py-1 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700"
       >
-        {{ period.label }}
+        Appliquer
+      </button>
+      <button
+        (click)="resetDateRange()"
+        class="px-3 py-1 text-gray-700 text-sm rounded-lg hover:bg-gray-200 flex items-center gap-2"
+      >
+        <i class="fas fa-rotate-right"></i>
+        <!-- Reset -->
       </button>
     </div>
   </div>

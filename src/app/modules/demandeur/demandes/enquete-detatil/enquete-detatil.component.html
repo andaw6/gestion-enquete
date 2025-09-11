@@ -1,0 +1,141 @@
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <app-entity-loader
+    [fetchDataFn]="loadData"
+    [headerTitle]="'Détails de l\'Enquête'"
+    [loadingTitle]="'Chargement de la enquete...'"
+    [loadingSubtitle]="'Récupération des informations d\'un enquête'"
+    [errorTitle]="'Impossible de charger l\'enquête'"
+    [backButtonText]="'Retour'"
+    (goBack)="goBack()"
+    (dataLoaded)="onLoaded($event)"
+    (loadingState)="onLoadingStateChanged($event)"
+    (errorState)="onLoadingError($event)"
+  >
+    <ng-template let-data>
+      <ng-container *ngIf="data">
+        <app-breadcrumb
+          [items]="breadcrumbItems()"
+          class="mb-8 animate-fade-in-up block"
+        >
+        </app-breadcrumb>
+
+        <!-- Page Title -->
+        <div class="mb-8 animate-slide-up">
+          <div
+            class="flex flex-col lg:flex-row lg:items-center justify-start gap-6"
+          >
+            <button
+              (click)="goBack()"
+              class="p-2 text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 rounded-lg transition-colors duration-200"
+            >
+              <i class="fas fa-arrow-left text-xl"></i>
+            </button>
+
+            <div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="bg-primary-100 p-2 rounded-lg">
+                  <svg
+                    class="w-8 h-8 text-primary-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <h1 class="text-4xl font-bold text-secondary-900">
+                  Détails de l'Enquête
+                </h1>
+              </div>
+              <div class="flex items-center gap-4">
+                <p class="text-lg text-secondary-600 font-mono">
+                  {{ enquete()!.reference || "ENQ-2024-001" }}
+                </p>
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 status-pulse"
+                >
+                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  {{ enquete()!.etat.libelle || "En cours d'investigation" }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Cards -->
+        <app-status-cards [enquete]="enquete()!"></app-status-cards>
+
+        <!-- Progress Section -->
+        <app-progress-section [enquete]="enquete()!"></app-progress-section>
+
+        <!-- Main Content Grid -->
+        <div class="">
+          <div class="my-4">
+            <app-enquete-details [enquete]="enquete()!"></app-enquete-details>
+          </div>
+
+          <div class="my-4">
+            <!-- <app-demande-details
+              [demande]="enquete()!.demande!"
+            ></app-demande-details> -->
+
+            <div
+              class="card-gradient rounded-xl shadow-soft border border-gray-100 overflow-hidden animate-fade-in"
+              style="animation-delay: 0.2s"
+            >
+              <div
+                class="bg-gradient-to-r from-primary-500 to-primary-600 px-8 py-6"
+              >
+                <h2
+                  class="text-2xl font-bold text-white flex items-center gap-3"
+                >
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Demande d'enquête associée
+                </h2>
+              </div>
+              <div class="p-8">
+                <div class="space-y-6">
+                  <div
+                    class="flex items-center justify-between p-4 bg-primary-50 rounded-lg border border-primary-100"
+                  >
+                    <div>
+                      <p
+                        class="text-sm font-bold text-primary-700 uppercase tracking-wide"
+                      >
+                        Référence de la demande
+                      </p>
+                      <p class="text-xl font-mono font-bold text-primary-900">
+                        {{ enquete()!.demande!.reference }}
+                      </p>
+                    </div>
+                    <button
+                      (click)="showDetailDemande = true"
+                      class="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors"
+                    >
+                      Voir détails
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <app-modal-detail-demande
+          [open]="showDetailDemande"
+          (close)="showDetailDemande = false"
+          [demande]="enquete()!.demande!"
+          (download)="onDownload($event)"
+        ></app-modal-detail-demande>
+      </ng-container>
+    </ng-template>
+  </app-entity-loader>
+</main>

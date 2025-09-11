@@ -178,6 +178,45 @@ export abstract class ApiService<T = any> {
   }
 
   /**
+   * Effectue une requête HTTP PATCH générique.
+   *
+   * @typeParam T - Type de la réponse attendue.
+   * @param endpoint - Chemin relatif (à `baseUrl`).
+   * @param data - Corps JSON à envoyer.
+   * @param params - Paramètres de requête (query string).
+   * @param options - Options HTTP supplémentaires.
+   */
+  protected patch<T>(
+    endpoint: string,
+    data: any,
+    params?: IParams,
+    options?: HttpOptions
+  ): Observable<T> {
+    let fullUrl = `${this.baseUrl}${endpoint}`;
+
+    if (params) {
+      const validParams: IParams = {};
+      Object.keys(params).forEach((key) => {
+        const value = params[key];
+        if (value !== null && value !== undefined && value !== '') {
+          validParams[key] = value;
+        }
+      });
+
+      const queryString = this.formatQueryParams(validParams);
+      if (queryString) {
+        fullUrl += `?${queryString}`;
+      }
+    }
+
+    return this.http.patch<T>(fullUrl, data, this.addAuthHeader(options)).pipe(
+      tap((response) => this.logResponse('PATCH', fullUrl, response)),
+      catchError((error) => this.handleError(error))
+    );
+  }
+
+
+  /**
    * Affiche la réponse HTTP dans la console (mode développement).
    *
    * @param method - Verbe HTTP.
@@ -381,4 +420,29 @@ export abstract class ApiService<T = any> {
       })
     );
   }
+
+  /**
+   * Wrapper PATCH pour mettre à jour partiellement une ressource.
+   *
+   * @typeParam T - Type de la ressource mise à jour.
+   * @param url - Endpoint.
+   * @param data - Payload (champs partiels à modifier).
+   * @param params - Paramètres de requête.
+   */
+  protected responsePatchOne<T = any>(
+    url: string,
+    data: any,
+    params?: IParams
+  ): Observable<T> {
+    return this.patch<T>(url, data, params).pipe(
+      map((response) => response ?? data),
+      catchError((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Erreur lors du PATCH', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+
 }

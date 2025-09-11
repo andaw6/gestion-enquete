@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe, NgIf, NgTemplateOutlet } from '@angular/common';
+import { CommonModule, DatePipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Component, ContentChild, EventEmitter, Input, Output, signal, TemplateRef, ViewContainerRef, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ResponseError } from '@core/interfaces/response-error.interface';
@@ -11,13 +11,13 @@ export interface LoadingError {
   retryable: boolean;
 }
 
-
 @Component({
   selector: 'app-entity-loader',
   standalone: true,
   imports: [
     CommonModule,
     NgIf,
+    NgClass,
     NgTemplateOutlet,
     DatePipe
   ],
@@ -28,6 +28,14 @@ export class EntityLoaderComponent<T> {
   // Fonction de chargement des données
   @Input({ required: true }) fetchDataFn!: (id: number) => Promise<T>;
 
+  // Labels personnalisables
+  @Input() loadingTitle: string = 'Chargement des données...';
+  @Input() loadingSubtitle: string = 'Récupération des informations';
+  @Input() errorTitle: string = 'Erreur de chargement';
+  @Input() retryButtonText: string = 'Réessayer';
+  @Input() backButtonText: string = 'Retour';
+  @Input() headerTitle: string = "Détails de l'entité";
+
   // Template personnalisé (optionnel)
   @ContentChild(TemplateRef) customTemplateRef?: TemplateRef<any>;
 
@@ -37,15 +45,15 @@ export class EntityLoaderComponent<T> {
   @Input() errorMessages: Record<string, string> = {
     404: 'Ressource introuvable.',
     403: 'Accès refusé.',
-    500: 'Erreur interne.',
-    0: 'Problème de réseau.',
-    UNKNOWN: 'Erreur inconnue.'
+    500: 'Erreur interne du serveur.',
+    0: 'Problème de connexion réseau.',
+    UNKNOWN: 'Une erreur inattendue s\'est produite.'
   };
+
   @Output() goBack = new EventEmitter<void>();
   @Output() dataLoaded = new EventEmitter<T>();
   @Output() loadingState = new EventEmitter<boolean>();
   @Output() errorState = new EventEmitter<LoadingError | null>();
-
 
   // État
   data: WritableSignal<T | null> = signal(null);
@@ -78,6 +86,7 @@ export class EntityLoaderComponent<T> {
   loadData(): void {
     const id = Number(this.id());
     this.setLoadingState(true);
+    this.retryCount.update(count => count + 1);
 
     this.fetchDataFn(id)
       .then(data => this.setSuccessState(data))
@@ -95,7 +104,7 @@ export class EntityLoaderComponent<T> {
     setTimeout(() => {
       this.loadData();
       this.isReloading.set(false);
-    }, 500); // Petit délai pour l'UX
+    }, 500);
   }
 
   retryUpdate(): void {
@@ -104,7 +113,7 @@ export class EntityLoaderComponent<T> {
   }
 
   showTechnicalDetails(): boolean {
-    return this.retryCount() >= 2; // Afficher après 2 échecs
+    return this.retryCount() >= 2;
   }
 
   errorMessage(): string {
@@ -124,24 +133,31 @@ export class EntityLoaderComponent<T> {
     this.showRetryNotification.set(false);
   }
 
+  toggleTechnicalDetails(): void {
+    this.technicalDetailsExpanded.update(x => !x);
+  }
+
   private setSuccessState(data: T): void {
     this.data.set(data);
     this.dataLoaded.emit(data);
     this.loadingError.set(null);
     this.failLoading.set(false);
     this.errorState.emit(null);
+    this.retryCount.set(0); // Reset retry count on success
   }
 
   private handleError(err: ResponseError): void {
     const code = err.status?.toString() || 'UNKNOWN';
-    const message = this.errorMessages[code] || "UNKNOWN";
+    const message = this.errorMessages[code] || this.errorMessages['UNKNOWN'];
+
     this.loadingError.set({
       code,
       message,
-      details: err.message || 'Erreur lors du chargement',
+      details: err.message || 'Erreur lors du chargement des données',
       timestamp: new Date(),
-      retryable: true
+      retryable: code !== '403' // Certaines erreurs ne sont pas retry-ables
     });
+
     this.failLoading.set(true);
     this.errorState.emit(this.loadingError());
   }
@@ -149,12 +165,13 @@ export class EntityLoaderComponent<T> {
   private handleInvalidId(): void {
     this.loadingError.set({
       code: 'INVALID_ID',
-      message: 'ID invalide ou manquant.',
-      details: 'Vérifiez l’URL.',
+      message: 'Identifiant invalide ou manquant.',
+      details: 'Veuillez vérifier l\'URL et réessayer.',
       timestamp: new Date(),
       retryable: false
     });
     this.failLoading.set(true);
+    this.errorState.emit(this.loadingError());
   }
 
   private setLoadingState(value: boolean): void {
@@ -165,20 +182,4 @@ export class EntityLoaderComponent<T> {
       this.showRetryNotification.set(false);
     }
   }
-
-  reload(): void {
-    if (this.isReloading()) return;
-    this.isReloading.set(true);
-    setTimeout(() => {
-      this.loadData();
-      this.isReloading.set(false);
-    }, 300);
-  }
-
-  toggleTechnicalDetails(): void {
-    this.technicalDetailsExpanded.update(x => !x);
-  }
-
-
-
 }

@@ -1,0 +1,36 @@
+<div
+  class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-card border border-gray-200/50"
+>
+  <div
+    class="px-6 py-5 border-b border-gray-200/50 bg-gradient-to-r from-gray-50/50 to-gray-100/50 rounded-t-2xl"
+  >
+    <h3 class="text-lg font-bold text-gray-900 flex items-center">
+      <i class="fas fa-bell text-blue-500 mr-3"></i>
+      Notifications
+    </h3>
+  </div>
+  <div class="p-6">
+    <div class="space-y-4">
+      <div
+        *ngFor="let notification of notifications"
+        class="flex items-start space-x-4 p-4 rounded-xl border card-hover"
+        [ngClass]="notification.bgColor + ' ' + notification.borderColor"
+      >
+        <div
+          class="w-10 h-10 rounded-full flex items-center justify-center shadow-card"
+          [ngClass]="notification.gradient"
+        >
+          <i class="text-white" [ngClass]="notification.icon"></i>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-gray-900">
+            {{ notification.title }}
+          </p>
+          <p class="text-xs text-gray-600 mt-1">
+            {{ notification.description }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

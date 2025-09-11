@@ -1,0 +1,35 @@
+<div class="bg-white rounded-lg shadow-card p-6">
+  <h2 class="text-xl font-semibold text-secondary-900 mb-4 flex items-center">
+    <i class="fas fa-info-circle text-primary-500 mr-3"></i>
+    Informations Générales
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label class="block text-sm font-medium text-secondary-700 mb-1"
+        >Objet</label
+      >
+      <p class="text-secondary-900 bg-gray-50 p-3 rounded-md">
+        {{ demande.objet }}
+      </p>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2"
+        >Date d'échéance</label
+      >
+      <p class="bg-gray-50 p-3 rounded-lg flex items-center"  [ngClass]="
+          isEcheanceProche() ? 'text-red-600 font-medium' : 'text-secondary-900'
+        ">
+        <i class="fas fa-calendar text-primary-500 mr-2"></i>
+        {{ formatDate() }}
+      </p>
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-sm font-medium text-secondary-700 mb-1"
+        >Description</label
+      >
+      <p class="text-secondary-900 bg-gray-50 p-3 rounded-md">
+        {{ demande.description }}
+      </p>
+    </div>
+  </div>
+</div>

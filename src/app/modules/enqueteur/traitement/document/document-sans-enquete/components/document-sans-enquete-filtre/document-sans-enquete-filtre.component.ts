@@ -1,15 +1,23 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {DocumentFilterOptions} from "@modules/enqueteur/traitement/document/document";
-import {FILE_CATEGORIES, FILE_TRI} from "@config/constant";
-import {Option} from "@core/interfaces/option.interface";
-import {FormControl} from "@angular/forms";
-import {Subject} from "rxjs";
-import {UtilService} from "@core/services/util.service";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { DocumentFilterOptions } from "@modules/enqueteur/traitement/document/document";
+import { FILE_CATEGORIES, FILE_TRI } from "@config/constant";
+import { Option } from "@core/interfaces/option.interface";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { Subject } from "rxjs";
+import { UtilService } from "@core/services/util.service";
+import { CommonModule, NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-document-sans-enquete-filtre',
   templateUrl: './document-sans-enquete-filtre.component.html',
-  styleUrls: ['./document-sans-enquete-filtre.component.css']
+  styleUrls: ['./document-sans-enquete-filtre.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgForOf
+  ]
 })
 export class DocumentSansEnqueteFiltreComponent implements OnInit, OnDestroy {
   @Output() filtersChange = new EventEmitter<DocumentFilterOptions>();

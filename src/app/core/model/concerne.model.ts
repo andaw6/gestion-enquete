@@ -4,7 +4,6 @@ export interface ConcerneModel {
   readonly id: number;
   type: TypeConcerne;
   telephone: string;
-  numero: string;
   regionSocial: string;
   createdAt: Date | null;
   updatedAt: Date | null;

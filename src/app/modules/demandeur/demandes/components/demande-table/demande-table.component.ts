@@ -1,8 +1,8 @@
 import { CommonModule, DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+import { DemandeEnqueteModel, DemandeEtatDemande } from '@core/model/demande-enquete.model';
 import { UtilService } from '@core/services/util.service';
-import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
+import { ActionMode } from '@core/types';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 
 @Component({
@@ -16,8 +16,7 @@ export class DemandeTableComponent {
 
   @Input() demandes: DemandeEnqueteModel[] = [];
   @Input() loading: boolean = false;
-  @Output() viewDetail = new EventEmitter<DemandeEnqueteModel>();
-  @Output() update = new EventEmitter<DemandeEnqueteModel>();
+  @Output() action = new EventEmitter<{ action: ActionMode, demande: DemandeEnqueteModel }>();
 
   constructor(
     private readonly utilService: UtilService,
@@ -27,13 +26,13 @@ export class DemandeTableComponent {
     const baseClass = "w-8 h-8 rounded-lg flex items-center justify-center mr-3";
 
     switch (statusCode) {
-      case "01": // validée
+      case DemandeEtatDemande.Valider: // validée
         return `${baseClass} bg-green-100`;
-      case "00": // en attente
+      case DemandeEtatDemande.EnAttente: // en attente
         return `${baseClass} bg-yellow-100`;
-      case "03": // en complément
+      case DemandeEtatDemande.EnComplement: // en complément
         return `${baseClass} bg-purple-100`;
-      case "02": // annulée
+      case DemandeEtatDemande.Annuler: // annulée
         return `${baseClass} bg-red-100`;
       default:
         return `${baseClass} bg-blue-100`;
@@ -42,13 +41,13 @@ export class DemandeTableComponent {
 
   getStatusIcon(statusCode: string): string {
     switch (statusCode) {
-      case "01": // Validée
+      case DemandeEtatDemande.Valider: // Validée
         return "fas fa-check-circle";      // ✔️
-      case "00": // En attente
+      case DemandeEtatDemande.EnAttente: // En attente
         return "fas fa-hourglass-half";    // ⌛
-      case "03": // En complément
+      case DemandeEtatDemande.EnComplement: // En complément
         return "fas fa-info-circle";       // ℹ️
-      case "02": // Annulée
+      case DemandeEtatDemande.Annuler: // Annulée
         return "fas fa-times-circle";      // ❌
       default:
         return "fas fa-question-circle";   // ❓
@@ -62,13 +61,13 @@ export class DemandeTableComponent {
 
   getRequestIconColor(statusCode: string): string {
     switch (statusCode) {
-      case "01": // validée
+      case DemandeEtatDemande.Valider: // validée
         return "text-green-600";
-      case "00": // en attente
+      case DemandeEtatDemande.EnAttente: // en attente
         return "text-yellow-600";
-      case "03": // en complément
+      case DemandeEtatDemande.EnComplement: // en complément
         return "text-purple-600";
-      case "02": // annulée
+      case DemandeEtatDemande.Annuler: // annulée
         return "text-red-600";
       default:
         return "text-blue-600";
@@ -80,13 +79,13 @@ export class DemandeTableComponent {
     const baseClass = "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium";
 
     switch (statusCode) {
-      case "01": // validée
+      case DemandeEtatDemande.Valider: // validée
         return `${baseClass} bg-green-100 text-green-800`;
-      case "00": // en attente
+      case DemandeEtatDemande.EnAttente: // en attente
         return `${baseClass} bg-yellow-100 text-yellow-800`;
-      case "03": // en complément
+      case DemandeEtatDemande.EnComplement: // en complément
         return `${baseClass} bg-purple-100 text-purple-800`;
-      case "02": // annulée
+      case DemandeEtatDemande.Annuler: // annulée
         return `${baseClass} bg-red-100 text-red-800`;
       default:
         return `${baseClass} bg-gray-100 text-gray-800`;
@@ -97,13 +96,13 @@ export class DemandeTableComponent {
     const baseClass = "w-1.5 h-1.5 rounded-full mr-2";
 
     switch (statusCode) {
-      case "00": // En attente
+      case DemandeEtatDemande.EnAttente: // En attente
         return `${baseClass} bg-yellow-400`;
-      case "01": // Validée
+      case DemandeEtatDemande.Valider: // Validée
         return `${baseClass} bg-green-400`;
-      case "02": // Annulée
+      case DemandeEtatDemande.Annuler: // Annulée
         return `${baseClass} bg-red-400`;
-      case "03": // En complément
+      case DemandeEtatDemande.EnComplement: // En complément
         return `${baseClass} bg-blue-400`;
       default: // Code inconnu
         return `${baseClass} bg-gray-400`;
@@ -130,15 +129,17 @@ export class DemandeTableComponent {
   }
 
 
-
-
   viewRequest(request: DemandeEnqueteModel): void {
-    this.viewDetail.emit(request);
-    // console.log("Voir la demande:", request)
+    this.action.emit({
+      demande: request,
+      action: "view"
+    });
   }
 
   downloadRequest(request: DemandeEnqueteModel): void {
-    this.update.emit(request);
-    // console.log("Télécharger/Éditer la demande:", request)
+    this.action.emit({
+      demande: request,
+      action: request.etat.code == DemandeEtatDemande.Valider ? "download" : "update"
+    });
   }
 }

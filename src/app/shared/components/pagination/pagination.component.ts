@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { Pagination } from '@core/interfaces/pagination.interface';
 
@@ -9,7 +9,7 @@ import { Pagination } from '@core/interfaces/pagination.interface';
   imports: [CommonModule, FormsModule],
   templateUrl: './pagination.component.html',
 })
-export class PaginationComponent implements OnInit {
+export class PaginationComponent implements OnInit, OnChanges {
   protected changePage: number = 0;
   @Output() pageChanged = new EventEmitter<Pagination>();
   @Input() pagination: Pagination = {
@@ -21,14 +21,32 @@ export class PaginationComponent implements OnInit {
 
   visiblePages: number[] = []; // Pages à afficher
   private maxVisiblePages: number = 5; // Nombre maximum de pages visibles
+  paginationLimits: number[] = [5, 10, 20, 50, 100];
+
 
   @Input() resultsPerPage!: number;
   @Input() currentPage!: number;
   @Input() totalItem!: number;
 
   ngOnInit(): void {
-    // console.log(this.pagination);
     this.calculateVisiblePages();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const paginationChange = changes['pagination']?.currentValue as Pagination | undefined;
+    if (!paginationChange) return;
+
+    // Seulement si une seule page
+    if (paginationChange.totalPage === 1) {
+      // Trouver la première limite >= totalItem
+      const bestLimit = this.paginationLimits.find(
+        (limit) => paginationChange.totalItem <= limit
+      );
+
+      if (bestLimit) {
+        this.pagination = { ...paginationChange, limit: bestLimit };
+      }
+    }
   }
 
   calculateVisiblePages(): void {
@@ -107,3 +125,10 @@ export class PaginationComponent implements OnInit {
     this.goToPage(Number(value));
   }
 }
+
+
+
+
+
+
+

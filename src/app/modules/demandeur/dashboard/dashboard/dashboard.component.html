@@ -24,7 +24,7 @@
   <div class="mb-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <div
-        *ngFor="let stat of statsData; let i = index"
+        *ngFor="let stat of statsData(); let i = index"
         class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 card-hover animate-fade-in"
         [style.animation-delay]="i * 0.1 + 's'"
       >
@@ -37,7 +37,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
     <!-- Chart -->
     <div class="lg:col-span-2">
-      <app-chart></app-chart>
+      <app-chart [evolutions]="evolutions()" (onDateChange)="onDateChange($event)"></app-chart>
     </div>
 
     <!-- Recent Activity -->
@@ -64,6 +64,6 @@
       </div>
     </div>
 
-    <app-demande-table [demandes]="recentRequests"></app-demande-table>
+    <app-demande-table [demandes]="demandeRecentes()" (action)="onAction($event)"></app-demande-table>
   </div>
 </main>

@@ -4,6 +4,8 @@ import { DashbordService } from "@modules/enqueteur/enquetes/dashboard/dashbord.
 import { EnqueteService } from '../../enquete.service';
 import { Logger } from '@core/services/logger.service';
 import { EnqueteModel } from '@core/model/enquete.model';
+import { UtilisateurModel } from '@core/model/utilisateur.model';
+import { UtilisateurStateService } from '@store/utilisateur/utilisateur-state.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,12 +21,23 @@ export class DashboardComponent {
   completionData: Array<{ id: string; progression: number }> = [];
 
   enqueteRecentes = signal<EnqueteModel[]>([]);
+  user!: UtilisateurModel;
 
-  constructor(private enqueteService: DashbordService, private service: EnqueteService) { }
+  constructor(
+    private enqueteService: DashbordService,
+    private service: EnqueteService,
+    private readonly utilisateurState: UtilisateurStateService,
+  ) { }
 
   ngOnInit(): void {
     this.loadDashboardData()
-    this.loadEnquete();
+    this.utilisateurState.user$.subscribe(user => {
+      if (user) {
+        this.user = user;
+        this.loadEnquete();
+        // this.loadData();
+      }
+    });
   }
 
   private loadDashboardData(): void {
@@ -39,7 +52,8 @@ export class DashboardComponent {
     this.service.getAll({
       sort: "updatedAt,desc",
       limit: 3,
-      page: 1
+      page: 1,
+      enqueteurId: this.user.id
     }).subscribe({
       next: response => {
         Logger.info({ message: "Tous les enquêtes", data: response.data }, "DashboardComponent:Enqueteur");

@@ -93,6 +93,7 @@
               <i class="fas fa-eye"></i>
             </button>
             <button
+              *ngIf="request.etat.code !== '04'"
               (click)="downloadRequest(request)"
               class="text-gray-400 hover:text-gray-600 transition-colors"
             >

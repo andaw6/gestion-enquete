@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiCrudService } from '@core/api/api-crud.service';
-import { Observable, of } from "rxjs";
-import { map } from 'rxjs/operators';
+import { map, Observable } from "rxjs";
 import { IParams } from '@core/interfaces/http-options.interface';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
-import { EnqueteModel } from '@core/model/enquete.model';
+import { EnqueteEtatEnquete, EnqueteModel, EnqueteStatEtat } from '@core/model/enquete.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,27 +18,15 @@ export class EnqueteService extends ApiCrudService<EnqueteModel> {
 
   /** CRUD API */
   override create(data: any): Observable<EnqueteModel> {
-    return this.responsePostOne<EnqueteModel>(data).pipe(
-      map(created => {
-        return created;
-      })
-    );
+    return this.responsePostOne<EnqueteModel>(data);
   }
 
   override update(id: number, data: any): Observable<EnqueteModel> {
-    return this.responsePutOne<EnqueteModel>(`/${id}`, data).pipe(
-      map(updated => {
-        return updated;
-      })
-    );
+    return this.responsePutOne<EnqueteModel>(`/${id}`, data);
   }
 
   override deleteOne(id: number): Observable<boolean> {
-    return this.responseDeleteOne(`/${id}`).pipe(
-      map(success => {
-        return success;
-      })
-    );
+    return this.responseDeleteOne(`/${id}`);
   }
 
   override getAll(params: IParams = {}): Observable<ApiResponse<EnqueteModel>> {
@@ -49,4 +36,14 @@ export class EnqueteService extends ApiCrudService<EnqueteModel> {
   override getOne(id: number): Observable<EnqueteModel | null> {
     return this.responseGetOne<EnqueteModel>(`/${id}`);
   }
+
+  changeEtat(id: number, code: EnqueteEtatEnquete): Observable<EnqueteModel> {
+    return this.responsePatchOne<EnqueteModel>(`/${id}/etat`, null, { code });
+  }
+
+  statsEtat(utilisateurId?: number): Observable<EnqueteStatEtat> {
+    return this.responseGetOne<EnqueteStatEtat>("/stats/etat", { utilisateurId }).pipe(map(d => d!));
+  }
+
+
 }

@@ -60,7 +60,7 @@ interface DemandeEnqueteModel {
   enquete?: EnqueteModel;
   documents: DocumentModel[];
 }
-interface EnqueteModel {
+export interface EnqueteModel {
   readonly id: number;
   etat: CodeLibelle;
   reference: string;
@@ -69,9 +69,11 @@ interface EnqueteModel {
   dateFin: Date | null;
   dateValidation: Date | null;
   dateAnnulation: Date | null;
+  dateAssignation: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
   demande?: DemandeEnqueteModel;
+  enqueteur?: UtilisateurModel;
 }
 interface DocumentModel {
   readonly id: number;

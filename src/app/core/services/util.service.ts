@@ -5,6 +5,7 @@ import { Document } from "@modules/enqueteur/traitement/document/document";
 import { NotificationAlertService } from "@core/services/notification-alert.service";
 import { debounceTime, distinctUntilChanged, filter, Subject, takeUntil } from "rxjs";
 import { FormControl } from "@angular/forms";
+import { DocumentModel } from '@core/model/document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class UtilService extends NotificationAlertService {
     return color ? result.split(" ").splice(0, 2).join(" ") : result;
   }
 
-  getDocumentActionIcon(document: Document): string {
+  getDocumentActionIcon(document: Document | DocumentModel): string {
     const ext = document.extension.toLowerCase();
     for (const [category, extensions] of Object.entries(FILE_TYPE_CATEGORY_MAP)) {
       if (extensions.includes(ext)) {
@@ -64,7 +65,7 @@ export class UtilService extends NotificationAlertService {
     return "fas fa-eye";
   }
 
-  getDocumentActionLabel(document: Document): string {
+  getDocumentActionLabel(document: Document | DocumentModel): string {
     const ext = document.extension.toLowerCase();
 
     for (const [category, extensions] of Object.entries(FILE_TYPE_CATEGORY_MAP)) {
@@ -96,6 +97,7 @@ export class UtilService extends NotificationAlertService {
     const i = Math.floor(Math.log(taille) / Math.log(k))
     return Number.parseFloat((taille / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
   }
+
 
   getBgIcon(extension: string) {
     return FILE_BG_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
@@ -147,14 +149,15 @@ export class UtilService extends NotificationAlertService {
     }
   }
 
-getSalutationWithName(name: string, date: Date = new Date()): string {
-  const hour = date.getHours();
+  getSalutationWithName(name: string, date: Date = new Date()): string {
+    const hour = date.getHours();
 
-  if (hour >= 5 && hour < 12) return `Bonjour, ${name}`;
-  if (hour >= 12 && hour < 18) return `Bon après-midi, ${name}`;
-  if (hour >= 18 && hour < 22) return `Bonsoir, ${name}`;
-  return `Bonne nuit, ${name}`;
-}
+    if (hour >= 5 && hour < 12) return `Bonjour, ${name}`;
+    if (hour >= 12 && hour < 18) return `Bon après-midi, ${name}`;
+    if (hour >= 18 && hour < 22) return `Bonsoir, ${name}`;
+    return `Bonne nuit, ${name}`;
+  }
+
 
 
   private isValidQuery(query: string | null): boolean {

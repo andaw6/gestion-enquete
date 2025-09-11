@@ -1,9 +1,15 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import { CommonModule, NgIf } from '@angular/common';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-delete-modal',
   templateUrl: './delete-modal.component.html',
-  styleUrls: ['./delete-modal.component.css']
+  styleUrls: ['./delete-modal.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgIf
+  ]
 })
 export class DeleteModalComponent {
   @Input() isOpen: boolean = false;

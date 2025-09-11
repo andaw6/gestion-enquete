@@ -59,11 +59,18 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.searchChanged.emit(this.searchTerm);
   }
 
-  onReset() {
+  onReset(): void {
+    // Réinitialiser la recherche
     this.searchTerm = '';
+    this.searchControl.reset('', { emitEvent: false }); // évite de relancer setupSearchListener
+
+    // Réinitialiser les filtres
     this.selectedFilters = {};
-    this.reset.emit();
+
+    // Émettre les événements nécessaires
+    this.reset.emit(); // pour signaler un reset global
     this.filtersChanged.emit(this.selectedFilters);
     this.searchChanged.emit(this.searchTerm);
   }
+
 }

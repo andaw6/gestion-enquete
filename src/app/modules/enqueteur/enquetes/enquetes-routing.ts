@@ -20,5 +20,10 @@ export const ENQUETES_ROUTES: Route[] = [
     path: "en-cours",
     loadComponent: () =>
       import("@modules/enqueteur/enquetes/enquete-en-cours/enquete-en-cours.component").then(c => c.EnqueteEnCoursComponent)
+  },
+  {
+    path: "en-cours/:id",
+    loadComponent: () =>
+      import("@modules/enqueteur/enquetes/traitement-enquete/traitement-enquete.component").then(c => c.TraitementEnqueteComponent)
   }
 ];

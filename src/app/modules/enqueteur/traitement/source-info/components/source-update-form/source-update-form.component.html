@@ -1,0 +1,647 @@
+<div
+  *ngIf="isOpen"
+  class="fixed inset-0 bg-dark-900/60 modal-overlay flex items-center justify-center z-50 animate-fade-in"
+  (click)="onOverlayClick($event)"
+>
+  <div
+    class="bg-white rounded-2xl shadow-intense w-full max-w-4xl max-h-[90vh] overflow-hidden animate-zoom-in"
+  >
+    <!-- Header -->
+    <div
+      class="bg-gradient-to-r from-secondary to-secondary-700 text-white px-8 py-6 flex items-center justify-between"
+    >
+      <div class="flex items-center space-x-3">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold">Modifier la source d'information</h2>
+          <p class="text-secondary-100 text-sm mt-1" *ngIf="sourceInfo">
+            ID: #{{ sourceInfo.id }}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="onClose()"
+        class="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form Content -->
+    <div class="p-8 overflow-y-auto max-h-[calc(90vh-180px)] scrollbar-thin">
+      <form
+        [formGroup]="sourceInfoForm"
+        class="space-y-6"
+      >
+        <!-- Informations générales -->
+        <div class="bg-primary-50 rounded-xl p-6 border-l-4 border-primary">
+          <h3 class="text-lg font-bold text-secondary mb-4 flex items-center">
+            <svg
+              class="w-5 h-5 mr-2 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            Informations générales
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Nom -->
+            <div class="input-group">
+              <label
+                for="nom"
+                class="block text-sm font-semibold text-dark-700 mb-2"
+              >
+                Nom de la source <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="nom"
+                formControlName="nom"
+                class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200"
+                placeholder="Ex: Témoignage employé"
+              />
+            </div>
+
+            <!-- Type -->
+            <div class="input-group">
+              <label
+                for="type"
+                class="block text-sm font-semibold text-dark-700 mb-2"
+              >
+                Type de source <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="type"
+                formControlName="codeType"
+                class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200 bg-white"
+              >
+                <option value="">Sélectionner un type</option>
+                <option *ngFor="let type of typeOptions" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <!-- État -->
+            <div class="input-group">
+              <label
+                for="etat"
+                class="block text-sm font-semibold text-dark-700 mb-2"
+              >
+                État <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="etat"
+                formControlName="codeEtat"
+                class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200 bg-white"
+              >
+                <option value="">Sélectionner un état</option>
+                <option *ngFor="let etat of etatOptions" [value]="etat.value">
+                  {{ etat.label }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Fiabilité -->
+            <div class="input-group">
+              <label
+                for="fiabilite"
+                class="block text-sm font-semibold text-dark-700 mb-2"
+              >
+                Fiabilité ({{ fiabiliteMin }}-{{ fiabiliteMax }})
+                <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  id="fiabilite"
+                  formControlName="fiabilite"
+                  [min]="fiabiliteMin"
+                  [max]="fiabiliteMax"
+                  class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200"
+                />
+                <div class="mt-2 bg-dark-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    [class]="
+                      getFiabiliteBarColor() +
+                      ' h-full transition-all duration-300'
+                    "
+                    [style.width]="getFiabiliteBarWidth()"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dates importantes -->
+        <div class="bg-secondary-50 rounded-xl p-6 border-l-4 border-secondary">
+          <h3 class="text-lg font-bold text-secondary mb-4 flex items-center">
+            <svg
+              class="w-5 h-5 mr-2 text-secondary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            Dates importantes
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="input-group">
+              <label
+                for="dateObtention"
+                class="block text-sm font-semibold text-dark-700 mb-2"
+              >
+                Date d'obtention
+              </label>
+              <input
+                type="date"
+                id="dateObtention"
+                formControlName="dateObtention"
+                class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="dateMiseAJour"
+                class="block text-sm font-semibold text-dark-700 mb-2"
+              >
+                Date de mise à jour
+              </label>
+              <input
+                type="date"
+                id="dateMiseAJour"
+                formControlName="dateMiseAJour"
+                class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Description et commentaires -->
+        <div class="space-y-6">
+          <div class="input-group">
+            <label
+              for="description"
+              class="block text-sm font-semibold text-dark-700 mb-2"
+            >
+              Description <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              id="description"
+              formControlName="description"
+              rows="4"
+              class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200 resize-none"
+              placeholder="Décrivez la source d'information..."
+            ></textarea>
+          </div>
+
+          <div class="input-group">
+            <label
+              for="commentaires"
+              class="block text-sm font-semibold text-dark-700 mb-2"
+            >
+              Commentaires additionnels
+            </label>
+            <textarea
+              id="commentaires"
+              formControlName="commentaires"
+              rows="3"
+              class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200 resize-none"
+              placeholder="Ajoutez des commentaires si nécessaire..."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Relations et documents -->
+        <div
+          class="bg-dark-50 rounded-xl p-6 border-l-4 border-dark-400 shadow-card"
+        >
+          <h3 class="text-lg font-bold text-secondary mb-4 flex items-center">
+            <svg
+              class="w-5 h-5 mr-2 text-dark-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+              ></path>
+            </svg>
+            Relations et documents
+          </h3>
+
+          <div
+            class="grid grid-cols-1 gap-6"
+            [ngClass]="{ 'lg:grid-cols-2': enableEnqueteSelection }"
+          >
+            <!-- Section Documents -->
+            <div class="input-group">
+              <label class="block text-sm font-semibold text-dark-700 mb-3">
+                Documents associés
+              </label>
+
+              <!-- Tabs -->
+              <div class="flex border-b border-dark-200 mb-4">
+                <button
+                  type="button"
+                  (click)="switchDocTab('upload')"
+                  [class.active]="activeDocTab === 'upload'"
+                  class="tab-btn px-4 py-2 font-medium text-sm border-b-2 transition-colors"
+                >
+                  Télécharger nouveau
+                </button>
+                <button
+                  type="button"
+                  (click)="switchDocTab('select')"
+                  [class.active]="activeDocTab === 'select'"
+                  class="tab-btn px-4 py-2 font-medium text-sm border-b-2 transition-colors"
+                >
+                  Sélectionner existants
+                </button>
+              </div>
+
+
+              <div class="mt-4" *ngIf="activeDocTab === 'upload'">
+                <app-file-upload
+                  [showSelection]="false"
+                  (filesAdded)="onFilesAdded($event)"
+                ></app-file-upload>
+              </div>
+
+              <!-- Select Existing Zone -->
+              <div *ngIf="activeDocTab === 'select'" class="doc-tab-content">
+                <div class="relative">
+                  <input
+                    type="text"
+                    [(ngModel)]="documentSearchTerm"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Rechercher un document..."
+                    class="w-full px-4 py-2 border-2 border-dark-200 rounded-lg focus:border-primary focus:outline-none transition-colors"
+                  />
+                  <svg
+                    class="w-5 h-5 text-dark-400 absolute right-3 top-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div
+                  class="mt-3 max-h-64 overflow-y-auto border-2 border-dark-200 rounded-lg bg-white custom-scrollbar"
+                >
+                  <div class="divide-y divide-dark-100">
+                    <div
+                      *ngFor="let doc of filteredAvailableDocuments"
+                      class="p-3 hover:bg-primary-50 cursor-pointer transition-colors"
+                      (click)="addDocument(doc)"
+                    >
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 flex-1">
+                          <div
+                            [class]="utilService.getBgIcon(doc.extension)"
+                            class="w-7 h-7 rounded-lg flex items-center justify-center"
+                          >
+                            <i
+                              [class]="
+                                utilService.getIcon(doc.extension, false)
+                              "
+                              class="text-md"
+                            ></i>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <p
+                              class="text-sm font-medium text-dark-700 truncate"
+                            >
+                              {{ doc.nom }}
+                            </p>
+                            <p class="text-xs text-dark-500">
+                              {{ doc.type.libelle }} •
+                              {{ utilService.formatFileSize(doc.taille) }}
+                            </p>
+                          </div>
+                        </div>
+                        <svg
+                          class="w-5 h-5 text-primary flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 4v16m8-8H4"
+                          ></path>
+                        </svg>
+                      </div>
+                    </div>
+                    <p
+                      *ngIf="filteredAvailableDocuments.length === 0"
+                      class="p-4 text-sm text-dark-500 text-center"
+                    >
+                      Aucun document disponible
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selected Documents -->
+              <div class="mt-4">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-xs font-semibold text-dark-600 uppercase">
+                    Documents sélectionnés
+                  </p>
+                  <span
+                    class="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full font-medium"
+                  >
+                    {{ selectedDocuments.length }}
+                  </span>
+                </div>
+                <div class="space-y-2 max-h-80 overflow-y-auto">
+                  <div
+                    *ngFor="let doc of selectedDocuments"
+                    class="flex items-center justify-between bg-white p-3 rounded-lg border border-dark-200 hover:border-primary transition-colors group"
+                  >
+                    <div class="flex items-center space-x-3 flex-1 min-w-0">
+                      <div
+                        [class]="utilService.getBgIcon(doc.extension)"
+                        class="w-7 h-7 rounded-lg flex items-center justify-center"
+                      >
+                        <i
+                          [class]="utilService.getIcon(doc.extension, false)"
+                          class="text-md"
+                        ></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-dark-700 truncate">
+                          {{ doc.nom }}
+                        </p>
+                        <p class="text-xs text-dark-500">
+                          {{ doc.type.libelle }} •
+                          {{ doc.isExisting ? "Existant" : "Nouveau" }}
+                          <span *ngIf="doc.taille">
+                            • {{ utilService.formatFileSize(doc.taille) }}</span
+                          >
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="removeDocument(doc.id, doc.isExisting)"
+                      class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <p
+                    *ngIf="selectedDocuments.length === 0"
+                    class="text-sm text-dark-500 text-center py-4"
+                  >
+                    Aucun document sélectionné
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Enquêtes (conditionnelle) -->
+            <div *ngIf="enableEnqueteSelection" class="input-group">
+              <label class="block text-sm font-semibold text-dark-700 mb-3">
+                Enquêtes liées
+              </label>
+
+              <div class="relative mb-3">
+                <input
+                  type="text"
+                  [(ngModel)]="enqueteSearchTerm"
+                  [ngModelOptions]="{ standalone: true }"
+                  placeholder="Rechercher une enquête..."
+                  class="w-full px-4 py-2 border-2 border-dark-200 rounded-lg focus:border-primary focus:outline-none transition-colors"
+                />
+                <svg
+                  class="w-5 h-5 text-dark-400 absolute right-3 top-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  ></path>
+                </svg>
+              </div>
+
+              <div
+                class="border-2 border-dark-200 rounded-lg bg-white max-h-64 overflow-y-auto"
+              >
+                <div class="divide-y divide-dark-100">
+                  <label
+                    *ngFor="let enq of filteredEnquetes"
+                    class="flex items-center p-3 hover:bg-secondary-50 cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="isEnqueteSelected(enq.id)"
+                      (change)="toggleEnquete(enq.id)"
+                      class="w-4 h-4 text-secondary border-dark-300 rounded focus:ring-secondary focus:ring-2"
+                    />
+                    <div class="ml-3 flex-1">
+                      <p class="text-sm font-medium text-dark-700">
+                        {{ enq.reference }}
+                      </p>
+                      <p class="text-xs text-dark-500">
+                        {{ enq.demande?.objet }}
+                      </p>
+                    </div>
+                    <span
+                      [class]="
+                        'text-xs px-2 py-1 rounded-full ' +
+                        getEnqueteStateBadge(enq.etat.code)
+                      "
+                    >
+                      {{ enq.etat.libelle }}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-xs font-semibold text-dark-600 uppercase">
+                    Enquêtes sélectionnées
+                  </p>
+                  <span
+                    class="text-xs bg-secondary-100 text-secondary-700 px-2 py-1 rounded-full font-medium"
+                  >
+                    {{ selectedEnquetes.length }}
+                  </span>
+                </div>
+                <div class="space-y-2">
+                  <div
+                    *ngFor="let enq of selectedEnquetes"
+                    class="flex items-center justify-between bg-white p-3 rounded-lg border border-dark-200"
+                  >
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-secondary">
+                        {{ enq.reference }}
+                      </p>
+                      <p class="text-xs text-dark-600">
+                        {{ enq.demande?.objet }}
+                      </p>
+                    </div>
+                    <span
+                      [class]="
+                        'text-xs px-2 py-1 rounded-full ' +
+                        getEnqueteStateBadge(enq.etat.code)
+                      "
+                    >
+                      {{ enq.etat.libelle }}
+                    </span>
+                  </div>
+                  <p
+                    *ngIf="selectedEnquetes.length === 0"
+                    class="text-sm text-dark-500 text-center py-4"
+                  >
+                    Aucune enquête sélectionnée
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Utilisateur responsable -->
+        <div *ngIf="enableUserSelection" class="input-group">
+          <label
+            for="utilisateur"
+            class="block text-sm font-semibold text-dark-700 mb-2"
+          >
+            Utilisateur responsable <span class="text-red-500">*</span>
+          </label>
+          <select
+            id="utilisateur"
+            formControlName="utilisateurId"
+            class="w-full px-4 py-3 border-2 border-dark-200 rounded-lg focus:border-primary transition-all duration-200 bg-white"
+          >
+            <option [value]="null">Sélectionner un utilisateur</option>
+            <option *ngFor="let user of availableUsers" [value]="user.id">
+              {{ user.username }}
+            </option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div
+      class="bg-dark-50 px-8 py-4 flex items-center justify-between border-t border-dark-200"
+    >
+      <div class="flex items-center space-x-2 text-sm text-dark-600">
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        <span
+          >Les champs marqués d'un <span class="text-red-500">*</span> sont
+          obligatoires</span
+        >
+      </div>
+      <div class="flex items-center space-x-3">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="px-6 py-3 border-2 border-dark-300 text-dark-700 font-semibold rounded-lg hover:bg-dark-100 transition-all duration-200"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          (click)="onSubmit()"
+          class="px-6 py-3 bg-primary hover:bg-primary-600 text-white font-semibold rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
+        >
+          <i *ngIf="!isSubmitting" class="fas fa-check w-5 h-5"></i>
+          <i *ngIf="isSubmitting" class="fas fa-spinner fa-spin w-5 h-5"></i>
+          <span>{{
+            isSubmitting ? "Modification..." : "Enregistrer les modifications"
+          }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

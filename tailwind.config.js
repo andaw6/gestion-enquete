@@ -24,7 +24,7 @@ module.exports = {
         },
 
         // Couleur secondaire cyan
-        primary: {
+        primary: {    
           DEFAULT: "#17ABDD",
           50: "#E7F4FA",
           100: "#BAE1F1",

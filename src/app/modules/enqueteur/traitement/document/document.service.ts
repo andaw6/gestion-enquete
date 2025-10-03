@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {IParams} from "@core/interfaces/http-options.interface";
-import {ApiResponse} from "@core/interfaces/api-response.interface";
-import { DocumentData, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
-import {ApiCrudService} from "@core/api/api-crud.service";
-import { DocumentModel } from '@core/model/document.model';
+import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { map, Observable, of } from "rxjs";
+import { IParams } from "@core/interfaces/http-options.interface";
+import { ApiResponse } from "@core/interfaces/api-response.interface";
+import { DocumentData, DocumentUrl } from "@modules/enqueteur/traitement/document/document";
+import { ApiCrudService } from "@core/api/api-crud.service";
+import { DocumentModel, DocumentRequestData, DocumentUsage } from '@core/model/document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class DocumentService extends ApiCrudService<DocumentModel, DocumentData>
     });
   }
 
-  override getAll(params: IParams= {}): Observable<ApiResponse<DocumentModel>> {
+  override getAll(params: IParams = {}): Observable<ApiResponse<DocumentModel>> {
     return this.responseGetMany<DocumentModel>(params, "/all");
   }
 
@@ -35,13 +35,13 @@ export class DocumentService extends ApiCrudService<DocumentModel, DocumentData>
     return this.responsePostOne<DocumentModel>(this.toFormData(data));
   }
 
-  private toFormData(data:DocumentData):FormData{
+  private toFormData(data: DocumentData): FormData {
     const formData = new FormData();
     formData.append("nom", data.nom);
     formData.append("description", data.description);
     formData.append("typeId", data.typeId.toString());
     formData.append("file", data.file);
-    if(data.utilisateurId){
+    if (data.utilisateurId) {
       formData.append("utilisateurId", data.utilisateurId.toString());
     }
     return formData;
@@ -51,8 +51,8 @@ export class DocumentService extends ApiCrudService<DocumentModel, DocumentData>
     return this.responsePutOne<DocumentModel>(`/${id}`, data);
   }
 
-  override deleteOne(id: number): Observable<boolean> {
-    return this.responseDeleteOne(`/${id}`);
+  override deleteOne(id: number, params: IParams = {}): Observable<boolean> {
+    return this.responseDeleteOne(`/${id}`, params);
   }
 
   getUrl(id: number): Observable<DocumentUrl | null> {
@@ -68,4 +68,29 @@ export class DocumentService extends ApiCrudService<DocumentModel, DocumentData>
       responseType: 'blob'
     });
   }
+
+  checkIfUsed(id: number, params: IParams = {}): Observable<DocumentUsage> {
+    return this.responseGetOne<DocumentUsage>(`/${id}/usage`, params).pipe(map(d => d!));
+  }
+
+  associer(
+    params: { enqueteId?: number, demandeId?: number, sourceId?: number },
+    data: { files: File[], infos: DocumentRequestData[] }
+  ): Observable<DocumentModel[]> {
+
+    const formData = new FormData();
+    // Ajouter les fichiers
+    data.files.forEach(file => {
+      formData.append('documents', file);
+    });
+    // Ajouter les métadonnées avec la clé infos
+    formData.append('metadonnees', JSON.stringify({ infos: data.infos }));
+
+    return this.responsePostMany<DocumentModel>("/associer", formData, params);
+  }
+
+  
+
+
+
 }

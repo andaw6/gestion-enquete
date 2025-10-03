@@ -1,0 +1,65 @@
+<div>
+  <!-- Header avec boutons d'action -->
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-lg font-semibold text-gray-900">Documents associés</h3>
+    <div class="flex space-x-3">
+      <button
+        (click)="openExistingDocumentsModal()"
+        class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+      >
+        <i class="fas fa-link w-4 h-4"></i>
+        <span>Associer existants</span>
+      </button>
+
+      <button
+        (click)="openUploadModal()"
+        class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        <i class="fas fa-plus w-5 h-5"></i>
+        <span>Ajouter nouveau</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="my3">
+    <!-- Zone de glisser-déposer -->
+    <app-document-upload-zone
+      (filesSelected)="handleFilesFromDropZone($event)"
+    />
+  </div>
+
+  <div class="my-3">
+    <!-- Liste des documents -->
+    <app-documents-list
+      [documents]="documents"
+      (viewDocument)="viewDocument.emit($event)"
+      (downloadDocument)="downloadDocument.emit($event)"
+      (deleteDocument)="deleteDocument.emit($event)"
+      (openUploadModal)="openUploadModal()"
+      (openExistingDocumentsModal)="openExistingDocumentsModal()"
+    />
+  </div>
+
+  <div class="my-3">
+    <!-- Modal d'upload -->
+    <app-document-upload-modal
+      [show]="showUploadModal"
+      [initialFiles]="selectedFiles"
+      [enqueteId]="enquete.id"
+      (close)="closeUploadModal()"
+      (uploadSuccess)="handleUploadSuccess($event)"
+    />
+  </div>
+
+  <div class="mt-3">
+    <!-- Modal de sélection de documents existants -->
+    <app-existing-documents-modal
+      [show]="showExistingDocumentsModal"
+      [enqueteId]="enquete.id"
+      [userId]="user.id"
+      [associatedDocuments]="documents"
+      (close)="closeExistingDocumentsModal()"
+      (documentsAssociated)="handleDocumentsAssociated($event)"
+    />
+  </div>
+</div>

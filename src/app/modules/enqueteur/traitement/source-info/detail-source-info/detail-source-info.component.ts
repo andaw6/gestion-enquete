@@ -6,6 +6,8 @@ import {Document} from "@modules/enqueteur/traitement/document/document";
 import {DatePipe} from "@angular/common";
 import {UtilService} from "@core/services/util.service";
 import {DocumentService} from "@modules/enqueteur/traitement/document/document.service";
+import { SourceInfoModel } from '@core/model/source-info.model';
+import { DocumentModel } from '@core/model/document.model';
 
 @Component({
   selector: 'app-detail-source-info',
@@ -14,9 +16,9 @@ import {DocumentService} from "@modules/enqueteur/traitement/document/document.s
 })
 export class DetailSourceInfoComponent implements OnInit {
   id!: number;
-  source!: SourceInfo;
+  source!: SourceInfoModel;
   isPreviewModalOpen: boolean = false;
-  selectedDocument: Document | null = null;
+  selectedDocument: DocumentModel | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,12 +73,12 @@ export class DetailSourceInfoComponent implements OnInit {
   }
 
 
-  handleViewDocument(document: Document) {
+  handleViewDocument(document: DocumentModel) {
     this.selectedDocument = document;
     this.isPreviewModalOpen = true;
   }
 
-  handleDownloadDocument(document: Document) {
+  handleDownloadDocument(document: DocumentModel) {
     this.documentService.getView(document.id, {download: true}).subscribe({
       next: (blob: Blob) => this.utilService.downloadBlob(this.renderer, blob, `${document.nom}.${document.extension}`),
       error: () =>
@@ -107,11 +109,10 @@ export class DetailSourceInfoComponent implements OnInit {
   getUsers() {
     if (!this.source) return [];
     return [
-      this.source.utilisateur
     ]
   }
   getProgress(): number {
     if (!this.source) return 0;
-    return Number(this.source.niveauFiabilite)
+    return Number(this.source.fiabilite)
   }
 }

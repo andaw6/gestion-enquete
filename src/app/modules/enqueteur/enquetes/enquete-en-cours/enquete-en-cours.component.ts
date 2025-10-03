@@ -2,7 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { EnqueteListComponent } from './components/enquete-list/enquete-list.component';
-import { EnqueteFiltersComponent, FilterOptions } from './components/enquete-filters/enquete-filters.component';
+import { FilterOptions } from './components/enquete-filters/enquete-filters.component';
 import { StatCard, StatsCardsComponent } from './components/stats-cards/stats-cards.component';
 import { EnqueteDetailsComponent, EnqueteDisplay } from './components/enquete-details/enquete-details.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
@@ -20,6 +20,7 @@ import { PaginationComponent } from "@shared/components/pagination/pagination.co
 import { FilterConfig } from '@core/interfaces/filter-config.interface';
 import { PRIORITE_LEVELS } from '@config/constant';
 import { SearchFilterComponent } from "@shared/components/search-filter/search-filter.component";
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: "root",
@@ -226,7 +227,6 @@ const FILTERS: FilterConfig[] = [
     CommonModule,
     PageHeaderComponent,
     EnqueteListComponent,
-    EnqueteFiltersComponent,
     EnqueteDetailsComponent,
     StatsCardsComponent,
     NotificationsComponent,
@@ -252,8 +252,6 @@ export class EnqueteEnCoursComponent {
     enAttente: 0,
     enCours: 0,
     terminees: 0,
-    enValidation: 0,
-    enRevision: 0,
     valides: 0,
     annulees: 0,
     echeances: 0,
@@ -277,7 +275,7 @@ export class EnqueteEnCoursComponent {
       },
       {
         title: "Urgentes",
-        value: 0,
+        value: this.enqueteStats().urgent ?? 0,
         icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
         colorClass: "to-red-50",
       },
@@ -289,7 +287,7 @@ export class EnqueteEnCoursComponent {
       },
       {
         title: "Progression",
-        value: `0%`,
+        value: `${(this.enqueteStats().progression ?? 0).toFixed(2)}%`,
         icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
         colorClass: "to-green-50",
       },
@@ -304,6 +302,7 @@ export class EnqueteEnCoursComponent {
     private service: EnqueteService,
     private readonly utilisateurState: UtilisateurStateService,
     private readonly toastService: ToastService,
+    private router:Router,
   ) {
     this.filteredEnquetes$ = this.enqueteService.filteredEnquetes$
     this.stats$ = this.filteredEnquetes$.pipe(map((enquetes) => this.calculateStats(enquetes)))
@@ -339,6 +338,7 @@ export class EnqueteEnCoursComponent {
       enqueteurId: this.user.id,
       ...filter,
       ...this.pagination(),
+      sort:"updatedAt,desc"
     })
       .pipe(
         // timeout(10000),
@@ -355,7 +355,7 @@ export class EnqueteEnCoursComponent {
             this.pagination.set(response.pagination);
           }
         },
-        error:_=>{
+        error: _ => {
           this.toastService.show("Erreur lors du chargement des données", "error");
         }
       });
@@ -416,6 +416,7 @@ export class EnqueteEnCoursComponent {
   }
 
   showEnqueteDetails(enquete: EnqueteModel): void {
+    this.router.navigate(["/enqueteur/enquetes/en-cours", enquete.id])
     // this.selectedEnquete = this.enqueteService.getEnqueteById(id) || null
     // this.currentView = "details"
   }

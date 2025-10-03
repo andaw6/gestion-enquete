@@ -104,25 +104,7 @@ export abstract class ApiService<T = any> {
     params?: IParams,
     options?: HttpOptions
   ): Observable<T> {
-    let fullUrl = `${this.baseUrl}${endpoint}`;
-
-    if (params) {
-      const validParams: IParams = {};
-
-      // Ne garder que les paramètres définis et non vides
-      Object.keys(params).forEach((key) => {
-        const value = params[key];
-        if (value !== null && value !== undefined && value !== '') {
-          validParams[key] = value;
-        }
-      });
-
-      const queryString = this.formatQueryParams(validParams);
-      if (queryString) {
-        fullUrl += `?${queryString}`;
-      }
-    }
-
+    const fullUrl = `${this.baseUrl}${endpoint}${this.formatParam(params)}`;
     return this.http.get<T>(fullUrl, this.addAuthHeader(options)).pipe(
       tap((response) => this.logResponse('GET', fullUrl, response)),
       catchError((error) => this.handleError(error))
@@ -138,8 +120,8 @@ export abstract class ApiService<T = any> {
    * @param data - Corps JSON à envoyer.
    * @param options - Options HTTP supplémentaires.
    */
-  protected post<T>(endpoint: string, data: any, options?: HttpOptions): Observable<T> {
-    const fullUrl = `${this.baseUrl}${endpoint}`;
+  protected post<T>(endpoint: string, data: any, params?: IParams, options?: HttpOptions): Observable<T> {
+    const fullUrl = `${this.baseUrl}${endpoint}` + this.formatParam(params);
     return this.http.post<T>(fullUrl, data, this.addAuthHeader(options)).pipe(
       tap((response) => this.logResponse('POST', fullUrl, response)),
       catchError((error) => this.handleError(error))
@@ -154,8 +136,8 @@ export abstract class ApiService<T = any> {
    * @param data - Corps JSON à envoyer.
    * @param options - Options HTTP supplémentaires.
    */
-  protected put<T>(endpoint: string, data: any, options?: HttpOptions): Observable<T> {
-    const fullUrl = `${this.baseUrl}${endpoint}`;
+  protected put<T>(endpoint: string, data: any, params?: IParams, options?: HttpOptions): Observable<T> {
+    const fullUrl = `${this.baseUrl}${endpoint}${this.formatParam(params)}`;
     return this.http.put<T>(fullUrl, data, this.addAuthHeader(options)).pipe(
       tap((response) => this.logResponse('PUT', fullUrl, response)),
       catchError((error) => this.handleError(error))
@@ -169,8 +151,8 @@ export abstract class ApiService<T = any> {
    * @param endpoint - Chemin relatif (à `baseUrl`).
    * @param options - Options HTTP supplémentaires.
    */
-  protected delete<T>(endpoint: string, options?: HttpOptions): Observable<T> {
-    const fullUrl = `${this.baseUrl}${endpoint}`;
+  protected delete<T>(endpoint: string, params?: IParams, options?: HttpOptions): Observable<T> {
+    const fullUrl = `${this.baseUrl}${endpoint}${this.formatParam(params)}`;
     return this.http.delete<T>(fullUrl, this.addAuthHeader(options)).pipe(
       tap((response) => this.logResponse('DELETE', fullUrl, response)),
       catchError((error) => this.handleError(error))
@@ -192,8 +174,14 @@ export abstract class ApiService<T = any> {
     params?: IParams,
     options?: HttpOptions
   ): Observable<T> {
-    let fullUrl = `${this.baseUrl}${endpoint}`;
+    const fullUrl = `${this.baseUrl}${endpoint}${this.formatParam(params)}`;
+    return this.http.patch<T>(fullUrl, data, this.addAuthHeader(options)).pipe(
+      tap((response) => this.logResponse('PATCH', fullUrl, response)),
+      catchError((error) => this.handleError(error))
+    );
+  }
 
+  formatParam(params?: IParams) {
     if (params) {
       const validParams: IParams = {};
       Object.keys(params).forEach((key) => {
@@ -205,16 +193,11 @@ export abstract class ApiService<T = any> {
 
       const queryString = this.formatQueryParams(validParams);
       if (queryString) {
-        fullUrl += `?${queryString}`;
+        return `?${queryString}`;
       }
     }
-
-    return this.http.patch<T>(fullUrl, data, this.addAuthHeader(options)).pipe(
-      tap((response) => this.logResponse('PATCH', fullUrl, response)),
-      catchError((error) => this.handleError(error))
-    );
+    return "";
   }
-
 
   /**
    * Affiche la réponse HTTP dans la console (mode développement).
@@ -333,8 +316,8 @@ export abstract class ApiService<T = any> {
    * @param url - Endpoint.
    * @param data - Payload.
    */
-  protected responsePostOne<T = any>(data: any, url?: string): Observable<T> {
-    return this.post<T>(url ?? "", data).pipe(
+  protected responsePostOne<T = any>(data: any, url?: string, params: IParams = {}): Observable<T> {
+    return this.post<T>(url ?? "", data, params).pipe(
       map((response) => response ?? data),
       catchError((error) => {
         // eslint-disable-next-line no-console
@@ -351,8 +334,8 @@ export abstract class ApiService<T = any> {
    * @param url - Endpoint.
    * @param data - Payload.
    */
-  protected responsePutOne<T = any>(url: string, data: any): Observable<T> {
-    return this.put<T>(url, data).pipe(
+  protected responsePutOne<T = any>(url: string, data: any, params: IParams = {}): Observable<T> {
+    return this.put<T>(url, data, params).pipe(
       map((response) => response ?? data),
       catchError((error) => {
         // eslint-disable-next-line no-console
@@ -368,8 +351,8 @@ export abstract class ApiService<T = any> {
    * @param url - Endpoint.
    * @returns `true` en cas de succès.
    */
-  protected responseDeleteOne<T = any>(url: string): Observable<boolean> {
-    return this.delete<T>(url).pipe(
+  protected responseDeleteOne<T = any>(url: string, params: IParams = {}): Observable<boolean> {
+    return this.delete<T>(url, params).pipe(
       map(() => true),
       catchError((error) => {
         // eslint-disable-next-line no-console
@@ -386,8 +369,8 @@ export abstract class ApiService<T = any> {
    * @param data - Tableau ou objet d'identifiants.
    * @returns `true` en cas de succès.
    */
-  protected responseDeleteMany<T = any>(url: string, data: any): Observable<boolean> {
-    const fullUrl = `${this.baseUrl}${url}`;
+  protected responseDeleteMany<T = any>(url: string, data: any, params: IParams = {}): Observable<boolean> {
+    const fullUrl = `${this.baseUrl}${url}${this.formatParam(params)}`;
     const options: { headers?: HttpHeaders; params?: HttpParams; withCredentials?: boolean; body: any } = {
       ...this.addAuthHeader(),
       body: data,
@@ -410,8 +393,8 @@ export abstract class ApiService<T = any> {
    * @param url - Endpoint.
    * @param data - Tableau d'objets.
    */
-  protected responsePostMany<T = any>(url: string, data: any[]): Observable<T[]> {
-    return this.post<T[]>(url, data).pipe(
+  protected responsePostMany<T = any>(url: string, data: any[] | any, params?: IParams): Observable<T[]> {
+    return this.post<T[]>(url, data, params).pipe(
       map((response) => response ?? data),
       catchError((error) => {
         // eslint-disable-next-line no-console

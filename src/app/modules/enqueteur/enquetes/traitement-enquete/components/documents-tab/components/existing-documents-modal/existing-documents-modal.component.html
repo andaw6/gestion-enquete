@@ -1,0 +1,167 @@
+<!-- Modal de sélection de documents existants -->
+<div
+  *ngIf="show"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  (click)="close.emit()"
+>
+  <div
+    class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden custom-scrollbar flex flex-col"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header du modal -->
+    <div class="flex justify-between items-center p-6 border-b border-gray-200">
+      <h3 class="text-xl font-semibold text-gray-900">
+        Sélectionner des documents existants
+      </h3>
+      <button
+        (click)="close.emit()"
+        class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-times w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="p-6 border-b border-gray-200">
+      <div class="relative">
+        <i
+          class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        ></i>
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Rechercher par nom, description ou type..."
+          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Liste des documents -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+      <div *ngIf="isLoadingExistingDocuments" class="text-center py-8">
+        <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
+        <p class="text-gray-500">Chargement des documents...</p>
+      </div>
+
+      <div
+        *ngIf="!isLoadingExistingDocuments && existingDocuments.length === 0"
+        class="text-center py-8"
+      >
+        <i class="fas fa-search text-2xl text-gray-400 mb-2"></i>
+        <p class="text-gray-500">Aucun document trouvé</p>
+      </div>
+
+      <div
+        *ngIf="!isLoadingExistingDocuments && existingDocuments.length > 0"
+        class="space-y-3"
+      >
+        <div
+          *ngFor="let document of existingDocuments"
+          class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+          [class.bg-blue-50]="isDocumentSelected(document)"
+          [class.border-blue-300]="isDocumentSelected(document)"
+          [class.opacity-50]="isDocumentAlreadyAssociated(document)"
+          (click)="
+            !isDocumentAlreadyAssociated(document) &&
+              toggleDocumentSelection(document)
+          "
+        >
+          <div class="flex-shrink-0 mr-4">
+            <input
+              type="checkbox"
+              [checked]="isDocumentSelected(document)"
+              [disabled]="isDocumentAlreadyAssociated(document)"
+              (click)="$event.stopPropagation()"
+              (change)="toggleDocumentSelection(document)"
+              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+          </div>
+
+          <div class="flex-shrink-0 mr-4">
+            <i
+              [class]="utilService.getIcon(document.extension, false)"
+              class="text-2xl"
+            ></i>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-2">
+              <h4 class="font-medium text-gray-900 truncate">
+                {{ document.nom }}
+              </h4>
+              <span
+                *ngIf="isDocumentAlreadyAssociated(document)"
+                class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full"
+              >
+                Déjà associé
+              </span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">
+              Type: {{ document.type.libelle }}
+              <span *ngIf="document.taille">
+                • {{ utilService.formatFileSize(document.taille) }}
+              </span>
+              <span *ngIf="document.createdAt">
+                • {{ formatDate(document.createdAt) }}
+              </span>
+            </p>
+            <p
+              *ngIf="document.description"
+              class="text-xs text-gray-400 mt-1 truncate"
+            >
+              {{ document.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <app-pagination1
+          *ngIf="!isLoadingExistingDocuments && existingDocuments.length > 0"
+          [pagination]="pagination"
+          [maxVisiblePages]="5"
+          [loading]="isLoadingExistingDocuments"
+          (pageChange)="setPagination($event)"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-center items-center">
+      <app-loader [show]="isLoadingExistingDocuments" ></app-loader>
+    </div>
+    <!-- Footer avec compteur et boutons -->
+    <div class="p-6 border-t border-gray-200 bg-gray-50">
+      <div class="flex justify-between items-center">
+        <div class="text-sm text-gray-600">
+          {{ selectedExistingDocuments.length }} document(s) sélectionné(s)
+        </div>
+        <div class="flex space-x-3">
+          <button
+            (click)="close.emit()"
+            class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+          >
+            Annuler
+          </button>
+          <button
+            (click)="associateSelectedDocuments()"
+            [disabled]="!canAssociateDocuments()"
+            class="px-6 py-2 bg-green-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center space-x-2"
+            [class.opacity-50]="!canAssociateDocuments()"
+            [class.cursor-not-allowed]="!canAssociateDocuments()"
+            [class.hover:bg-green-700]="canAssociateDocuments()"
+          >
+            <i class="fas fa-link w-4 h-4"></i>
+            <span
+              >Associer
+              {{
+                selectedExistingDocuments.length > 0
+                  ? "(" + selectedExistingDocuments.length + ")"
+                  : ""
+              }}</span
+            >
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

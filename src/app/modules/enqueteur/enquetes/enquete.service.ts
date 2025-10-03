@@ -5,6 +5,7 @@ import { map, Observable } from "rxjs";
 import { IParams } from '@core/interfaces/http-options.interface';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
 import { EnqueteEtatEnquete, EnqueteModel, EnqueteStatEtat } from '@core/model/enquete.model';
+import { DocumentModel } from '@core/model/document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class EnqueteService extends ApiCrudService<EnqueteModel> {
   }
 
   override getOne(id: number): Observable<EnqueteModel | null> {
-    return this.responseGetOne<EnqueteModel>(`/${id}`);
+    return this.responseGetOne<EnqueteModel>(`/${id}/all`);
   }
 
   changeEtat(id: number, code: EnqueteEtatEnquete): Observable<EnqueteModel> {
@@ -46,4 +47,24 @@ export class EnqueteService extends ApiCrudService<EnqueteModel> {
   }
 
 
+  associeDocuments(id: number, docIds: number[], files: File[] = []): Observable<EnqueteModel> {
+    const formData = new FormData();
+
+    // Ajouter les fichiers
+    files.forEach(file => {
+      formData.append('fichiers', file);
+    });
+
+    // Ajouter le JSON sous la clé attendue "document"
+    const payload = { ids: docIds };
+    formData.append(
+      'document',
+      new Blob([JSON.stringify(payload)], { type: 'application/json' })
+    );
+    return this.responsePatchOne<EnqueteModel>(`/${id}/documents`, formData);
+  }
+
+  associeSources(id: number, sourceIds: number[]): Observable<EnqueteModel> {
+    return this.responsePatchOne<EnqueteModel>(`/${id}/sources`, { ids: sourceIds })
+  }
 }

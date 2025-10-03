@@ -30,8 +30,8 @@ import { SpinnerComponent } from "@shared/components/spinner/spinner.component";
     NgIf,
     DocumentPreviewModalComponent,
     PaginationComponent,
-      SpinnerComponent
-],
+    SpinnerComponent
+  ],
   templateUrl: './assignation.component.html',
   styleUrls: ['./assignation.component.css']
 })
@@ -43,12 +43,12 @@ export class AssignationComponent implements OnInit {
   selectedDocument: DocumentModel | null = null;
   isPreviewModalOpen: boolean = false;
 
-  pagination: Pagination = {
+  pagination = signal<Pagination>({
     totalItem: 1,
     totalPage: 1,
     page: 1,
     limit: 10
-  }
+  });
 
   enqueteState = signal<EnqueteStatEtat>({
     enAttente: 5,
@@ -145,7 +145,7 @@ export class AssignationComponent implements OnInit {
       next: ({ stats, enquetes }) => {
         this.enqueteState.set(stats);
         this.enquetes.set(enquetes.data);
-        this.pagination = enquetes.pagination;
+        this.pagination.set(enquetes.pagination);
         this.loading.set(false);
       },
       error: _ => {
@@ -160,6 +160,12 @@ export class AssignationComponent implements OnInit {
       next: response => {
         const updatedEnquetes = this.enquetes().filter(enq => enq.id !== response.id);
         this.enquetes.set(updatedEnquetes);
+        this.enqueteState.update(e => ({
+          ...e,
+          enAttente: e.enAttente - 1,
+          enCours: e.enCours + 1
+        }));
+        this.pagination.update(e => ({ ...e, totalItem: e.totalItem - 1 }));
       },
       error: _ => {
         this.toast.show("Erreur lors du démarrage de l'enquête", "error")

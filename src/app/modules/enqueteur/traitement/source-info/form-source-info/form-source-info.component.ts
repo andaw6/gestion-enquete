@@ -19,6 +19,7 @@ import { NotificationAlertService } from "@core/services/notification-alert.serv
 import { forkJoin } from 'rxjs';
 import { RELIABILITY_LEVELS } from "@config/constant";
 import { DocumentModel } from "@core/model/document.model";
+import { SourceInfoModel } from '@core/model/source-info.model';
 
 @Component({
   selector: 'app-form-source-info',
@@ -192,25 +193,26 @@ export class FormSourceInfoComponent implements OnInit {
 
     this.isSubmitting = true;
     const payload = this.getFormData();
-    const request$ = this.isEditingMode()
-      ? this.sourceInfoService.update(Number(this.draft.id), payload)
-      : this.sourceInfoService.create(payload);
+    // const request$ = this.isEditingMode()
+    //   ? this.sourceInfoService.update(Number(this.draft.id), payload)
+    //   : this.sourceInfoService.create();
 
-    this.sourceId = null;
-    request$.subscribe({
-      next: (data: SourceInfo) => {
-        this.showSuccessModal = true;
-        this.isSubmitting = false;
-        localStorage.removeItem(this.key);
-        this.draft = undefined;
-        this.sourceId = data.id;
-      },
-      error: err => {
-        this.isSubmitting = false;
-        this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
-        console.error(err);
-      }
-    });
+
+    // this.sourceId = null;
+    // request$.subscribe({
+    //   next: (data: SourceInfoModel) => {
+    //     this.showSuccessModal = true;
+    //     this.isSubmitting = false;
+    //     localStorage.removeItem(this.key);
+    //     this.draft = undefined;
+    //     this.sourceId = data.id;
+    //   },
+    //   error: err => {
+    //     this.isSubmitting = false;
+    //     this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
+    //     console.error(err);
+    //   }
+    // });
   }
 
   isEditingMode(): boolean {

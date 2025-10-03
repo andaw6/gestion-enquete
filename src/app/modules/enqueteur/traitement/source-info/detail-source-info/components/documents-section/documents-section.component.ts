@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Document} from "@modules/enqueteur/traitement/document/document";
 import {FILE_BG_CLASS_MAP, FILE_ICON_CLASS_MAP, FILE_TYPE_CATEGORY_MAP} from "@config/constant";
 import {UtilService} from "@core/services/util.service";
+import { DocumentModel } from '@core/model/document.model';
 
 @Component({
   selector: 'app-documents-section',
@@ -9,9 +10,9 @@ import {UtilService} from "@core/services/util.service";
   styleUrls: ['./documents-section.component.css']
 })
 export class DocumentsSectionComponent {
-  @Input() documents: Document[] = [];
-  @Output() onViewDocument = new EventEmitter<Document>();
-  @Output() onDownloadDocument = new EventEmitter<Document>();
+  @Input() documents: DocumentModel[] = [];
+  @Output() onViewDocument = new EventEmitter<DocumentModel>();
+  @Output() onDownloadDocument = new EventEmitter<DocumentModel>();
 
   constructor(
     protected utilService:UtilService,

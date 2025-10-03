@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, TrackByFunction} from '@angular/core';
-import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info";
+import { SourceInfoModel } from '@core/model/source-info.model';
 
 @Component({
   selector: 'app-source-list',
@@ -8,19 +8,19 @@ import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info"
 })
 export class SourceListComponent {
 
-  @Input() sources: SourceInfo[] = [];
-  @Output() onActionClick: EventEmitter<SourceInfo> = new EventEmitter<SourceInfo>();
-  @Output() onUpdatedClick: EventEmitter<SourceInfo> = new EventEmitter<SourceInfo>();
+  @Input() sources: SourceInfoModel[] = [];
+  @Output() onActionClick = new EventEmitter<SourceInfoModel>();
+  @Output() onUpdatedClick = new EventEmitter<SourceInfoModel>();
   @Input() selected: number|null = null;
 
 
-  getStars(source: SourceInfo): boolean[] {
+  getStars(source: SourceInfoModel): boolean[] {
     return Array(5)
       .fill(false)
-      .map((_, i) => i < Number(source.niveauFiabilite))
+      .map((_, i) => i < Number(source.fiabilite))
   }
 
-  getUsageText(source: SourceInfo): string {
+  getUsageText(source: SourceInfoModel): string {
     return `${"Utilisée"} ${'N'} fois`
   }
 }

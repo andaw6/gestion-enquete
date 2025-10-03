@@ -12,3 +12,16 @@ export interface DocumentModel {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+
+export interface DocumentRequestData {
+  nom: string,
+  description: string,
+  codeType: string
+}
+
+export interface DocumentUsage {
+  readonly documentId: number;
+  used: boolean;
+  message: string;
+}

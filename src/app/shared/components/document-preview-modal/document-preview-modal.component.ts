@@ -13,7 +13,6 @@ import { DocumentService } from '@modules/enqueteur/traitement/document/document
 import { of, Subscription, switchMap } from 'rxjs';
 import { DocumentUrl, Document } from '@modules/enqueteur/traitement/document/document';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { NotificationAlertService } from "@core/services/notification-alert.service";
 import { CommonModule, NgIf } from "@angular/common";
 import { catchError, map } from "rxjs/operators";
 import { SpinnerComponent } from "@shared/components/spinner/spinner.component";
@@ -117,7 +116,6 @@ export class DocumentPreviewModalComponent implements OnInit, OnDestroy, OnChang
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["document"]) {
       let doc: Document | DocumentModel | null = changes["document"].currentValue as Document | DocumentModel | null;
-      console.log("this is a test to document change", doc)
       if (doc) {
         this.documentData = doc;
         this.documentId = doc.id;

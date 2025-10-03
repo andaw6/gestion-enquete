@@ -1,0 +1,53 @@
+<div class="p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Option: Sélectionner une source existante -->
+        <button
+          type="button"
+          (click)="modeSelected.emit('select')"
+          class="group relative bg-gradient-to-br from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 border-2 border-primary-200 hover:border-primary-400 rounded-xl p-8 transition-all duration-300 hover:shadow-xl"
+        >
+          <div class="flex flex-col items-center text-center space-y-4">
+            <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i class="fas fa-folder-open text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-secondary-800 mb-2">
+                Sélectionner une Source
+              </h3>
+              <p class="text-sm text-dark-600">
+                Choisissez parmi les sources déjà enregistrées dans le système
+              </p>
+            </div>
+            <div class="flex items-center space-x-2 text-primary font-medium">
+              <span>Parcourir les sources</span>
+              <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+        </button>
+
+        <!-- Option: Créer une nouvelle source -->
+        <button
+          type="button"
+          (click)="modeSelected.emit('create')"
+          class="group relative bg-gradient-to-br from-secondary-50 to-secondary-100 hover:from-secondary-100 hover:to-secondary-200 border-2 border-secondary-200 hover:border-secondary-400 rounded-xl p-8 transition-all duration-300 hover:shadow-xl"
+        >
+          <div class="flex flex-col items-center text-center space-y-4">
+            <div class="bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i class="fas fa-plus-circle text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-secondary-800 mb-2">
+                Créer une Nouvelle Source
+              </h3>
+              <p class="text-sm text-dark-600">
+                Ajoutez une nouvelle source d'information avec tous les détails
+              </p>
+            </div>
+            <div class="flex items-center space-x-2 text-secondary font-medium">
+              <span>Créer maintenant</span>
+              <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>

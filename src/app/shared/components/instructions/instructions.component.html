@@ -1,0 +1,98 @@
+<div
+  class="priority-urgent rounded-xl border-2 overflow-hidden animate-slide-in mb-4"
+>
+  <div class="bg-gradient-to-r from-primary-500 to-secondary-500 px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="bg-white/20 rounded-lg p-2 mr-4 animate-pulse">
+          <i class="fas fa-bell text-white text-lg"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-white">Instructions</h3>
+          <p class="text-primary-100 text-sm mt-1">
+            Voici les instructions du chef d'enquêteur
+          </p>
+        </div>
+      </div>
+      <div
+        *ngIf="enquete.demande!.urgent ?? false"
+        class="flex items-center bg-red-700 rounded-full px-3 py-1 animate-pulse"
+      >
+        <i class="fas fa-exclamation text-white mr-2"></i>
+        <span class="text-white text-sm font-bold">URGENT</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <div class="flex items-start space-x-4">
+      <div class="flex flex-col items-center">
+        <div class="w-3 h-3 bg-primary-500 rounded-full animate-ping"></div>
+        <div
+          class="w-0.5 h-16 bg-gradient-to-b from-primary-500 to-transparent mt-2"
+        ></div>
+      </div>
+
+      <div class="flex-1">
+        <div
+          class="bg-white rounded-lg p-4 border-l-4 border-primary-500 shadow-md"
+        >
+          <div class="flex items-start">
+            <i class="fas fa-quote-left text-gray-400 text-sm mr-3 mt-1"></i>
+            <div class="flex-1">
+              <p class="text-gray-800 leading-relaxed italic">
+                {{ enquete.instruction }}
+              </p>
+              <div
+                *ngIf="chefEnqueteur"
+                class="flex items-center mt-3 pt-3 border-t border-gray-100"
+              >
+                <div class="flex items-center text-sm text-gray-600">
+                  <div
+                    class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-user text-white text-xs"></i>
+                  </div>
+                  <div>
+                    <p class="font-medium">{{ chefEnqueteur.username }}</p>
+                    <p class="text-xs text-gray-500">
+                      {{ chefEnqueteur.role }}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  *ngIf="false"
+                  class="ml-auto flex items-center text-xs text-gray-500"
+                >
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>Aujourd'hui, 09:15</span>
+                </div>
+              </div>
+            </div>
+            <i class="fas fa-quote-right text-gray-400 text-sm ml-3 mt-1"></i>
+          </div>
+        </div>
+
+        <!-- Actions suggérées -->
+        <div
+          class="mt-4 bg-gray-50 rounded-lg p-4"
+          *ngIf="recommandations.length"
+        >
+          <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+            <i class="fas fa-tasks mr-2 text-primary-500"></i>
+            Actions recommandées
+          </h4>
+          <div class="space-y-2">
+            <div
+              class="flex items-center text-sm"
+              *ngFor="let rec of recommandations"
+            >
+              <div class="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
+              <span class="text-gray-700">{{ rec }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

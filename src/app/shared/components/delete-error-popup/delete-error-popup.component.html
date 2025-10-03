@@ -1,0 +1,82 @@
+ <div
+      *ngIf="config.isVisible"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in"
+      (click)="onBackdropClick($event)">
+
+      <!-- Popup container -->
+      <div
+        class="bg-white rounded-xl shadow-intense max-w-md w-full mx-4 transform animate-zoom-in"
+        (click)="$event.stopPropagation()">
+
+        <!-- Header avec icône d'erreur -->
+        <div class="flex items-center justify-center pt-8 pb-4">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z">
+              </path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Contenu du message -->
+        <div class="px-8 pb-8 text-center">
+          <!-- Titre -->
+          <h3 class="text-xl font-semibold text-dark-900 mb-3">
+            Suppression impossible
+          </h3>
+
+          <!-- Message principal -->
+          <p class="text-dark-600 mb-6 leading-relaxed">
+            Ce document ne peut pas être supprimé car il est actuellement utilisé dans d'autres parties du système.
+          </p>
+
+          <!-- Message détaillé (optionnel) -->
+          <div *ngIf="config.details" class="bg-gray-50 rounded-lg p-4 mb-6">
+            <p class="text-sm text-dark-700">
+              <strong>Détails :</strong> {{ config.details }}
+            </p>
+          </div>
+
+          <!-- Suggestions -->
+          <div class="bg-blue-50 rounded-lg p-4 mb-6">
+            <div class="flex items-start space-x-2">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div class="text-sm text-blue-800">
+                <p class="font-medium mb-1">Que pouvez-vous faire ?</p>
+                <ul class="text-left space-y-1">
+                  <li>• Supprimer d'abord les références à ce document</li>
+                  <li>• Archiver le document au lieu de le supprimer</li>
+                  <li>• Contacter l'administrateur pour plus d'aide</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-3 px-8 pb-8">
+          <!-- Bouton secondaire -->
+          <button
+            *ngIf="config.showArchiveButton"
+            type="button"
+            class="flex-1 px-6 py-3 text-sm font-medium text-dark-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transition-colors duration-200"
+            (click)="onArchive()">
+            <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l4 0V6a2 2 0 114 0v2h4l-1 12H6L5 8z"></path>
+            </svg>
+            Archiver
+          </button>
+
+          <!-- Bouton principal -->
+          <button
+            type="button"
+            class="flex-1 px-6 py-3 text-sm font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200"
+            (click)="onClose()">
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>

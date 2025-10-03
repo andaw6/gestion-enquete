@@ -23,12 +23,26 @@ interface SourceInfoModel {
   fiabilite: number;
   etat: CodeLibelle;
   type: CodeLibelle;
-  utilisateurId: number;
+  utilisateur: UtilisateurModel;
   dateObtention: Date | null;
   dateMiseAJour: Date | null;
   documents: DocumentModel[];
   enquetes: EnqueteModel[]
 }
+interface SourceInfoRequestData {
+  nom: string;
+  description: string;
+  commentaires: string;
+  fiabilite: number;
+  codeEtat: string;
+  codeType: string;
+  utilisateurId: number;
+  dateObtention: string | Date;
+  dateMiseAJour: string | Date;
+  documentIds: number[];
+  enqueteIds: number[];
+}
+
 interface ConclusionModel {
   readonly id: number;
   titre: string;
@@ -39,7 +53,7 @@ interface ConclusionModel {
   dateValidation: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
-  enquete:EnqueteModel;
+  enquete: EnqueteModel;
 }
 interface DemandeEnqueteModel {
   readonly id: number;
@@ -74,6 +88,8 @@ export interface EnqueteModel {
   updatedAt: Date | null;
   demande?: DemandeEnqueteModel;
   enqueteur?: UtilisateurModel;
+  sourceInfos: SourceInfoModel[];
+  conclusions: ConclusionModel[];
 }
 interface DocumentModel {
   readonly id: number;

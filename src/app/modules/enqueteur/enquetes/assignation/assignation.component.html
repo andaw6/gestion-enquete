@@ -98,7 +98,7 @@
         </span>
       </div>
     </div>
-    <div [ngClass]="{ 'p-8 pb-2': !!pagination.totalItem }">
+    <div [ngClass]="{ 'p-8 pb-2': !!pagination().totalItem }">
       <div class="space-y-6">
         <ng-container *ngFor="let enquete of getEnqueteAssigner()">
           <div class="my-4">
@@ -116,7 +116,7 @@
     </div>
 
     <div *ngIf="!loading()">
-      <app-pagination [pagination]="pagination"></app-pagination>
+      <app-pagination [pagination]="pagination()"></app-pagination>
     </div>
   </div>
 </main>

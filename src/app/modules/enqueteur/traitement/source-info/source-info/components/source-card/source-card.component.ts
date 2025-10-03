@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { SourceInfoModel } from '@core/model/source-info.model';
 import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info";
 
 @Component({
@@ -7,16 +8,16 @@ import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info"
   styleUrls: ['./source-card.component.css']
 })
 export class SourceCardComponent {
-  @Input() source!: SourceInfo
-  @Output() onActionClick: EventEmitter<SourceInfo> = new EventEmitter<SourceInfo>();
-  @Output() onUpdatedClick: EventEmitter<SourceInfo> = new EventEmitter<SourceInfo>();
+  @Input() source!: SourceInfoModel;
+  @Output() onActionClick = new EventEmitter<SourceInfoModel>();
+  @Output() onUpdatedClick = new EventEmitter<SourceInfoModel>();
   @Input() selected: boolean = false;
 
 
   getStars(): boolean[] {
     return Array(5)
       .fill(false)
-      .map((_, i) => i < Number(this.source.niveauFiabilite))
+      .map((_, i) => i < Number(this.source.fiabilite))
   }
 
   getUsageText(): string {

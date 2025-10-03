@@ -1,6 +1,10 @@
 import { DemandeEnqueteModel } from "./demande-enquete.model";
 import { CodeLibelle } from "./code-libelle.model";
 import { UtilisateurModel } from "./utilisateur.model";
+import { AutreInfoModel } from "./autre-info.model";
+import { SourceInfoModel } from "./source-info.model";
+import { ConclusionModel } from "./conclusion.model";
+import { DocumentModel } from "./document.model";
 
 export interface EnqueteModel {
   readonly id: number;
@@ -18,6 +22,10 @@ export interface EnqueteModel {
   updatedAt: Date | null;
   demande?: DemandeEnqueteModel;
   enqueteur?: UtilisateurModel;
+  autresInfos?: AutreInfoModel[];
+  sourcesInfos?: SourceInfoModel[];
+  conclusions?: ConclusionModel[];
+  documents?: DocumentModel[];
 }
 
 
@@ -36,10 +44,12 @@ export interface EnqueteStatEtat {
   enAttente: number;
   enCours: number;
   terminees: number;
-  enValidation: number;
-  enRevision: number;
   valides: number;
   annulees: number;
   echeances: number;
   total: number;
+  enValidation?: number;
+  enRevision?: number;
+  progression?: number;
+  urgent?: number;
 }

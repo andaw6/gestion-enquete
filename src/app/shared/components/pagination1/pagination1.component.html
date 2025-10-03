@@ -1,0 +1,140 @@
+<nav
+  class="flex flex-col sm:flex-row justify-between items-center gap-4 py-4"
+  aria-label="Pagination Navigation"
+>
+  <!-- Informations sur la pagination -->
+  <div class="text-sm text-dark-400 order-2 sm:order-1">
+    Affichage de
+    <span class="font-medium text-dark-600">{{ getStartItem() }}</span> à
+    <span class="font-medium text-dark-600">{{ getEndItem() }}</span> sur
+    <span class="font-medium text-dark-600">{{ pagination.totalItem }}</span>
+    résultats
+  </div>
+
+  <!-- Navigation -->
+  <div class="flex items-center gap-2 order-1 sm:order-2">
+    <!-- Bouton Précédent -->
+    <button
+      (click)="goToPage(pagination.page - 1)"
+      [disabled]="pagination.page <= 1"
+      class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-dark-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-dark-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-dark-500 transition-all duration-200"
+      [class.animate-pulse]="loading"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+      <span class="hidden sm:inline">Précédent</span>
+    </button>
+
+    <!-- Pages -->
+    <div class="flex items-center gap-1">
+      <!-- Première page si nécessaire -->
+      <button
+        *ngIf="shouldShowFirstPage()"
+        (click)="goToPage(1)"
+        class="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+        [class]="getPageButtonClass(1)"
+        [class.animate-pulse]="loading"
+      >
+        1
+      </button>
+
+      <!-- Ellipsis avant -->
+      <span *ngIf="shouldShowStartEllipsis()" class="px-2 py-2 text-dark-400">
+        ...
+      </span>
+
+      <!-- Pages visibles -->
+      <button
+        *ngFor="let page of getVisiblePages()"
+        (click)="goToPage(page)"
+        class="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+        [class]="getPageButtonClass(page)"
+        [class.animate-pulse]="loading"
+      >
+        {{ page }}
+      </button>
+
+      <!-- Ellipsis après -->
+      <span *ngIf="shouldShowEndEllipsis()" class="px-2 py-2 text-dark-400">
+        ...
+      </span>
+
+      <!-- Dernière page si nécessaire -->
+      <button
+        *ngIf="shouldShowLastPage()"
+        (click)="goToPage(pagination.totalPage)"
+        class="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+        [class]="getPageButtonClass(pagination.totalPage)"
+        [class.animate-pulse]="loading"
+      >
+        {{ pagination.totalPage }}
+      </button>
+    </div>
+
+    <!-- Bouton Suivant -->
+    <button
+      (click)="goToPage(pagination.page + 1)"
+      [disabled]="pagination.page >= pagination.totalPage"
+      class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-dark-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-dark-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-dark-500 transition-all duration-200"
+      [class.animate-pulse]="loading"
+    >
+      <span class="hidden sm:inline">Suivant</span>
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Sélecteur de limite (optionnel) -->
+  <div
+    *ngIf="showLimitSelector"
+    class="flex items-center gap-2 text-sm text-dark-500 order-3"
+  >
+    <label for="limit-selector" class="whitespace-nowrap"
+      >Éléments par page :</label
+    >
+    <!-- <select
+      id="limit-selector"
+      [value]="pagination.limit"
+      (change)="onLimitChange($event)"
+      class="px-2 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      [disabled]="loading"
+    >
+      <option *ngFor="let option of limitOptions" [value]="option">
+        {{ option }}
+      </option>
+    </select> -->
+    <select
+      id="limit-selector"
+      [(ngModel)]="pagination.limit"
+      (ngModelChange)="onLimitChange($event)"
+      [disabled]="loading"
+      class="px-2 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+    >
+      <option *ngFor="let option of limitOptions" [ngValue]="option">
+        {{ option }}
+      </option>
+    </select>
+  </div>
+</nav>

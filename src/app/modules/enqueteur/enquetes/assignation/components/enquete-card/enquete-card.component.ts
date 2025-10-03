@@ -4,12 +4,12 @@ import { EnqueteEtatEnquete, EnqueteModel } from '@core/model/enquete.model';
 import { TypeConcerne } from '@core/model/concerne.model';
 import { UtilService } from '@core/services/util.service';
 import { DocumentModel } from '@core/model/document.model';
-import { UtilisateurModel } from '@core/model/utilisateur.model';
+import { InstructionsComponent } from '@shared/components/instructions/instructions.component';
 
 @Component({
   selector: 'app-enquete-card',
   standalone: true,
-  imports: [CommonModule, NgIf, NgClass, NgForOf],
+  imports: [CommonModule, InstructionsComponent, NgIf, NgClass, NgForOf],
   templateUrl: './enquete-card.component.html',
   styleUrls: ['./enquete-card.component.css']
 })
@@ -23,20 +23,6 @@ export class EnqueteCardComponent {
 
   @Output() demarrer = new EventEmitter<EnqueteModel>();
   @Output() viewDoc = new EventEmitter<DocumentModel>();
-
-  recommandations: string[] = [
-    // "Contacter l'entreprise dans l'heure",
-    // "Programmer visite sur site aujourd'hui",
-    // "Envoyer rapport préliminaire avant 17h"
-  ];
-
-  chefEnqueteur?: UtilisateurModel
-  = {
-    id: 0,
-    username: "Elhadji Ciss",
-    role: "Chef enquêteur"
-  }
-
 
 
   ngOnInit() {

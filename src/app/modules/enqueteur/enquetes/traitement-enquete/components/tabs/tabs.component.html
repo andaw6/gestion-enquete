@@ -1,0 +1,83 @@
+<div
+  class="bg-white rounded-2xl shadow-card border border-gray-200 overflow-hidden mb-8"
+>
+  <div class="border-b border-gray-200">
+    <nav class="flex overflow-x-auto custom-scrollbar" aria-label="Tabs">
+      <button
+        *ngFor="let tab of tabs"
+        (click)="switchTab(tab.id)"
+        [class]="getTabClasses(tab.id)"
+        class="py-4 px-6 font-medium text-sm whitespace-nowrap transition-colors"
+      >
+        <svg
+          class="w-5 h-5 inline mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            [attr.d]="tab.icon"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+        {{ tab.label }}
+      </button>
+    </nav>
+  </div>
+
+  <div class="p-8 pb-4">
+    <app-general-info-tab
+      *ngIf="activeTab() === 'informations'"
+      (viewDocument)="onViewDocument($event)"
+      (downloadDocument)="onDownloadDocument($event)"
+    />
+
+    <app-testimonies-tab
+      *ngIf="activeTab() === 'temoignages'"
+      (openModel)="openNouveauTemoignageModal = true"
+      (delete)="onDeleteTemoignage($event)"
+      (edit)="onEditTemoignage($event)"
+    />
+
+    <app-documents-tab
+      *ngIf="activeTab() === 'documents'"
+      (viewDocument)="onViewDocument($event)"
+      (downloadDocument)="onDownloadDocument($event)"
+      (deleteDocument)="onDeleteDocument($event)"
+    />
+
+    <app-sources-tab *ngIf="activeTab() === 'sources'"  (downloadDocument)="onDownloadDocument($event)" />
+
+    <app-observations-tab *ngIf="activeTab() === 'observations'" />
+  </div>
+</div>
+
+<app-document-preview-modal
+  [isModalOpen]="isPreviewModalOpen"
+  [document]="selectedDocument"
+  (modalClosed)="isPreviewModalOpen = false; selectedDocument = null"
+></app-document-preview-modal>
+
+<app-temoignage-modal
+  [autoSave]="true"
+  [open]="openNouveauTemoignageModal"
+  (close)="openNouveauTemoignageModal = false; testimony = undefined"
+  (nouveauTemoignage)="nouveauTemoignage($event)"
+  [testimony]="testimony"
+/>
+
+<app-delete-modal
+  [showModal]="openDeleteModal"
+  [info]="infoDeleteModal()"
+  (confirm)="remove()"
+  (cancel)="openDeleteModal = false; deletedTemoignage = undefined"
+></app-delete-modal>
+
+<app-delete-error-popup
+  [config]="popupConfig"
+  (close)="onPopupClose()"
+  (archive)="onArchiveDocument()"
+>
+</app-delete-error-popup>

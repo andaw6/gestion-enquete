@@ -1,0 +1,244 @@
+<div *ngIf="enquete">
+  <div class="mb-6">
+    <button
+      (click)="onBack()"
+      class="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+    >
+      <svg
+        class="w-5 h-5 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"
+        ></path>
+      </svg>
+      Retour à la liste
+    </button>
+  </div>
+
+  <!-- En-tête de l'enquête -->
+  <div
+    class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200 p-8 mb-8"
+  >
+    <div class="flex justify-between items-start mb-6">
+      <div class="flex-1">
+        <div class="flex items-center space-x-4 mb-4">
+          <h1 class="text-3xl font-bold text-gray-900">{{ enquete.id }}</h1>
+          <span
+            [class]="
+              'px-4 py-2 rounded-full text-sm font-semibold ' +
+              getPriorityBadgeClass(enquete.priorite)
+            "
+          >
+            {{ enquete.priorite }}
+          </span>
+          <span
+            class="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700"
+          >
+            {{ enquete.type }}
+          </span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+          {{ enquete.titre }}
+        </h2>
+        <p class="text-gray-600 mb-6">{{ enquete.description }}</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-700"
+              >Organisation</label
+            >
+            <p class="text-gray-900 font-semibold">
+              {{ enquete.organisation }}
+            </p>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-700"
+              >Date de création</label
+            >
+            <p class="text-gray-900">{{ formatDate(enquete.dateCreation) }}</p>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-700">Échéance</label>
+            <p class="text-gray-900 font-semibold">
+              {{ formatDate(enquete.dateEcheance) }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col space-y-4">
+        <div class="text-center">
+          <div class="text-3xl font-bold text-blue-600">
+            {{ enquete.progression }}%
+          </div>
+          <div class="text-sm text-gray-500">Progression</div>
+        </div>
+        <div class="w-24 bg-gray-200 rounded-full h-2">
+          <div
+            class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full"
+            [style.width.%]="enquete.progression"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="flex flex-wrap gap-3">
+      <button
+        (click)="updateStatus()"
+        class="px-4 py-2 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium"
+      >
+        <svg
+          class="w-4 h-4 inline mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+          ></path>
+        </svg>
+        Mettre à jour le statut
+      </button>
+      <button
+        (click)="addNote()"
+        class="px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
+      >
+        <svg
+          class="w-4 h-4 inline mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+          ></path>
+        </svg>
+        Ajouter une note
+      </button>
+      <button
+        (click)="uploadDocument()"
+        class="px-4 py-2 bg-cyan-100 text-cyan-800 rounded-lg hover:bg-cyan-200 transition-colors text-sm font-medium"
+      >
+        <svg
+          class="w-4 h-4 inline mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+          ></path>
+        </svg>
+        Ajouter un document
+      </button>
+      <button
+        (click)="sendMessage()"
+        class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 transition-colors text-sm font-medium"
+      >
+        <svg
+          class="w-4 h-4 inline mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          ></path>
+        </svg>
+        Envoyer un message
+      </button>
+      <button
+        (click)="generateReport()"
+        class="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+      >
+        <svg
+          class="w-4 h-4 inline mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          ></path>
+        </svg>
+        Générer un rapport
+      </button>
+    </div>
+  </div>
+
+  <!-- Onglets -->
+  <div
+    class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+  >
+    <div class="border-b border-gray-200">
+      <nav class="flex space-x-8 px-8 py-4">
+        <button
+          *ngFor="let tab of tabs"
+          (click)="activeTab = tab.id"
+          [class]="
+            'flex items-center px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ' +
+            (activeTab === tab.id
+              ? 'text-blue-600 border-blue-500'
+              : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300')
+          "
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              [attr.d]="tab.icon"
+            ></path>
+          </svg>
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
+
+    <div class="p-8">
+      <div [ngSwitch]="activeTab">
+        <div
+          *ngSwitchCase="'timeline'"
+          [innerHTML]="getTimelineContent()"
+        ></div>
+        <div
+          *ngSwitchCase="'documents'"
+          [innerHTML]="getDocumentsContent()"
+        ></div>
+        <div *ngSwitchCase="'notes'" [innerHTML]="getNotesContent()"></div>
+        <div *ngSwitchCase="'team'" [innerHTML]="getTeamContent()"></div>
+        <div
+          *ngSwitchCase="'analysis'"
+          [innerHTML]="getAnalysisContent()"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>

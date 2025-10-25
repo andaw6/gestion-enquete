@@ -1,0 +1,59 @@
+<div class="bg-white rounded-lg shadow-card p-6">
+  <h2 class="text-xl font-semibold text-secondary-900 mb-4 flex items-center">
+    <!-- <svg
+      class="w-5 h-5 mr-2 text-primary-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      ></path>
+    </svg> -->
+    <i class="fas fa-file-alt text-primary-500 mr-3"></i>
+    Documents Associés
+  </h2>
+  <div class="space-y-3" *ngIf="documents.length > 0; else noDocuments">
+    <div
+      *ngFor="let document of documents"
+      class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+    >
+      <div class="flex items-center gap-2">
+        <div [class]="'w-12 h-12 rounded-xl flex items-center justify-center shadow-sm '+utilService.getBgIcon(document.extension) ">
+            <i [class]="utilService.getIcon(document.extension, false) + ' text-lg ' "></i>
+          </div>
+        <div>
+          <p class="font-medium text-secondary-900">{{ document.nom }}</p>
+          <p class="text-sm text-secondary-600">
+            {{ document.taille }} • Ajouté le
+            {{ document.createdAt| date : "dd/MM/yyyy" }}
+          </p>
+        </div>
+      </div>
+      <!-- <button
+        (click)="onTelecharger(document)"
+        class="text-primary-600 hover:text-primary-800 font-medium"
+      >
+        Télécharger
+      </button> -->
+      <div class="flex space-x-2">
+          <button
+            (click)="onPreview.emit(document)"
+            class="flex-1 px-3 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-medium rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-sm hover:shadow-md">
+            <i [class]="utilService.getDocumentActionIcon(document) + ' mr-2'"></i>{{ utilService.getDocumentActionLabel(document) }}
+          </button>
+          <button
+            (click)="onDownload.emit(document)"
+            class="px-3 py-2 bg-gray-100 text-dark-600 text-xs font-medium rounded-lg hover:bg-gray-200 transition-all duration-200">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+    </div>
+  </div>
+  <ng-template #noDocuments>
+    <p class="text-secondary-600 text-center py-4">Aucun document associé</p>
+  </ng-template>
+</div>

@@ -1,0 +1,44 @@
+<div class="border-l-4 border-primary-300 pl-4">
+  <h3 class="text-lg font-semibold text-secondary-800 mb-2">
+    Enquêtes Associées
+  </h3>
+  <p class="text-sm text-dark-500 mb-4">
+    Sélectionnez les enquêtes liées à cette source (optionnel)
+  </p>
+
+  <div
+    class="bg-dark-50 rounded-lg p-4 max-h-48 overflow-y-auto scrollbar-thin"
+  >
+    <div class="space-y-2">
+      <label
+        *ngFor="let enquete of enquetes"
+        class="flex items-center p-3 bg-white rounded-lg hover:bg-primary-50 cursor-pointer transition-colors border border-transparent hover:border-primary-200"
+      >
+        <input
+          type="checkbox"
+          (change)="onEnqueteChange($event, enquete.id)"
+          [checked]="selectedEnqueteIds.includes(enquete.id)"
+          class="w-4 h-4 text-primary border-dark-300 rounded focus:ring-primary"
+        />
+        <div class="ml-3 flex-1">
+          <span class="text-sm font-medium text-dark-800">{{
+            enquete.reference
+          }}</span>
+          <span class="text-xs text-dark-500 ml-2 line-clamp-1">{{
+            enquete.demande!.objet
+          }}</span>
+        </div>
+        <span
+          class="text-xs px-2 py-1 rounded-full"
+          [ngClass]="getEtatColor(enquete.etat.code)"
+        >
+          {{ enquete.etat.libelle }}
+        </span>
+      </label>
+
+      <div *ngIf="enquetes.length === 0" class="text-center py-2">
+        <span class="text-xs text-dark-400">Aucune enquête disponible</span>
+      </div>
+    </div>
+  </div>
+</div>

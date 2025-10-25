@@ -26,14 +26,14 @@ import {PageHeaderComponent} from "@shared/components/page-header/page-header.co
     declarations: [
         DocumentComponent,
         DocumentSansEnqueteComponent,
-        DocumentGridComponent,
-        DocumentUploadModalComponent,
-        DocumentSansEnqueteFiltreComponent,
-        DeleteModalComponent,
-    ],
-    imports: [
+      ],
+      imports: [
         CommonModule,
         FormsModule,
+        DocumentSansEnqueteFiltreComponent,
+        DeleteModalComponent,
+        DocumentGridComponent,
+        DocumentUploadModalComponent,
         PaginationComponent,
         DocumentPreviewModalComponent,
         ReactiveFormsModule,

@@ -1,11 +1,11 @@
 {
   "/api": {
-    "target": "http://localhost:2000",
+    "target": "http://localhost:8888",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
     "pathRewrite": {
-      "^/api": "/v1/api"
+      "^/api": "/GESTIONENQUETE/v1/api"
     },
     "headers": {
       "Connection": "keep-alive"

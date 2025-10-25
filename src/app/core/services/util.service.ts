@@ -5,6 +5,7 @@ import { Document } from "@modules/enqueteur/traitement/document/document";
 import { NotificationAlertService } from "@core/services/notification-alert.service";
 import { debounceTime, distinctUntilChanged, filter, Subject, takeUntil } from "rxjs";
 import { FormControl } from "@angular/forms";
+import { DocumentModel } from '@core/model/document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class UtilService extends NotificationAlertService {
     return color ? result.split(" ").splice(0, 2).join(" ") : result;
   }
 
-  getDocumentActionIcon(document: Document): string {
+  getDocumentActionIcon(document: Document | DocumentModel): string {
     const ext = document.extension.toLowerCase();
     for (const [category, extensions] of Object.entries(FILE_TYPE_CATEGORY_MAP)) {
       if (extensions.includes(ext)) {
@@ -64,7 +65,7 @@ export class UtilService extends NotificationAlertService {
     return "fas fa-eye";
   }
 
-  getDocumentActionLabel(document: Document): string {
+  getDocumentActionLabel(document: Document | DocumentModel): string {
     const ext = document.extension.toLowerCase();
 
     for (const [category, extensions] of Object.entries(FILE_TYPE_CATEGORY_MAP)) {
@@ -96,6 +97,7 @@ export class UtilService extends NotificationAlertService {
     const i = Math.floor(Math.log(taille) / Math.log(k))
     return Number.parseFloat((taille / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
   }
+
 
   getBgIcon(extension: string) {
     return FILE_BG_CLASS_MAP[extension] || FILE_ICON_CLASS_MAP["default"];
@@ -145,6 +147,75 @@ export class UtilService extends NotificationAlertService {
       default:
         return "Moyenne"
     }
+  }
+
+  getSalutationWithName(name: string, date: Date = new Date()): string {
+    const hour = date.getHours();
+
+    if (hour >= 5 && hour < 12) return `Bonjour, ${name}`;
+    if (hour >= 12 && hour < 18) return `Bon après-midi, ${name}`;
+    if (hour >= 18 && hour < 22) return `Bonsoir, ${name}`;
+    return `Bonne nuit, ${name}`;
+  }
+
+  formatDate(date: Date | string | null | undefined): string {
+    if (!date) {
+      return "Date non disponible";
+    }
+
+    const d = typeof date === "string" ? new Date(date) : date;
+
+    return new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    }).format(d);
+  }
+
+
+  timeAgo(date: Date | string | null): string {
+    if (date == null || !date) return "N/A";
+    const d = typeof date === "string" ? new Date(date) : date;
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+
+    if (diffMs < 0) {
+      return "Dans le futur";
+    }
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 60) {
+      return "Il y a quelques secondes";
+    } else if (minutes < 60) {
+      return `Il y a ${minutes} minute${minutes > 1 ? "s" : ""}`;
+    } else if (hours < 24) {
+      return `Il y a ${hours} heure${hours > 1 ? "s" : ""}`;
+    } else if (days < 30) {
+      return `Il y a ${days} jour${days > 1 ? "s" : ""}`;
+    } else {
+      // fallback sur une date formatée classique
+      return new Intl.DateTimeFormat("fr-FR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }).format(d);
+    }
+  }
+
+  isPreviewable(extension: string | null): boolean {
+    if (!extension) return false;
+
+    const previewableExtensions = [
+      "pdf", "txt", "html", "htm", "xml", "svg",
+      "jpg", "jpeg", "png", "gif",
+      "mp4", "webm", "ogg", "mp3", "wav"
+    ];
+
+    return previewableExtensions.includes(extension.toLowerCase());
   }
 
   private isValidQuery(query: string | null): boolean {

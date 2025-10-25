@@ -1,16 +1,16 @@
-import {Injectable} from '@angular/core';
-import {ApiService} from "@core/api/api.service";
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {IParams} from "@core/interfaces/http-options.interface";
-import {ApiResponse} from "@core/interfaces/api-response.interface";
-import {Document, DocumentData, DocumentUrl} from "@modules/enqueteur/traitement/document/document";
-import {ApiCrudService} from "@core/api/api-crud.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { map, Observable, of } from "rxjs";
+import { IParams } from "@core/interfaces/http-options.interface";
+import { ApiResponse } from "@core/interfaces/api-response.interface";
+import { DocumentData, DocumentUrl } from "@modules/enqueteur/traitement/document/document";
+import { ApiCrudService } from "@core/api/api-crud.service";
+import { DocumentModel, DocumentRequestData, DocumentUsage } from '@core/model/document.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentService extends ApiCrudService<Document, DocumentData> {
+export class DocumentService extends ApiCrudService<DocumentModel, DocumentData> {
 
   constructor(http: HttpClient) {
     super(http);
@@ -23,33 +23,36 @@ export class DocumentService extends ApiCrudService<Document, DocumentData> {
     });
   }
 
-  override getAll(params: IParams= {}): Observable<ApiResponse<Document>> {
-    return this.responseGetMany<Document>(params, "/all");
+  override getAll(params: IParams = {}): Observable<ApiResponse<DocumentModel>> {
+    return this.responseGetMany<DocumentModel>(params, "/all");
   }
 
-  override getOne(id: number): Observable<Document | null> {
-    return this.responseGetOne<Document>(`/${id}`);
+  override getOne(id: number): Observable<DocumentModel | null> {
+    return this.responseGetOne<DocumentModel>(`/${id}`);
   }
 
-  override create(data: DocumentData): Observable<Document> {
-    return this.responsePostOne<Document>(this.toFormData(data));
+  override create(data: DocumentData): Observable<DocumentModel> {
+    return this.responsePostOne<DocumentModel>(this.toFormData(data));
   }
 
-  private toFormData(data:DocumentData):FormData{
+  private toFormData(data: DocumentData): FormData {
     const formData = new FormData();
     formData.append("nom", data.nom);
     formData.append("description", data.description);
     formData.append("typeId", data.typeId.toString());
     formData.append("file", data.file);
+    if (data.utilisateurId) {
+      formData.append("utilisateurId", data.utilisateurId.toString());
+    }
     return formData;
   }
 
-  override update(id: number, data: DocumentData): Observable<Document> {
-    return this.responsePutOne<Document>(`/${id}`, data);
+  override update(id: number, data: DocumentData): Observable<DocumentModel> {
+    return this.responsePutOne<DocumentModel>(`/${id}`, data);
   }
 
-  override deleteOne(id: number): Observable<boolean> {
-    return this.responseDeleteOne(`/${id}`);
+  override deleteOne(id: number, params: IParams = {}): Observable<boolean> {
+    return this.responseDeleteOne(`/${id}`, params);
   }
 
   getUrl(id: number): Observable<DocumentUrl | null> {
@@ -65,4 +68,29 @@ export class DocumentService extends ApiCrudService<Document, DocumentData> {
       responseType: 'blob'
     });
   }
+
+  checkIfUsed(id: number, params: IParams = {}): Observable<DocumentUsage> {
+    return this.responseGetOne<DocumentUsage>(`/${id}/usage`, params).pipe(map(d => d!));
+  }
+
+  associer(
+    params: { enqueteId?: number, demandeId?: number, sourceId?: number },
+    data: { files: File[], infos: DocumentRequestData[] }
+  ): Observable<DocumentModel[]> {
+
+    const formData = new FormData();
+    // Ajouter les fichiers
+    data.files.forEach(file => {
+      formData.append('documents', file);
+    });
+    // Ajouter les métadonnées avec la clé infos
+    formData.append('metadonnees', JSON.stringify({ infos: data.infos }));
+
+    return this.responsePostMany<DocumentModel>("/associer", formData, params);
+  }
+
+  
+
+
+
 }

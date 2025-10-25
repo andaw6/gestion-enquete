@@ -1,0 +1,157 @@
+<div class="bg-gradient-to-br from-slate-50 to-slate-100 p-2 md:p-4">
+  <!-- p-4 md:p-8 -->
+  <!-- Header Section -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+      <div class="flex-1 min-w-[200px]">
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+          Sources d'information
+        </h2>
+        <p class="text-slate-600 text-sm md:text-base">
+          {{ sources.length }} source(s) enregistrée(s)
+        </p>
+      </div>
+      <button
+        (click)="openSourceModal = true"
+        class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-800 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl"
+      >
+        <i class="fas fa-plus w-5 h-5"></i>
+        <span>Nouvelle source</span>
+      </button>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="flex flex-wrap gap-4">
+      <div class="flex flex-col gap-2 min-w-[180px]">
+        <label class="text-sm font-semibold text-slate-700">Type</label>
+        <select
+          [(ngModel)]="filterType"
+          (change)="applyFilters()"
+          class="px-4 py-2.5 border-2 border-slate-200 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all cursor-pointer"
+        >
+          <option value="">Tous les types</option>
+          <option *ngFor="let opt of typeOptions" [value]="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-2 min-w-[180px]">
+        <label class="text-sm font-semibold text-slate-700">État</label>
+        <select
+          [(ngModel)]="filterEtat"
+          (change)="applyFilters()"
+          class="px-4 py-2.5 border-2 border-slate-200 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all cursor-pointer"
+        >
+          <option value="">Tous les états</option>
+          <option *ngFor="let opt of etatOptions" [value]="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+        <label class="text-sm font-semibold text-slate-700">Recherche</label>
+        <div class="relative">
+          <svg
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+            placeholder="Rechercher une source..."
+            class="w-full pl-12 pr-4 py-2.5 border-2 border-slate-200 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <app-source-card
+      *ngFor="let source of paginatedSources"
+      [source]="source"
+      (clickCard)="viewSourceDetails($event)"
+      (edit)="editSource($event)"
+      (details)="viewDetails($event)"
+    >
+    </app-source-card>
+
+    <!-- Empty state -->
+    <div
+      *ngIf="paginatedSources.length === 0"
+      class="col-span-full text-center py-16"
+    >
+      <i class="fa-solid fa-file-circle-xmark text-6xl text-slate-400 mb-4"></i>
+      <h3 class="text-2xl font-bold text-slate-900 mb-2">
+        Aucune source trouvée
+      </h3>
+      <p class="text-slate-600 mb-6">
+        Commencez par ajouter une nouvelle source d'information
+      </p>
+      <button
+        (click)="openSourceModal = true"
+        class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md"
+      >
+        <i class="fa-solid fa-plus mr-2"></i> Ajouter une source
+      </button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="paginatedSources.length"
+    class="bg-white rounded-xl shadow-lg mt-4"
+  >
+    <app-pagination
+      [pagination]="pagination"
+      (pageChanged)="setPage($event)"
+    ></app-pagination>
+  </div>
+</div>
+
+<app-add-source
+  [open]="openSourceModal"
+  [isSubmitting]="isSubmitting()"
+  [existingDocuments]="documents"
+  (closeModal)="openSourceModal = false"
+  (submitForm)="handleSubmit($event)"
+>
+</app-add-source>
+
+<app-source-info-modal
+  [isOpen]="openSourceDetailModal"
+  [sourceInfo]="selectedSource"
+  [utilisateur]="user"
+  (closeModal)="openSourceDetailModal = false; selectedSource = null"
+  (downloadDocument)="downloadDocument.emit($event)"
+  (viewDocument)="viewDetailsDocument($event)"
+></app-source-info-modal>
+
+<app-document-preview-modal
+  [isModalOpen]="openViewDocumentModal"
+  [document]="selectedDocument"
+  (modalClosed)="closeDocumentModal()"
+></app-document-preview-modal>
+
+<app-source-update-form
+  [isOpen]="openUpdateSourceModal"
+  [sourceInfo]="selectedSource"
+  [isSubmitting]="isSubmitting()"
+  [availableDocuments]="documents"
+  [enableEnqueteSelection]="false"
+  [typeOptions]="typeOptions"
+  [etatOptions]="etatOptions"
+  (closeModal)="openUpdateSourceModal = false; selectedSource = null"
+  (submitForm)="handleSubmit($event)"
+></app-source-update-form>

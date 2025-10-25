@@ -1,114 +1,366 @@
-import { Component, OnInit, signal } from '@angular/core';
+// import { Component, computed, OnInit, signal } from '@angular/core';
+// import { PRIORITE_LEVELS } from '@config/constant';
+// import { FilterConfig } from '@core/interfaces/filter-config.interface';
+// import { StatCard, StatCardComponent } from '@shared/components/stat-card/stat-card.component';
+// import { DemandeService } from '../demande.service';
+// import { NotificationAlertService } from '@core/services/notification-alert.service';
+// import { Router } from '@angular/router';
+// import { IParams } from '@core/interfaces/http-options.interface';
+// import { Pagination } from '@core/interfaces/pagination.interface';
+// import { EtatDemandeService } from '@modules/admin/parametrage/etat-demande/etat-demande.service';
+// import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
+// import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+// import { DemandeEnqueteModel, DemandeEnqueteStatEtat } from '@core/model/demande-enquete.model';
+// import { Logger } from '@core/services/logger.service';
+// import { PageHeaderConfig } from '@shared/components/page-header-1/page-header-1.component';
+// import { CommonModule, NgForOf, NgIf } from '@angular/common';
+// import { SearchFilterComponent } from '@shared/components/search-filter/search-filter.component';
+// import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+// import { DemandeTableComponent } from '../components/demande-table/demande-table.component';
+// import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+// import { forkJoin } from 'rxjs';
+// import { ActionMode } from '@core/types';
+
+
+// const FILTERS: FilterConfig[] = [
+//   {
+//     key: 'etat',
+//     label: 'Statut',
+//     placeholder: 'Tous les statuts',
+//     options: [
+//     ],
+//   },
+//   {
+//     key: 'type',
+//     label: 'Type de Conerné',
+//     placeholder: 'Tous les types',
+//     options: [
+//       { value: "employeur", label: "Employeur" },
+//       { value: "travailleur", label: "Travailleur" },
+//       { value: "beneficiaire", label: "Bénéficiaire" },
+//     ],
+//   },
+//   {
+//     key: 'priorite',
+//     label: 'Priorité',
+//     placeholder: 'Toutes priorités',
+//     options: [
+//       ...PRIORITE_LEVELS,
+//       { value: 6, label: 'Urgente' },
+//     ],
+//   },
+//   // {
+//   //   key: 'center',
+//   //   label: 'Centre',
+//   //   placeholder: 'Tous les centres',
+//   //   options: [
+//   //     { value: 'CG001', label: 'Afrilins' },
+//   //   ],
+//   // },
+// ];
+
+// @Component({
+//   selector: 'app-list-demandes',
+//   templateUrl: './list-demandes.component.html',
+//   styleUrls: ['./list-demandes.component.css'],
+//   standalone: true,
+//   imports: [
+//     PageHeaderComponent,
+//     CommonModule,
+//     SearchFilterComponent,
+//     StatCardComponent,
+//     PaginationComponent,
+//     NgIf,
+//     NgForOf,
+//     DemandeTableComponent
+//   ],
+// })
+// export class ListDemandesComponent implements OnInit {
+//   // UI labels
+//   pageTitle = "Toutes mes demandes d'enquête";
+//   pageSubTitle = "Visionner tous vos demandes d'enquête ici";
+
+//   statsData = computed<StatCard[]>(() => [
+//     // {
+//     //   title: "Total des demandes",
+//     //   value: 24,
+//     //   change: "+12% ce mois",
+//     //   changeType: "positive",
+//     //   icon: "fas fa-file-alt",
+//     //   gradient: "from-primary-500 to-primary-600",
+//     // },
+//     {
+//       title: "En Attente",
+//       value: this.statsEtat().enAttentes,
+//       change: "En attente validation",
+//       changeType: "neutral",
+//       icon: "fas fa-hourglass-half",
+//       gradient: "from-yellow-500 to-orange-500",
+//     },
+//     {
+//       title: "Validées",
+//       value: this.statsEtat().validees,
+//       change: "Complétées",
+//       changeType: "positive",
+//       icon: "fas fa-check-circle",
+//       gradient: "from-green-500 to-emerald-500",
+//     },
+//     {
+//       title: "Demandes rejetées",
+//       value: this.statsEtat().rejetees,
+//       change: "À revoir",
+//       changeType: "negative",
+//       icon: "fas fa-times-circle",
+//       gradient: "from-red-500 to-rose-500",
+//     },
+//     {
+//       title: "Demandes annulées",
+//       value: this.statsEtat().annulees,
+//       change: "Annulées par utilisateur",
+//       changeType: "neutral",
+//       icon: "fas fa-ban",
+//       gradient: "from-gray-500 to-gray-600",
+//     },
+//   ]);
+
+//   filterConfig: FilterConfig[] = FILTERS;
+
+//   headerConfig: PageHeaderConfig = {
+//     title: 'Gestion des Utilisateurs',
+//     subtitle: 'Gérez les comptes utilisateurs de votre garage',
+//     buttons: [
+//       {
+//         label: 'Exporter',
+//         icon: 'fas fa-download',
+//         type: 'secondary',
+//         action: () => { }
+//       },
+//       {
+//         label: 'Nouveau Utilisateur',
+//         icon: 'fas fa-plus',
+//         type: 'primary',
+//         action: () => {
+//           // this.router.navigate([formatRoute(ADMIN_PATH, ADMIN_NAVIGATION.utilisateurs.nouveau)]).then(_ => _);
+//         }
+//       }
+//     ]
+//   };
+
+
+//   filter: Record<string, string | number> = {};
+//   loading = signal<boolean>(false);
+//   demandes = signal<DemandeEnqueteModel[]>([])
+//   statsEtat = signal<DemandeEnqueteStatEtat>({
+//     validees: 0,
+//     enAttentes: 0,
+//     enComplement: 0,
+//     rejetees: 0,
+//     annulees: 0
+//   });
+//   user!: Utilisateur;
+//   pagination: Pagination = {
+//     limit: 10,
+//     page: 1,
+//     totalItem: 0,
+//     totalPage: 0
+//   };
+
+//   constructor(
+//     private readonly demandeService: DemandeService,
+//     private readonly toast: NotificationAlertService,
+//     private readonly etatDemandeService: EtatDemandeService,
+//     private utilisateurState: UtilisateurStateService,
+//     private router: Router,
+//   ) { }
+
+//   ngOnInit(): void {
+//     this.utilisateurState.user$.subscribe(user => {
+//       if (user) {
+//         this.user = user;
+//         this.loadData();
+//       }
+//     });
+//     this.etatDemandeService.getAll().subscribe(response => {
+//       this.filterConfig[0].options = response.data.map(d => ({ value: d.code, label: d.libelle }))
+//     })
+//   }
+
+//   onFiltersChanged(filter: Record<string, string | number>) {
+//     this.filter = filter;
+//     this.applyFilter();
+//   }
+
+//   onAction(event: { action: ActionMode, demande: DemandeEnqueteModel }) {
+//     // Logger.info({ message: "Afficher detail demande", data: demande }, "ListDemandesComponents:onViewDetail");
+//     // this.router.navigate(["/demandeur/demandes/detail", demande.id]);
+//     switch (event.action) {
+//       case "view":
+//         this.router.navigate(["/demandeur/demandes/detail", event.demande.id]);
+//         break;
+//       case "delete":
+//         break;
+//       case "download":
+//         break;
+//       case "update":
+//         this.router.navigate(["/demandeur/demandes/modifier", event.demande.id]);
+//         break;
+//     }
+//   }
+
+
+
+//   loadData(filter: IParams = {}) {
+//     this.loading.set(true);
+
+//     forkJoin({
+//       stats: this.demandeService.statsEtat(this.user.id),
+//       demandes: this.demandeService.getAll({
+//         ...filter,
+//         ...this.pagination,
+//         sort: 'updatedAt,desc',
+//         utilisateurId: this.user.id
+//       })
+//     }).subscribe({
+//       next: ({ stats, demandes }) => {
+//         this.pagination = demandes.pagination;
+//         this.demandes.set(demandes.data);
+//         this.statsEtat.set(stats);
+//         this.loading.set(false);
+//       },
+//       error: err => {
+//         this.toast.showNotification("Erreur lors du chargement des données", "error");
+//       }
+//     })
+//   }
+
+//   setPagination(pg: Pagination) {
+//     this.pagination = pg;
+//     this.applyFilter();
+//   }
+
+//   applyFilter() {
+//     const filter: IParams = {};
+
+//     const { priorite, search, type, etat } = this.filter;
+
+//     if (priorite !== "") {
+//       filter[priorite === 6 ? "urgent" : "priorite"] = priorite === 6 ? true : priorite;
+//     }
+
+//     if (search) filter["search"] = search;
+//     if (type) filter["type"] = type;
+//     if (etat) filter["etat"] = etat;
+//     if (priorite || search || type || etat) {
+//       this.pagination.page = 1;
+//     }
+
+//     console.log(filter);
+//     this.loadData(filter);
+//   }
+
+
+//   onSearchChanged(value: string) {
+//     this.filter["search"] = value;
+//     this.applyFilter();
+//   }
+
+//   onResetFilters() {
+//     this.filter = {};
+//     this.applyFilter();
+//   }
+// }
+
+
+import { Component, computed, OnInit, signal } from '@angular/core';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+
 import { PRIORITE_LEVELS } from '@config/constant';
 import { FilterConfig } from '@core/interfaces/filter-config.interface';
-import { StatCard } from '@shared/components/stat-card/stat-card.component';
-import { DemandeService } from '../demande.service';
-import { NotificationAlertService } from '@core/services/notification-alert.service';
-import { Router } from '@angular/router';
 import { IParams } from '@core/interfaces/http-options.interface';
 import { Pagination } from '@core/interfaces/pagination.interface';
-import { ApiResponse } from '@core/interfaces/api-response.interface';
-import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
-import { ResponseError } from '@core/interfaces/response-error.interface';
-import { EtatDemandeService } from '@modules/admin/parametrage/etat-demande/etat-demande.service';
+import { ActionMode } from '@core/types';
+import { Logger } from '@core/services/logger.service';
+import { NotificationAlertService } from '@core/services/notification-alert.service';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
+
+import { DemandeService } from '../demande.service';
+import { EtatDemandeService } from '@modules/admin/parametrage/etat-demande/etat-demande.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { DemandeEnqueteModel, DemandeEnqueteStatEtat } from '@core/model/demande-enquete.model';
+
+import { StatCard, StatCardComponent } from '@shared/components/stat-card/stat-card.component';
+import { SearchFilterComponent } from '@shared/components/search-filter/search-filter.component';
+import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { DemandeTableComponent } from '../components/demande-table/demande-table.component';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+
+// --- FILTRES PRÉDÉFINIS ---
+const FILTERS: FilterConfig[] = [
+  {
+    key: 'etat',
+    label: 'Statut',
+    placeholder: 'Tous les statuts',
+    options: [], // rempli dynamiquement
+  },
+  {
+    key: 'type',
+    label: 'Type de Conerné',
+    placeholder: 'Tous les types',
+    options: [
+      { value: "employeur", label: "Employeur" },
+      { value: "travailleur", label: "Travailleur" },
+      { value: "beneficiaire", label: "Bénéficiaire" },
+    ],
+  },
+  {
+    key: 'priorite',
+    label: 'Priorité',
+    placeholder: 'Toutes priorités',
+    options: [
+      ...PRIORITE_LEVELS,
+      { value: 6, label: 'Urgente' },
+    ],
+  }
+];
 
 @Component({
   selector: 'app-list-demandes',
   templateUrl: './list-demandes.component.html',
-  styleUrls: ['./list-demandes.component.css']
+  styleUrls: ['./list-demandes.component.css'],
+  standalone: true,
+  imports: [
+    PageHeaderComponent,
+    CommonModule,
+    SearchFilterComponent,
+    StatCardComponent,
+    PaginationComponent,
+    NgIf,
+    NgForOf,
+    DemandeTableComponent
+  ],
 })
 export class ListDemandesComponent implements OnInit {
-  // UI labels
-  pageTitle = "Tous Mes Demande d'Enquête";
+
+  // --- UI TEXT ---
+  pageTitle = "Toutes mes demandes d'enquête";
   pageSubTitle = "Visionner tous vos demandes d'enquête ici";
 
-  statsData: StatCard[] = [
-    // {
-    //   title: "Total des demandes",
-    //   value: 24,
-    //   change: "+12% ce mois",
-    //   changeType: "positive",
-    //   icon: "fas fa-file-alt",
-    //   gradient: "from-primary-500 to-primary-600",
-    // },
-    {
-      title: "En cours",
-      value: 8,
-      change: "En traitement",
-      changeType: "neutral",
-      icon: "fas fa-hourglass-half",
-      gradient: "from-yellow-500 to-orange-500",
-    },
-    {
-      title: "Terminées",
-      value: 16,
-      change: "Complétées",
-      changeType: "positive",
-      icon: "fas fa-check-circle",
-      gradient: "from-green-500 to-emerald-500",
-    },
-    {
-      title: "Demandes rejetées",
-      value: 2,
-      change: "À revoir",
-      changeType: "negative",
-      icon: "fas fa-times-circle",
-      gradient: "from-red-500 to-rose-500",
-    },
-    {
-      title: "Demandes annulées",
-      value: 1,
-      change: "Annulées par utilisateur",
-      changeType: "neutral",
-      icon: "fas fa-ban",
-      gradient: "from-gray-500 to-gray-600",
-    },
-  ];
-
-  filterConfig: FilterConfig[] = [
-    {
-      key: 'etat',
-      label: 'Statut',
-      placeholder: 'Tous les statuts',
-      options: [
-      ],
-    },
-    {
-      key: 'type',
-      label: 'Type de Conerné',
-      placeholder: 'Tous les types',
-      options: [
-        { value: "employeur", label: "Employeur" },
-        { value: "travailleur", label: "Travailleur" },
-        { value: "beneficiaire", label: "Bénéficiaire" },
-      ],
-    },
-    {
-      key: 'priorite',
-      label: 'Priorité',
-      placeholder: 'Toutes priorités',
-      options: [
-        ...PRIORITE_LEVELS,
-        { value: 6, label: 'Urgente' },
-      ],
-    },
-    // {
-    //   key: 'center',
-    //   label: 'Centre',
-    //   placeholder: 'Tous les centres',
-    //   options: [
-    //     { value: 'CG001', label: 'Afrilins' },
-    //   ],
-    // },
-  ];
-
-
+  // --- STATE ---
+  filterConfig: FilterConfig[] = FILTERS;
   filter: Record<string, string | number> = {};
   loading = signal<boolean>(false);
-  demandes = signal<DemandeEnquete[]>([])
+  demandes = signal<DemandeEnqueteModel[]>([]);
+  statsEtat = signal<DemandeEnqueteStatEtat>({
+    validees: 0,
+    enAttentes: 0,
+    enComplement: 0,
+    rejetees: 0,
+    annulees: 0
+  });
   user!: Utilisateur;
+
   pagination: Pagination = {
     limit: 10,
     page: 1,
@@ -116,77 +368,72 @@ export class ListDemandesComponent implements OnInit {
     totalPage: 0
   };
 
+
+  // --- STAT CARDS COMPUTED ---
+  statsData = computed<StatCard[]>(() => [
+    {
+      title: "En Attente",
+      value: this.statsEtat().enAttentes,
+      change: "En attente validation",
+      changeType: "neutral",
+      icon: "fas fa-hourglass-half",
+      gradient: "from-yellow-500 to-orange-500",
+    },
+    {
+      title: "Validées",
+      value: this.statsEtat().validees,
+      change: "Complétées",
+      changeType: "positive",
+      icon: "fas fa-check-circle",
+      gradient: "from-green-500 to-emerald-500",
+    },
+    {
+      title: "Demandes rejetées",
+      value: this.statsEtat().rejetees,
+      change: "À revoir",
+      changeType: "negative",
+      icon: "fas fa-times-circle",
+      gradient: "from-red-500 to-rose-500",
+    },
+    {
+      title: "Demandes annulées",
+      value: this.statsEtat().annulees,
+      change: "Annulées par utilisateur",
+      changeType: "neutral",
+      icon: "fas fa-ban",
+      gradient: "from-gray-500 to-gray-600",
+    },
+  ]);
+
   constructor(
     private readonly demandeService: DemandeService,
     private readonly toast: NotificationAlertService,
     private readonly etatDemandeService: EtatDemandeService,
-    private utilisateurState: UtilisateurStateService,
+    private readonly utilisateurState: UtilisateurStateService,
     private router: Router,
-  ) { }
+  ) {}
 
+  // --- INIT ---
   ngOnInit(): void {
+    // Récupération utilisateur courant
     this.utilisateurState.user$.subscribe(user => {
       if (user) {
         this.user = user;
         this.loadData();
       }
     });
+
+    // Charger les options de filtre "état"
     this.etatDemandeService.getAll().subscribe(response => {
-      this.filterConfig[0].options = response.data.map(d => ({ value: d.code, label: d.libelle }))
-    })
+      this.filterConfig[0].options = response.data.map(d => ({ value: d.code, label: d.libelle }));
+    });
   }
 
+  // --- FILTRE ---
   onFiltersChanged(filter: Record<string, string | number>) {
     this.filter = filter;
     this.applyFilter();
   }
-
-
-
-  loadData(filter: IParams = {}) {
-    this.loading.set(true);
-    this.demandeService.getAll({
-      ...filter,
-      ...this.pagination,
-      sort: 'updatedAt,desc',
-      utilisateurId: this.user.id
-    }).subscribe({
-      next: (response: ApiResponse<DemandeEnquete>) => {
-        this.pagination = response.pagination;
-        this.demandes.set(response.data);
-      },
-      error: (err: ResponseError) => {
-        this.toast.showNotification(err.message ?? "Erreur lors du chargement des données", "error");
-      },
-      complete: () => this.loading.set(false)
-    });
-  }
-
-  setPagination(pg: Pagination) {
-    this.pagination = pg;
-    this.applyFilter();
-  }
-
-  applyFilter() {
-    const filter: IParams = {};
-
-    const { priorite, search, type, etat } = this.filter;
-
-    if (priorite !== "") {
-      filter[priorite === 6 ? "urgent" : "priorite"] = priorite === 6 ? true : priorite;
-    }
-
-    if (search) filter["search"] = search;
-    if (type) filter["type"] = type;
-    if (etat) filter["etat"] = etat;
-    if (priorite || search || type || etat) {
-      this.pagination.page = 1;
-    }
-
-    console.log(filter);
-    this.loadData(filter);
-  }
-
 
   onSearchChanged(value: string) {
     this.filter["search"] = value;
@@ -196,5 +443,66 @@ export class ListDemandesComponent implements OnInit {
   onResetFilters() {
     this.filter = {};
     this.applyFilter();
+  }
+
+  private applyFilter() {
+    const filter: IParams = {};
+    const { priorite, search, type, etat } = this.filter;
+
+    if (priorite !== "") filter[priorite === 6 ? "urgent" : "priorite"] = priorite === 6 ? true : priorite;
+    if (search) filter["search"] = search;
+    if (type) filter["type"] = type;
+    if (etat) filter["etat"] = etat;
+
+    if (priorite || search || type || etat) this.pagination.page = 1;
+
+    this.loadData(filter);
+  }
+
+  // --- ACTION SUR DEMANDE ---
+  onAction(event: { action: ActionMode, demande: DemandeEnqueteModel }) {
+    switch (event.action) {
+      case "view":
+        this.router.navigate(["/demandeur/demandes/detail", event.demande.id]);
+        break;
+      case "update":
+        this.router.navigate(["/demandeur/demandes/modifier", event.demande.id]);
+        break;
+      case "delete":
+      case "download":
+      default:
+        Logger.info(`Action ${event.action} non implémentée`, "ListDemandesComponent");
+    }
+  }
+
+  // --- PAGINATION ---
+  setPagination(pg: Pagination) {
+    this.pagination = pg;
+    this.applyFilter();
+  }
+
+  // --- CHARGEMENT DONNÉES ---
+  loadData(filter: IParams = {}) {
+    if (!this.user) return;
+
+    this.loading.set(true);
+
+    forkJoin({
+      stats: this.demandeService.statsEtat(this.user.id),
+      demandes: this.demandeService.getAll({
+        ...filter,
+        ...this.pagination,
+        sort: 'updatedAt,desc',
+        utilisateurId: this.user.id
+      })
+    }).subscribe({
+      next: ({ stats, demandes }) => {
+        this.statsEtat.set(stats);
+        this.demandes.set(demandes.data);
+        this.pagination = demandes.pagination;
+        this.loading.set(false);
+      },
+      error: () => this.toast.showNotification("Erreur lors du chargement des données", "error")
+    });
   }
 }

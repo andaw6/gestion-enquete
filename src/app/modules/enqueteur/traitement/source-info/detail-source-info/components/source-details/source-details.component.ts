@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info";
 import {RELIABILITY_LEVELS} from "@config/constant";
+import { SourceInfoModel } from '@core/model/source-info.model';
 
 @Component({
   selector: 'app-source-details',
@@ -8,18 +9,18 @@ import {RELIABILITY_LEVELS} from "@config/constant";
   styleUrls: ['./source-details.component.css']
 })
 export class SourceDetailsComponent {
-  @Input() source!: SourceInfo;
+  @Input() source!: SourceInfoModel;
 
   getStars(): boolean[] {
     return Array(5)
       .fill(false)
-      .map((_, i) => i < Number(this.source.niveauFiabilite))
+      .map((_, i) => i < Number(this.source.fiabilite))
   }
 
   getNiveauFiabilite(): string {
     if (this.source) {
       for (const {label, value} of RELIABILITY_LEVELS) {
-        if (this.source.niveauFiabilite === value) {
+        if (this.source.fiabilite === Number(value)) {
           return label;
         }
       }

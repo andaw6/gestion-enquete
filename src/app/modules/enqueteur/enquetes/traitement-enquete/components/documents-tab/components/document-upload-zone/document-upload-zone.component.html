@@ -1,0 +1,33 @@
+<!-- Zone de glisser-déposer -->
+<div
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+  [class]="
+    'border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 cursor-pointer ' +
+    (isDragOver
+      ? 'border-blue-400 bg-blue-50'
+      : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50')
+  "
+  (click)="triggerFileInput()"
+>
+  <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+
+  <div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">
+      Glissez vos fichiers ici ou cliquez pour parcourir
+    </h3>
+    <p class="text-sm text-gray-500 mb-4">
+      PNG, JPG, JPEG, PDF • Maximum 10 MB par fichier
+    </p>
+
+    <input
+      #fileInput
+      type="file"
+      class="hidden"
+      multiple
+      accept=".png,.jpg,.jpeg,.pdf"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+</div>

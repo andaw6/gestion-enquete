@@ -1,0 +1,114 @@
+<div
+  class="card-gradient rounded-xl shadow-soft border border-gray-100 overflow-hidden animate-fade-in"
+  style="animation-delay: 0.2s"
+>
+  <div class="bg-gradient-to-r from-primary-500 to-primary-600 px-8 py-6">
+    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      Demande d'enquête associée
+    </h2>
+  </div>
+  <div class="p-8" *ngIf="demande">
+    <div class="space-y-6">
+      <div
+        class="flex items-center justify-between p-4 bg-primary-50 rounded-lg border border-primary-100"
+      >
+        <div>
+          <p class="text-sm font-bold text-primary-700 uppercase tracking-wide">
+            Référence de la demande
+          </p>
+          <p class="text-xl font-mono font-bold text-primary-900">
+            {{ demande.reference }}
+          </p>
+        </div>
+        <button (click)="showDemande()"
+          class="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors"
+        >
+          Voir détails
+        </button>
+      </div>
+
+      <div>
+        <dt
+          class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2"
+        >
+          Objet
+        </dt>
+        <dd class="text-lg text-gray-900 font-semibold">{{ demande.objet }}</dd>
+      </div>
+
+      <div>
+        <dt
+          class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2"
+        >
+          Description
+        </dt>
+        <dd
+          class="text-gray-900 leading-relaxed p-4 bg-gray-50 rounded-lg border-l-4 border-gray-300"
+        >
+          {{ demande.description }}
+        </dd>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div
+          class="text-center p-4 bg-orange-50 rounded-lg border border-orange-200"
+        >
+          <p class="text-xs font-bold text-orange-700 uppercase tracking-wide">
+            Priorité
+          </p>
+          <span
+            class="inline-block mt-2 px-3 py-1 rounded-full text-sm font-bold bg-orange-200 text-orange-800"
+          >
+            {{ getPriorityLabel(demande.priorite) }}
+          </span>
+        </div>
+        <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+          <p class="text-xs font-bold text-red-700 uppercase tracking-wide">
+            Urgence
+          </p>
+          <span
+            class="inline-block mt-2 px-3 py-1 rounded-full text-sm font-bold"
+            [ngClass]="
+              demande.urgent
+                ? 'bg-red-200 text-red-800'
+                : 'bg-gray-200 text-gray-800'
+            "
+          >
+            {{ demande.urgent ? "Urgent" : "Normal" }}
+          </span>
+        </div>
+        <div
+          class="text-center p-4 bg-gray-50 rounded-lg border border-gray-200"
+        >
+          <p class="text-xs font-bold text-gray-700 uppercase tracking-wide">
+            Échéance
+          </p>
+          <p class="mt-2 text-sm font-bold text-gray-900">
+            {{ formatDate(demande.dateEcheance) }}
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400"
+        *ngIf="demande.commentaireValidation"
+      >
+        <dt
+          class="text-sm font-bold text-blue-700 uppercase tracking-wide mb-2"
+        >
+          Commentaire de validation
+        </dt>
+        <dd class="text-blue-900 italic">
+          "{{ demande.commentaireValidation }}"
+        </dd>
+      </div>
+    </div>
+  </div>
+</div>

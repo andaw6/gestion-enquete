@@ -1,0 +1,246 @@
+<!-- Container principal avec fond dégradé -->
+<div>
+  <!-- class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100" -->
+  <div class="" [ngClass]="{ 'container mx-auto px-4 pb-8': failLoading() }">
+    <!-- En-tête de la page -->
+    <header class="mb-8" *ngIf="failLoading()">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-800 mb-2">
+            {{ headerTitle }}
+          </h1>
+          <p class="text-slate-600" *ngIf="id()">
+            ID: <span class="font-mono font-semibold">{{ id() }}</span>
+          </p>
+        </div>
+
+        <!-- Bouton retour dans l'en-tête -->
+        <button
+          (click)="goBack.emit()"
+          class="flex items-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 font-medium py-2 px-4 rounded-lg shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-md"
+        >
+          <i class="fas fa-arrow-left text-sm"></i>
+          <span>{{ backButtonText }}</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Card principale -->
+    <div
+      class="overflow-hidden"
+      [ngClass]="{
+        'bg-white rounded-2xl shadow-xl border border-slate-200': failLoading()
+      }"
+    >
+      <!-- État de chargement -->
+      <div
+        *ngIf="loading() && !data()"
+        class="flex items-center justify-center py-24"
+      >
+        <div class="text-center max-w-md">
+          <!-- Animation de chargement moderne -->
+          <div class="relative mb-8">
+            <div class="w-20 h-20 mx-auto">
+              <!-- Cercle de fond -->
+              <div
+                class="absolute inset-0 border-4 border-indigo-100 rounded-full"
+              ></div>
+              <!-- Cercle animé -->
+              <div
+                class="absolute inset-0 border-4 border-indigo-500 rounded-full border-t-transparent animate-spin"
+              ></div>
+              <!-- Point central -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div
+                  class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages de chargement -->
+          <h2 class="text-2xl font-bold text-slate-800 mb-3">
+            {{ loadingTitle }}
+          </h2>
+          <p class="text-slate-600 mb-6">
+            {{ loadingSubtitle }}
+          </p>
+
+          <!-- Barre de progression élégante -->
+          <div class="w-64 mx-auto">
+            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+              <div
+                class="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full animate-pulse transition-all duration-1000 ease-in-out"
+                style="width: 65%"
+              ></div>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Chargement en cours...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- État d'erreur -->
+      <div *ngIf="failLoading() && !loading()" class="p-12">
+        <div class="max-w-lg mx-auto">
+          <div
+            class="bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-100 rounded-2xl p-8 shadow-lg"
+          >
+            <!-- Icône d'erreur avec animation -->
+            <div class="text-center mb-6">
+              <div class="relative w-20 h-20 mx-auto mb-4">
+                <div
+                  class="absolute inset-0 bg-red-100 rounded-full animate-pulse"
+                ></div>
+                <div
+                  class="relative w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-lg"
+                >
+                  <i
+                    class="fas fa-exclamation-triangle text-2xl text-white"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- Message d'erreur principal -->
+              <h2 class="text-2xl font-bold text-red-800 mb-3">
+                {{ errorTitle }}
+              </h2>
+
+              <!-- Message d'erreur détaillé -->
+              <p
+                class="text-red-700 mb-6 leading-relaxed"
+                [innerHTML]="errorMessage()"
+              ></p>
+            </div>
+
+            <!-- Actions principales -->
+            <div class="space-y-4 mb-6" *ngIf="loadingError()?.retryable">
+              <!-- Bouton retry principal -->
+              <button
+                (click)="reloadData()"
+                [disabled]="isReloading()"
+                class="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 disabled:from-red-300 disabled:to-pink-300 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                <i
+                  class="fas"
+                  [class.fa-redo]="!isReloading()"
+                  [class.fa-spinner]="isReloading()"
+                  [class.fa-spin]="isReloading()"
+                ></i>
+                <span class="text-lg">{{
+                  isReloading() ? "Rechargement..." : retryButtonText
+                }}</span>
+              </button>
+
+              <!-- Action secondaire -->
+              <button
+                (click)="goBack.emit()"
+                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2"
+              >
+                <i class="fas fa-arrow-left"></i>
+                <span>{{ backButtonText }}</span>
+              </button>
+            </div>
+
+            <!-- Détails techniques (expandables) -->
+            <div *ngIf="showTechnicalDetails()" class="mt-8">
+              <div
+                class="bg-red-100 rounded-xl border border-red-200 overflow-hidden"
+              >
+                <button
+                  (click)="toggleTechnicalDetails()"
+                  class="w-full p-4 text-left text-red-700 hover:bg-red-150 transition-colors duration-200 flex items-center justify-between"
+                >
+                  <span class="font-medium">Informations techniques</span>
+                  <i
+                    class="fas fa-chevron-down text-sm transform transition-transform duration-200"
+                    [class.rotate-180]="technicalDetailsExpanded()"
+                  ></i>
+                </button>
+
+                <div
+                  *ngIf="technicalDetailsExpanded()"
+                  class="border-t border-red-200 p-4 bg-red-50"
+                >
+                  <div class="space-y-2 text-sm font-mono text-red-800">
+                    <div class="flex justify-between">
+                      <strong>Code d'erreur:</strong>
+                      <span>{{ errorCode() }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <strong>ID de l'entité:</strong>
+                      <span>{{ id() }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <strong>Timestamp:</strong>
+                      <span>{{ errorTimestamp() | date : "medium" }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <strong>Tentatives:</strong>
+                      <span>{{ retryCount() }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenu principal (affiché seulement si pas d'erreur) -->
+      <div *ngIf="data() && !failLoading()" >
+        <ng-container
+          *ngTemplateOutlet="customTemplateRef!; context: { $implicit: data() }"
+        >
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast/Notification pour les erreurs non-critiques -->
+  <div
+    *ngIf="showRetryNotification()"
+    class="fixed bottom-6 right-6 bg-white border border-amber-200 rounded-xl p-5 shadow-2xl z-50 max-w-sm transform animate-slide-up"
+  >
+    <div class="flex items-start space-x-4">
+      <div class="flex-shrink-0">
+        <div
+          class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center"
+        >
+          <i class="fas fa-exclamation-triangle text-amber-500"></i>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-0">
+        <h4 class="text-sm font-semibold text-slate-800 mb-1">
+          Échec de la mise à jour
+        </h4>
+        <p class="text-xs text-slate-600 mb-3">
+          Les données affichées peuvent ne pas être à jour.
+        </p>
+
+        <div class="flex items-center space-x-3">
+          <button
+            (click)="retryUpdate()"
+            class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-medium py-1.5 px-3 rounded-lg transition-colors duration-200"
+          >
+            Réessayer
+          </button>
+
+          <button
+            (click)="dismissRetryNotification()"
+            class="text-xs text-slate-500 hover:text-slate-700 font-medium"
+          >
+            Ignorer
+          </button>
+        </div>
+      </div>
+
+      <button
+        (click)="dismissRetryNotification()"
+        class="flex-shrink-0 text-slate-400 hover:text-slate-600 p-1"
+      >
+        <i class="fas fa-times text-xs"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div id="observations" class="tab-content">
+  <div class="space-y-6">
+    <div class="flex justify-between items-center">
+      <h3 class="text-lg font-semibold text-gray-900">Observations et notes</h3>
+      <button
+        (click)="openModal = true"
+        class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all shadow-soft flex items-center space-x-2"
+      >
+        <i class="w-5 h-5 fas fa-plus" ></i>
+        <span>Nouvelle observation</span>
+      </button>
+    </div>
+
+    <!-- Timeline des observations -->
+    <div class="space-y-6">
+      <div class="relative" *ngFor="let obs of observations; let i = index">
+        <div
+          *ngIf="i < observations.length - 1"
+          class="absolute left-6 top-12 bottom-0 w-0.5 bg-gray-200"
+        ></div>
+
+        <div class="relative flex items-start space-x-4">
+          <!-- Icône ronde -->
+          <div class="flex-shrink-0">
+            <div
+              class="w-12 h-12 rounded-full flex items-center justify-center shadow-soft"
+              [ngClass]="getBgColor(obs)"
+            >
+              <i class="text-white text-lg" [class]="getIcon(obs)"></i>
+            </div>
+          </div>
+
+          <!-- Carte -->
+          <div
+            class="flex-1 bg-gradient-to-r from-white to-gray-50 rounded-xl p-6 border border-gray-200 shadow-card"
+          >
+            <div class="flex justify-between items-start mb-3">
+              <h4 class="font-semibold text-gray-900 text-lg">
+                {{ obs.objet }}
+              </h4>
+              <span class="text-sm text-gray-500">
+                {{ obs.dateEnregistrement | date : "dd/MM/yyyy HH:mm" }}
+              </span>
+            </div>
+            <p class="text-gray-700 mb-4">
+              {{ obs.description }}
+            </p>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4 text-sm text-gray-500">
+                <!-- Auteur -->
+                <span class="flex items-center">
+                  <i class="mr-1 fas fa-user" ></i>
+                  <!-- {{ obs.enquete?.agent?.nom || "Utilisateur inconnu" }} -->
+                </span>
+
+                <!-- Catégorie -->
+                <span class="flex items-center">
+                    <i class="mr-1 fas fa-folder" ></i>
+                  {{ obs.categorie }}
+                </span>
+              </div>
+
+              <!-- Badge état -->
+              <span
+                class="px-3 py-1 rounded-full text-xs font-medium"
+                [ngClass]="getBadgeClass(obs)"
+              >
+                {{ obs.etat.libelle }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-observation-modal
+  [open]="openModal"
+  (close)="openModal = false"
+  (save)="savedData($event)"
+></app-observation-modal>

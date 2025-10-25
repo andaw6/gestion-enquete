@@ -28,3 +28,25 @@ export interface Enquete {
   /** La date de création (format ISO 8601 date-time) */
   createdAt: string;
 }
+
+
+export interface StateCard {
+  title: string;
+  value: number | string;
+  unit?: string;
+  icon: string;
+  gradient: string;
+  borderColor: string;
+  bgOverlay: string;
+  valueColor: string;
+  trendBadge: string;
+  trend: string;
+}
+
+
+export interface EnqueteStat {
+  enAttente: number;
+  enCours: number;
+  terminer: number;
+  echeance: number;
+}

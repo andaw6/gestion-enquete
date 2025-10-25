@@ -1,47 +1,70 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiCrudService } from '@core/api/api-crud.service';
-import {Observable, of} from "rxjs";
-import { map } from 'rxjs/operators';
+import { map, Observable } from "rxjs";
 import { IParams } from '@core/interfaces/http-options.interface';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
+import { EnqueteEtatEnquete, EnqueteModel, EnqueteStatEtat } from '@core/model/enquete.model';
+import { DocumentModel } from '@core/model/document.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class EnqueteService  extends ApiCrudService<any>{
+export class EnqueteService extends ApiCrudService<EnqueteModel> {
 
-   /** CRUD API */
-    override create(data: any): Observable<DemandeEnquete> {
-      return this.responsePostOne<DemandeEnquete>(data).pipe(
-        map(created => {
-          return created;
-        })
-      );
-    }
+  constructor(http: HttpClient) {
+    super(http);
+    this.setBaseUrl("/enquete");
+  }
 
-    override update(id: number, data: any): Observable<DemandeEnquete> {
-      return this.responsePutOne<DemandeEnquete>(`/${id}`, data).pipe(
-        map(updated => {
-          return updated;
-        })
-      );
-    }
+  /** CRUD API */
+  override create(data: any): Observable<EnqueteModel> {
+    return this.responsePostOne<EnqueteModel>(data);
+  }
 
-    override deleteOne(id: number): Observable<boolean> {
-      return this.responseDeleteOne(`/${id}`).pipe(
-        map(success => {
-          return success;
-        })
-      );
-    }
+  override update(id: number, data: any): Observable<EnqueteModel> {
+    return this.responsePutOne<EnqueteModel>(`/${id}`, data);
+  }
 
-    override getAll(params: IParams = {}): Observable<ApiResponse<DemandeEnquete>> {
-      params["utilisateurId"] = this.USER_ID;
-      return this.responseGetMany<DemandeEnquete>(params, "/all");
-    }
+  override deleteOne(id: number): Observable<boolean> {
+    return this.responseDeleteOne(`/${id}`);
+  }
 
-    override getOne(id: number): Observable<DemandeEnquete | null> {
-      return this.responseGetOne<DemandeEnquete>(`/${id}`);
-    }
+  override getAll(params: IParams = {}): Observable<ApiResponse<EnqueteModel>> {
+    return this.responseGetMany<EnqueteModel>(params, "/all/avec/demande");
+  }
+
+  override getOne(id: number): Observable<EnqueteModel | null> {
+    return this.responseGetOne<EnqueteModel>(`/${id}/all`);
+  }
+
+  changeEtat(id: number, code: EnqueteEtatEnquete): Observable<EnqueteModel> {
+    return this.responsePatchOne<EnqueteModel>(`/${id}/etat`, null, { code });
+  }
+
+  statsEtat(utilisateurId?: number): Observable<EnqueteStatEtat> {
+    return this.responseGetOne<EnqueteStatEtat>("/stats/etat", { utilisateurId }).pipe(map(d => d!));
+  }
+
+
+  associeDocuments(id: number, docIds: number[], files: File[] = []): Observable<EnqueteModel> {
+    const formData = new FormData();
+
+    // Ajouter les fichiers
+    files.forEach(file => {
+      formData.append('fichiers', file);
+    });
+
+    // Ajouter le JSON sous la clé attendue "document"
+    const payload = { ids: docIds };
+    formData.append(
+      'document',
+      new Blob([JSON.stringify(payload)], { type: 'application/json' })
+    );
+    return this.responsePatchOne<EnqueteModel>(`/${id}/documents`, formData);
+  }
+
+  associeSources(id: number, sourceIds: number[]): Observable<EnqueteModel> {
+    return this.responsePatchOne<EnqueteModel>(`/${id}/sources`, { ids: sourceIds })
+  }
 }

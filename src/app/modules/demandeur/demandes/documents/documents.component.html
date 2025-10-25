@@ -1,0 +1,47 @@
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+></app-page-header>
+
+<div class="bg-gray-50">
+  <!-- Filters -->
+  <app-document-sans-enquete-filtre
+    [filters]="currentFilters"
+    (filtersChange)="onFiltersChange($event)"
+    (uploadClick)="onUploadClick()"
+  ></app-document-sans-enquete-filtre>
+
+  <!-- Documents Grid -->
+  <app-document-grid
+    [documents]="documents$"
+    [viewMode]="currentFilters.viewMode"
+    [pagination]="pagination"
+    [loading]="loading()"
+    (previewClick)="onPreviewClick($event)"
+    (downloadClick)="onDownloadClick($event)"
+    (deleteClick)="onDeleteClick($event)"
+    (paginationChange)="setPagination($event)"
+  ></app-document-grid>
+
+  <!-- Upload Modal -->
+  <app-document-upload-modal
+    [isOpen]="isUploadModalOpen"
+    (close)="onUploadModalClose()"
+    (upload)="onUpload($event)"
+  ></app-document-upload-modal>
+
+  <!-- Preview Modal -->
+  <app-document-preview-modal
+    [isModalOpen]="isPreviewModalOpen"
+    [document]="selectedDocument"
+    (modalClosed)="isPreviewModalOpen = false"
+  ></app-document-preview-modal>
+
+  <app-delete-modal
+    [isOpen]="showDeleteModal"
+    [itemName]="selectedItem"
+    [isDeleting]="isDeleting"
+    (confirm)="handleDelete()"
+    (cancel)="showDeleteModal = false"
+  ></app-delete-modal>
+</div>

@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,18 +7,19 @@ import {
   ValidatorFn,
   Validators
 } from "@angular/forms";
-import {EtatSourceInfo, SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info";
-import {Option, OptionSelect} from "@core/interfaces/option.interface";
-import {DocumentService} from "@modules/enqueteur/traitement/document/document.service";
-import {TypeSourceService} from "@modules/admin/parametrage/type-source/type-source.service";
-import {TypeSource} from "@modules/admin/parametrage/type-source/type-source";
-import {EtatSourceService} from "@modules/enqueteur/traitement/source-info/etat-source.service";
-import {SourceInfoService} from "@modules/enqueteur/traitement/source-info/source-info.service";
-import {Router} from "@angular/router";
-import {NotificationAlertService} from "@core/services/notification-alert.service";
-import {forkJoin} from 'rxjs';
-import {Document} from "@modules/enqueteur/traitement/document/document";
-import {RELIABILITY_LEVELS} from "@config/constant";
+import { EtatSourceInfo, SourceInfo } from "@modules/enqueteur/traitement/source-info/source-info";
+import { Option, OptionSelect } from "@core/interfaces/option.interface";
+import { DocumentService } from "@modules/enqueteur/traitement/document/document.service";
+import { TypeSourceService } from "@modules/admin/parametrage/type-source/type-source.service";
+import { TypeSource } from "@modules/admin/parametrage/type-source/type-source";
+import { EtatSourceService } from "@modules/enqueteur/traitement/source-info/etat-source.service";
+import { SourceInfoService } from "@modules/enqueteur/traitement/source-info/source-info.service";
+import { Router } from "@angular/router";
+import { NotificationAlertService } from "@core/services/notification-alert.service";
+import { forkJoin } from 'rxjs';
+import { RELIABILITY_LEVELS } from "@config/constant";
+import { DocumentModel } from "@core/model/document.model";
+import { SourceInfoModel } from '@core/model/source-info.model';
 
 @Component({
   selector: 'app-form-source-info',
@@ -85,7 +86,7 @@ export class FormSourceInfoComponent implements OnInit {
       if (!control.value) return null;
       const inputDate = new Date(control.value);
       const today = new Date();
-      return inputDate > today ? {futureDate: true} : null;
+      return inputDate > today ? { futureDate: true } : null;
     };
   }
 
@@ -100,7 +101,7 @@ export class FormSourceInfoComponent implements OnInit {
       complete(): void {
         console.log("complete");
       },
-      next: ({documents, types, etats}) => {
+      next: ({ documents, types, etats }) => {
         this.option = documents.data.map(this.mapDocumentToOptionSelect);
         this.sourceTypes = types.data;
         this.etatsDisponibles = etats.data;
@@ -121,7 +122,7 @@ export class FormSourceInfoComponent implements OnInit {
     });
   }
 
-  private mapDocumentToOptionSelect(doc: Document): OptionSelect {
+  private mapDocumentToOptionSelect(doc: DocumentModel): OptionSelect {
     return {
       id: doc.id.toString(),
       label: `${doc.nom}.${doc.extension}`,
@@ -192,25 +193,26 @@ export class FormSourceInfoComponent implements OnInit {
 
     this.isSubmitting = true;
     const payload = this.getFormData();
-    const request$ = this.isEditingMode()
-      ? this.sourceInfoService.update(Number(this.draft.id), payload)
-      : this.sourceInfoService.create(payload);
+    // const request$ = this.isEditingMode()
+    //   ? this.sourceInfoService.update(Number(this.draft.id), payload)
+    //   : this.sourceInfoService.create();
 
-    this.sourceId = null;
-    request$.subscribe({
-      next: (data: SourceInfo) => {
-        this.showSuccessModal = true;
-        this.isSubmitting = false;
-        localStorage.removeItem(this.key);
-        this.draft = undefined;
-        this.sourceId = data.id;
-      },
-      error: err => {
-        this.isSubmitting = false;
-        this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
-        console.error(err);
-      }
-    });
+
+    // this.sourceId = null;
+    // request$.subscribe({
+    //   next: (data: SourceInfoModel) => {
+    //     this.showSuccessModal = true;
+    //     this.isSubmitting = false;
+    //     localStorage.removeItem(this.key);
+    //     this.draft = undefined;
+    //     this.sourceId = data.id;
+    //   },
+    //   error: err => {
+    //     this.isSubmitting = false;
+    //     this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
+    //     console.error(err);
+    //   }
+    // });
   }
 
   isEditingMode(): boolean {
@@ -236,7 +238,7 @@ export class FormSourceInfoComponent implements OnInit {
     this.closeSuccessModal();
     this.router.navigate(
       ["/enqueteur/traitement/source-info"],
-      {queryParams: {show: this.sourceId}}
+      { queryParams: { show: this.sourceId } }
     ).then(console.info);
   }
 
@@ -254,7 +256,7 @@ export class FormSourceInfoComponent implements OnInit {
     this.documentIds.set([]);
     this.selectedDocument = [];
     this.initializeForm();
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   isValid(): boolean {

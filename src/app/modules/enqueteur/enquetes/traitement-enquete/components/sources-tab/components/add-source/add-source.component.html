@@ -1,0 +1,35 @@
+<app-modal-wrapper [isOpen]="open" (closeModal)="close()">
+  <app-modal-header
+    [title]="getModalTitle()"
+    [subtitle]="getModalSubtitle()"
+    (close)="close()"
+  ></app-modal-header>
+
+  <!-- Vue de choix initial -->
+  <app-source-mode-selection
+    *ngIf="sourceMode === null"
+    (modeSelected)="setSourceMode($event)"
+  ></app-source-mode-selection>
+
+  <!-- Vue de sélection de source existante -->
+  <app-existing-source-list
+    *ngIf="sourceMode === 'select'"
+    [sources]="existingSources"
+    [selectedSourceId]="selectedSourceId"
+    (back)="sourceMode = null"
+    (cancel)="close()"
+    (confirm)="confirmSourceSelection($event)"
+    (sourceSelect)="selectExistingSource($event)"
+  ></app-existing-source-list>
+
+  <!-- Vue de création de source -->
+  <app-source-form
+    *ngIf="sourceMode === 'create'"
+    [addEnquetes]="false"
+    [isSubmitting]="isSubmitting"
+    [existingDocuments]="existingDocuments"
+    (back)="sourceMode = null"
+    (cancel)="close()"
+    (submit)="onSubmit($event)"
+  ></app-source-form>
+</app-modal-wrapper>

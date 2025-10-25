@@ -7,23 +7,26 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
-import {Observable, Subject, of, map} from 'rxjs';
-import {DocumentService} from '@modules/enqueteur/traitement/document/document.service';
+import { Observable, Subject, of, map } from 'rxjs';
+import { DocumentService } from '@modules/enqueteur/traitement/document/document.service';
 import {
   Document,
   DocumentData, DocumentFilterOptions,
   DocumentUpload,
 } from '@modules/enqueteur/traitement/document/document';
-import {TypeDocumentService} from '@modules/admin/parametrage/type-document/type-document.service';
-import {Pagination} from '@core/interfaces/pagination.interface';
-import {ApiResponse} from '@core/interfaces/api-response.interface';
-import {ResponseError} from '@core/interfaces/response-error.interface';
+import { TypeDocumentService } from '@modules/admin/parametrage/type-document/type-document.service';
+import { Pagination } from '@core/interfaces/pagination.interface';
+import { ApiResponse } from '@core/interfaces/api-response.interface';
+import { ResponseError } from '@core/interfaces/response-error.interface';
 import {
   DocumentUploadModalComponent
 } from '@modules/enqueteur/traitement/document/components/document-upload-modal/document-upload-modal.component';
-import {IParams} from "@core/interfaces/http-options.interface";
-import {UtilService} from "@core/services/util.service";
-import {ViewMode} from "@core/types";
+import { IParams } from "@core/interfaces/http-options.interface";
+import { UtilService } from "@core/services/util.service";
+import { ViewMode } from "@core/types";
+import { DocumentModel } from '@core/model/document.model';
+import { UtilisateurStateService } from '@store/utilisateur/utilisateur-state.service';
+import { UtilisateurModel } from '@core/model/utilisateur.model';
 
 @Component({
   selector: 'app-document-sans-enquete',
@@ -33,7 +36,7 @@ import {ViewMode} from "@core/types";
 export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  documents$: Observable<Document[]> = of([]);
+  documents$: Observable<DocumentModel[]> = of([]);
   loading: WritableSignal<boolean> = signal(false);
 
   pagination: Pagination = {
@@ -54,22 +57,27 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   isPreviewModalOpen = false;
   showDeleteModal = false;
 
-  selectedDocument: Document | null = null;
-  deletedDocument: Document | null = null;
+  selectedDocument: DocumentModel | null = null;
+  deletedDocument: DocumentModel | null = null;
   selectedItem = '';
   isDeleting = false;
 
   paramFilter: IParams = {};
-  private readonly key:string =  "DocumentSans-Enquete.viewMode";
+  private readonly key: string = "DocumentSans-Enquete.viewMode";
 
   @ViewChild(DocumentUploadModalComponent)
   uploadModal!: DocumentUploadModalComponent;
   pageTitle: string = "Mes Documents non classés";
   pageSubTitle: string = "Retrouvez et organisez facilement vos documents d'enquêtes non classés";
 
+
+  private user$ = this.utilisateurState.user$;
+  user!: UtilisateurModel;
+
   constructor(
     private documentService: DocumentService,
     private utilService: UtilService,
+    private utilisateurState: UtilisateurStateService,
     private renderer: Renderer2,
   ) {
   }
@@ -78,7 +86,11 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
     if (window != undefined) {
       this.currentFilters.viewMode = localStorage.getItem(this.key) as ViewMode ?? 'grid';
     }
-
+    this.user$.subscribe(user => {
+      if (user) {
+        this.user = user;
+      }
+    })
     this.applyFilters();
   }
 
@@ -89,8 +101,8 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
 
   loadDocuments(): void {
     this.loading.set(true);
-    this.documentService.getAll({...this.pagination, ...this.paramFilter}).subscribe({
-      next: (response: ApiResponse<Document>) => {
+    this.documentService.getAll({ ...this.pagination, ...this.paramFilter, utilisateurId: this.user.id }).subscribe({
+      next: (response: ApiResponse<DocumentModel>) => {
         this.documents$ = of(response.data);
         this.pagination = response.pagination;
       },
@@ -162,10 +174,11 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
       description: data.documentDescription?.trim() ?? 'N/A',
       typeId: Number(data.documentType) || 0,
       file: data.file,
+      utilisateurId: this.user.id
     };
 
     this.documentService.create(payload).subscribe({
-      next: (document: Document) => {
+      next: (document: DocumentModel) => {
         this.documents$ = this.documents$.pipe(
           map((docs) => [document, ...docs])
         );
@@ -175,6 +188,9 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
         );
         this.uploadModal.reset();
         this.uploadModal.close.emit();
+        if (!this.pagination.totalItem) {
+          this.pagination.totalItem = 1;
+        }
       },
       error: (err: ResponseError) => {
         this.utilService.showNotification(
@@ -185,13 +201,13 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
     });
   }
 
-  onPreviewClick(document: Document): void {
+  onPreviewClick(document: DocumentModel): void {
     this.selectedDocument = document;
     this.isPreviewModalOpen = true;
   }
 
-  onDownloadClick(document: Document): void {
-    this.documentService.getView(document.id, {download: true}).subscribe({
+  onDownloadClick(document: DocumentModel): void {
+    this.documentService.getView(document.id, { download: true }).subscribe({
       next: (blob: Blob) => this.utilService.downloadBlob(this.renderer, blob, `${document.nom}.${document.extension}`),
       error: () =>
         this.utilService.showNotification(
@@ -202,7 +218,7 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
   }
 
 
-  onDeleteClick(document: Document): void {
+  onDeleteClick(document: DocumentModel): void {
     this.showDeleteModal = true;
     this.selectedItem = `${document.nom}.${document.extension}`;
     this.deletedDocument = document;
@@ -221,12 +237,12 @@ export class DocumentSansEnqueteComponent implements OnInit, OnDestroy {
         this.documents$ = this.documents$.pipe(
           map((docs) => docs.filter((doc) => doc.id !== this.deletedDocument?.id))
         );
-        this.utilService.showNotification('Document supprimé avec succès !', 'success');
+        // this.utilService.showNotification('Document supprimé avec succès !', 'success');
         this.closeDeleteModal();
       },
       error: (err) => {
         this.utilService.showNotification(
-          err.message || 'Erreur lors de la suppression du document !',
+          'Erreur lors de la suppression du document !',
           'error'
         );
         this.closeDeleteModal();

@@ -3,6 +3,8 @@ import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
 import { LoaderComponent } from "@shared/components/loader/loader.component";
 import { PRIORITE_LEVELS, PRIORITE_LEVELS_LABEL } from '@config/constant';
+import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
+
 
 @Component({
   selector: 'app-demandes-liste',
@@ -12,10 +14,10 @@ import { PRIORITE_LEVELS, PRIORITE_LEVELS_LABEL } from '@config/constant';
   styleUrls: ['./demandes-liste.component.css']
 })
 export class DemandesListeComponent {
-  @Input() demandes: DemandeEnquete[] = [];
+  @Input() demandes: DemandeEnqueteModel[] = [];
   @Input() loading: boolean = false;
-  @Output() voirDemande = new EventEmitter<DemandeEnquete>();
-  @Output() telechargerDemande = new EventEmitter<DemandeEnquete>();
+  @Output() voirDemande = new EventEmitter<DemandeEnqueteModel>();
+  @Output() telechargerDemande = new EventEmitter<DemandeEnqueteModel>();
 
   constructor() { }
 
@@ -48,15 +50,16 @@ export class DemandesListeComponent {
     return statutMap[etatCode] || 'bg-gray-400';
   }
 
-  isEcheanceDepassee(dateEcheance: Date): boolean {
+  isEcheanceDepassee(dateEcheance: Date|null): boolean {
+    if(dateEcheance == null) return false;
     return new Date(dateEcheance) < new Date();
   }
 
-  onVoir(demande: DemandeEnquete): void {
+  onVoir(demande: DemandeEnqueteModel): void {
     this.voirDemande.emit(demande);
   }
 
-  onTelecharger(demande: DemandeEnquete): void {
+  onTelecharger(demande: DemandeEnqueteModel): void {
     this.telechargerDemande.emit(demande);
   }
 

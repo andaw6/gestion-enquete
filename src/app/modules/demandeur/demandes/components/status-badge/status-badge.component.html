@@ -1,0 +1,7 @@
+<span
+  [ngClass]="getStatusClasses()"
+  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium w-fit"
+>
+  <i [class]="getStatusIcon() + ' mr-2'"></i>
+  {{ etat.libelle }}
+</span>

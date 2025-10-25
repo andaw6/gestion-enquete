@@ -1,0 +1,366 @@
+<!-- <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900">
+      Enquêtes en Attente d'Assignation
+    </h3>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Enquête
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Demandeur
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Type
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Priorité
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Date Création
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr
+          *ngFor="let enquete of enquetes; trackBy: trackByEnquete"
+          class="hover:bg-gray-50 animate-slide-up"
+        >
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10">
+                <div
+                  class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center"
+                >
+                  <i [class]="getIconClass(enquete.etat.libelle)"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">
+                  {{ enquete.reference }}
+                </div>
+                <div class="text-sm text-gray-500">{{ enquete.objet }}</div>
+              </div>
+            </div>
+          </td>
+
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">
+              {{ enquete.concerne.regionSocial }}
+            </div>
+            <div class="text-sm text-gray-500">
+              {{ enquete.utilisateur?.username || "Non assigné" }}
+            </div>
+          </td>
+
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span
+              [class]="
+                'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
+                getTypeClass(enquete.etat.libelle)
+              "
+            >
+              {{ enquete.etat.libelle }}
+            </span>
+          </td>
+
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span
+              [class]="
+                'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
+                getPrioriteClass(enquete.priorite)
+              "
+            >
+              {{ getPrioriteLabel(enquete.priorite) }}
+            </span>
+          </td>
+
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ enquete.createdAt | date : "dd/MM/yyyy" }}
+          </td>
+
+          <td
+            class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+          >
+            <button
+              (click)="onAssign(enquete)"
+              class="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-colors mr-2"
+            >
+              <i class="fas fa-user-plus mr-1"></i>Assigner
+            </button>
+            <button
+              (click)="onViewDetails(enquete)"
+              class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <i class="fas fa-eye mr-1"></i>Détails
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div> -->
+
+
+
+<div class="bg-white rounded-2xl shadow-intense overflow-hidden border border-gray-100">
+  <!-- Header avec dégradé et icône -->
+  <div class="bg-gradient-to-r from-secondary-500 to-primary-500 px-6 py-5">
+    <div class="flex items-center space-x-3">
+      <div class="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+        <i class="fas fa-clipboard-list text-white text-lg"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-white">
+        Enquêtes en Attente d'Assignation
+      </h3>
+      <div class="ml-auto flex items-center space-x-2">
+        <span class="text-white/80 text-sm">{{ enquetes.length || 0 }} enquête(s)</span>
+        <div class="h-6 w-6 bg-white/20 rounded-full flex items-center justify-center">
+          <span class="text-white text-xs font-bold">{{ enquetes.length || 0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres rapides (optionnel) -->
+  <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-filter text-gray-400 text-sm"></i>
+          <span class="text-sm font-medium text-gray-600">Filtres:</span>
+        </div>
+        <button class="px-3 py-1.5 bg-primary-100 text-primary-700 rounded-lg text-xs font-medium hover:bg-primary-200 transition-colors">
+          Toutes
+        </button>
+        <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors">
+          Urgentes
+        </button>
+        <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors">
+          Récentes
+        </button>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-search text-gray-400 text-sm"></i>
+        <input
+          type="text"
+          placeholder="Rechercher..."
+          class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau avec design moderne -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-100">
+      <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+        <tr>
+          <th class="px-6 py-4 text-left text-xs font-bold text-dark-600 uppercase tracking-wider">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-file-alt text-secondary-500"></i>
+              <span>Enquête</span>
+            </div>
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-dark-600 uppercase tracking-wider">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-user text-secondary-500"></i>
+              <span>Demandeur</span>
+            </div>
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-dark-600 uppercase tracking-wider">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-tag text-secondary-500"></i>
+              <span>Type</span>
+            </div>
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-dark-600 uppercase tracking-wider">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-exclamation-circle text-secondary-500"></i>
+              <span>Priorité</span>
+            </div>
+          </th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-dark-600 uppercase tracking-wider">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-calendar text-secondary-500"></i>
+              <span>Date Création</span>
+            </div>
+          </th>
+          <th class="px-6 py-4 text-right text-xs font-bold text-dark-600 uppercase tracking-wider">
+            <div class="flex items-center justify-end space-x-2">
+              <i class="fas fa-cogs text-secondary-500"></i>
+              <span>Actions</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        <tr
+          *ngFor="let enquete of enquetes; trackBy: trackByEnquete; let i = index"
+          class="hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 transition-all duration-200 group animate-fade-in"
+          [style.animation-delay]="i * 100 + 'ms'"
+        >
+          <!-- Colonne Enquête avec design card-like -->
+          <td class="px-6 py-5">
+            <div class="flex items-center space-x-4">
+              <div class="flex-shrink-0">
+                <div class="relative h-12 w-12 rounded-xl bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center shadow-soft group-hover:shadow-card transition-all duration-200">
+                  <i [class]="getIconClass(enquete.etat.libelle) + ' text-lg text-primary-600'"></i>
+                  <div class="absolute -top-1 -right-1 h-4 w-4 bg-primary-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-xs font-bold">!</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center space-x-2">
+                  <p class="text-sm font-bold text-dark-800 truncate">
+                    {{ enquete.reference }}
+                  </p>
+                  <div class="h-1.5 w-1.5 bg-primary-400 rounded-full"></div>
+                </div>
+                <p class="text-sm text-gray-600 truncate mt-1 leading-relaxed">
+                  {{ enquete.objet }}
+                </p>
+              </div>
+            </div>
+          </td>
+
+          <!-- Colonne Demandeur -->
+          <td class="px-6 py-5">
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2">
+                <div class="h-2 w-2 bg-secondary-400 rounded-full"></div>
+                <p class="text-sm font-semibold text-dark-800">
+                  {{ enquete.concerne.regionSocial }}
+                </p>
+              </div>
+              <p class="text-sm text-gray-500 flex items-center space-x-1">
+                <i class="fas fa-user-circle text-xs text-gray-400"></i>
+                <span>{{ enquete.utilisateur?.username || "Non assigné" }}</span>
+              </p>
+            </div>
+          </td>
+
+          <!-- Colonne Type avec badge moderne -->
+          <td class="px-6 py-5">
+            <span
+              [class]="
+                'inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold shadow-soft transition-all duration-200 ' +
+                getTypeClass(enquete.etat.libelle)
+              "
+            >
+              <span class="w-2 h-2 rounded-full bg-current mr-2"></span>
+              {{ enquete.etat.libelle }}
+            </span>
+          </td>
+
+          <!-- Colonne Priorité avec animation -->
+          <td class="px-6 py-5">
+            <span
+              [class]="
+                'inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold shadow-soft transition-all duration-200 ' +
+                getPrioriteClass(enquete.priorite)
+              "
+            >
+              <span class="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></span>
+              {{ getPrioriteLabel(enquete.priorite) }}
+            </span>
+          </td>
+
+          <!-- Colonne Date -->
+          <td class="px-6 py-5">
+            <div class="flex items-center space-x-2">
+              <div class="p-1.5 bg-gray-100 rounded-lg">
+                <i class="fas fa-calendar-alt text-gray-500 text-xs"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-dark-700">
+                  {{ enquete.createdAt | date : "dd/MM/yyyy" }}
+                </p>
+                <p class="text-xs text-gray-500">
+                  {{ enquete.createdAt | date : "HH:mm" }}
+                </p>
+              </div>
+            </div>
+          </td>
+
+          <!-- Colonne Actions avec boutons modernes -->
+          <td class="px-6 py-5">
+            <div class="flex items-center justify-end space-x-2">
+              <button
+                (click)="onAssign(enquete)"
+                class="group/btn inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-card hover:shadow-card-hover transform hover:-translate-y-0.5 text-sm font-medium"
+              >
+                <i class="fas fa-user-plus mr-2 group-hover/btn:rotate-12 transition-transform"></i>
+                Assigner
+              </button>
+              <button
+                (click)="onViewDetails(enquete)"
+                class="group/btn inline-flex items-center px-4 py-2.5 bg-gray-100 text-dark-600 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-soft hover:shadow-card text-sm font-medium"
+              >
+                <i class="fas fa-eye mr-2 group-hover/btn:scale-110 transition-transform"></i>
+                Détails
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer avec statistiques -->
+  <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-2">
+          <div class="h-3 w-3 bg-red-400 rounded-full animate-pulse"></div>
+          <span class="text-sm text-gray-600">{{ getUrgentCount() }} urgente(s)</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="h-3 w-3 bg-yellow-400 rounded-full"></div>
+          <span class="text-sm text-gray-600">{{ getNormalCount() }} normale(s)</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="h-3 w-3 bg-green-400 rounded-full"></div>
+          <span class="text-sm text-gray-600">{{ getLowCount() }} faible(s)</span>
+        </div>
+      </div>
+
+      <!-- Actions globales -->
+      <div class="flex items-center space-x-3">
+        <button class="inline-flex items-center px-3 py-2 bg-secondary-100 text-secondary-700 rounded-lg hover:bg-secondary-200 transition-colors text-sm font-medium">
+          <i class="fas fa-download mr-2"></i>
+          Exporter
+        </button>
+        <button class="inline-flex items-center px-3 py-2 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 transition-colors text-sm font-medium">
+          <i class="fas fa-sync-alt mr-2"></i>
+          Actualiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination (si nécessaire) -->
+<!-- <app-pagination [pagination]="pagination"></app-pagination> -->
+</div>

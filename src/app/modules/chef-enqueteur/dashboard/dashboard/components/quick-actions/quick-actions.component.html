@@ -1,0 +1,14 @@
+<div class="bg-white rounded-lg shadow-card p-6">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions Rapides</h3>
+  <div class="space-y-3">
+    <button
+      *ngFor="let action of quickActions"
+      class="w-full flex items-center justify-center px-4 py-3 text-white rounded-lg transition-colors"
+      [ngClass]="[action.bgColor, action.hoverColor]"
+      (click)="executeAction(action.action)"
+    >
+      <i class="mr-2" [ngClass]="action.icon"></i>
+      {{ action.title }}
+    </button>
+  </div>
+</div>

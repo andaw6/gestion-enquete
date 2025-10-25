@@ -8,51 +8,50 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-
         // Couleur principale bleu foncé
         secondary: {
-          DEFAULT: '#293F76',
-          50: '#EAECF1',
-          100: '#C1C6D6',
-          200: '#949FBB',
-          300: '#6A79A0',
-          400: '#3D5487',
-          500: '#293F76',
-          600: '#233565',
-          700: '#1D2B54',
-          800: '#172143',
-          900: '#111732',
+          DEFAULT: "#293F76",
+          50: "#EAECF1",
+          100: "#C1C6D6",
+          200: "#949FBB",
+          300: "#6A79A0",
+          400: "#3D5487",
+          500: "#293F76",
+          600: "#233565",
+          700: "#1D2B54",
+          800: "#172143",
+          900: "#111732",
         },
 
         // Couleur secondaire cyan
-        primary: {
-          DEFAULT: '#17ABDD',
-          50: '#E7F4FA',
-          100: '#BAE1F1',
-          200: '#A1D8EC',
-          300: '#71C9E7',
-          400: '#22B2DF',
-          500: '#17ABDD',
-          600: '#1399C5',
-          700: '#1087AD',
-          800: '#0C7595',
-          900: '#09637D',
+        primary: {    
+          DEFAULT: "#17ABDD",
+          50: "#E7F4FA",
+          100: "#BAE1F1",
+          200: "#A1D8EC",
+          300: "#71C9E7",
+          400: "#22B2DF",
+          500: "#17ABDD",
+          600: "#1399C5",
+          700: "#1087AD",
+          800: "#0C7595",
+          900: "#09637D",
         },
 
         // Couleur gris/noir personnalisée
         dark: {
-          DEFAULT: '#272727',
-          50: '#F5F5F5',
-          100: '#E0E0E0',
-          200: '#BDBDBD',
-          300: '#9E9E9E',
-          400: '#757575',
-          500: '#5C5C5C',
-          600: '#4D4C4C',
-          700: '#3E3E3E',
-          800: '#303030',
-          900: '#272727',
-          950: '#232322',
+          DEFAULT: "#272727",
+          50: "#F5F5F5",
+          100: "#E0E0E0",
+          200: "#BDBDBD",
+          300: "#9E9E9E",
+          400: "#757575",
+          500: "#5C5C5C",
+          600: "#4D4C4C",
+          700: "#3E3E3E",
+          800: "#303030",
+          900: "#272727",
+          950: "#232322",
         },
 
         // Palettes alternatives regroupées
@@ -82,7 +81,6 @@ module.exports = {
             900: "#064E3B",
           },
         },
-
       },
 
       statusColors: {
@@ -123,11 +121,17 @@ module.exports = {
           "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
+      animation: {
+        "fade-in": "fadeIn 0.6s ease-out",
+        "slide-up": "slideUp 0.6s ease-out",
+        "zoom-in": "zoomIn 0.5s ease-out",
+        "fade-in-up": "fadeIn 0.6s ease-out, slideUp 0.6s ease-out",
+      },
     },
   },
   plugins: [
     // Vous pouvez activer Flowbite ou d'autres plugins si nécessaire
     // require('flowbite/plugin'),
-    require("tailwindcss-animate")
+    require("tailwindcss-animate"),
   ],
 };

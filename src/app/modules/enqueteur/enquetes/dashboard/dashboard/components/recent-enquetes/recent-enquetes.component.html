@@ -10,7 +10,7 @@
       </button>
     </div>
   </div>
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto custom-scrollbar">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
       <tr>
@@ -24,23 +24,23 @@
       </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-      <tr *ngFor="let enquete of enquetes$ | async" class="hover:bg-gray-50">
+      <tr *ngFor="let enquete of enqueteRecentes" class="hover:bg-gray-50">
         <td class="px-6 py-4 whitespace-nowrap">
-          <div class="text-sm font-medium text-gray-900">{{ enquete.id }}</div>
-          <div class="text-sm text-gray-500">{{ enquete.titre }}</div>
+          <div class="text-sm font-medium text-gray-900">{{ enquete.reference }}</div>
+          <!-- <div class="text-sm text-gray-500">{{ enquete.id }}</div> -->
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
-          <div class="text-sm text-gray-900">{{ enquete.concerne.nom }}</div>
-          <div class="text-sm text-gray-500">{{ enquete.concerne.type }}</div>
+          <div class="text-sm text-gray-900">{{ enquete.demande!.concerne.telephone }}</div>
+          <div class="text-sm text-gray-500 " [class]="getTypeConcerneClass(enquete.demande!.concerne.type )">{{ enquete.demande!.concerne.type }}</div>
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
-                <span [class]="getStatutClass(enquete.statut)">
-                  {{ enquete.statut }}
+                <span [class]="getStatusClass(enquete.etat.code)">
+                  {{ enquete.etat.libelle }}
                 </span>
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
-                <span [class]="getPrioriteClass(enquete.priorite)">
-                  {{ enquete.priorite }}
+                <span [class]="getPrioriteClass(enquete.demande!.priorite)">
+                  {{ getPrioriteLabel(enquete.demande!.priorite) }}
                 </span>
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
@@ -53,7 +53,7 @@
           <div class="text-xs text-gray-500 mt-1">{{ enquete.progression }}%</div>
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ enquete.echeance | date:'dd/MM/yyyy' }}
+          {{ enquete.demande!.dateEcheance| date:'dd/MM/yyyy' }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
           <button class="text-primary-600 hover:text-primary-900 mr-3">

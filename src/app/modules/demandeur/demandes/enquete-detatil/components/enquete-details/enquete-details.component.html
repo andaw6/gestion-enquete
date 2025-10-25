@@ -1,0 +1,81 @@
+<div
+  class="card-gradient rounded-xl shadow-soft border border-gray-100 overflow-hidden animate-fade-in"
+>
+  <div class="bg-gradient-to-r from-secondary-500 to-secondary-600 px-8 py-6">
+    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          fill-rule="evenodd"
+          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      Informations de l'enquête
+    </h2>
+  </div>
+  <div class="p-8">
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-primary-500">
+        <dt class="text-sm font-bold text-gray-700 uppercase tracking-wide">
+          Référence
+        </dt>
+        <dd class="mt-2 text-lg text-gray-900 font-mono font-bold">
+          {{ enquete.reference || "N/A" }}
+        </dd>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-green-500">
+        <dt class="text-sm font-bold text-gray-700 uppercase tracking-wide">
+          État
+        </dt>
+        <dd class="mt-2">
+          <!-- <span
+            class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-green-100 text-green-800 border border-green-200"
+          >
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            {{ enquete.etat.libelle || "En cours" }}
+          </span> -->
+
+          <span
+            class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold border "
+            [class]="getStatusClass(enquete.etat.code).container"
+          >
+            <div class="w-2 h-2 rounded-full mr-2" [class]="getStatusClass(enquete.etat.code).dot"></div>
+            {{ enquete.etat.libelle || "En cours" }}
+          </span>
+        </dd>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+        <dt class="text-sm font-bold text-gray-700 uppercase tracking-wide">
+          Date de début
+        </dt>
+        <dd class="mt-2 text-lg text-gray-900 font-semibold">
+          {{ formatDate(enquete.dateDebut) }}
+        </dd>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-orange-500">
+        <dt class="text-sm font-bold text-gray-700 uppercase tracking-wide">
+          Date de fin prévue
+        </dt>
+        <dd class="mt-2 text-lg text-gray-900 font-semibold">
+          {{ formatDate(enquete.dateFin) }}
+        </dd>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-purple-500">
+        <dt class="text-sm font-bold text-gray-700 uppercase tracking-wide">
+          Date de création
+        </dt>
+        <dd class="mt-2 text-sm text-gray-900">
+          {{ formatDateTime(enquete.createdAt) }}
+        </dd>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-indigo-500">
+        <dt class="text-sm font-bold text-gray-700 uppercase tracking-wide">
+          Dernière mise à jour
+        </dt>
+        <dd class="mt-2 text-sm text-gray-900">
+          {{ formatDateTime(enquete.updatedAt) }}
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>

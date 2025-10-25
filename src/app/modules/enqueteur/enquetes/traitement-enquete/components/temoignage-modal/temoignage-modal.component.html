@@ -1,0 +1,345 @@
+<div
+  *ngIf="open"
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden "
+>
+  <div
+    class="bg-white rounded-2xl shadow-intense max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+  >
+    <!-- Header -->
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xl font-semibold text-gray-900">
+         {{getTitle()}}
+        </h3>
+        <button (click)="onClose()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <form class="p-6 space-y-6" [formGroup]="form">
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Nom du témoin</label>
+          <input
+            type="text"
+            formControlName="objet"
+            class="w-full px-4 py-3 border rounded-lg bg-white"
+            placeholder="Moussa Diop - Agent d'entretien"
+          />
+          <div
+            class="text-red-500 text-xs mt-1"
+            *ngIf="form.get('objet')?.invalid && form.get('objet')?.touched"
+          >
+            Nom requis (min 3 caractères).
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Date</label>
+          <input
+            type="date"
+            formControlName="date"
+            class="w-full px-4 py-3 border rounded-lg bg-white"
+          />
+          <div
+            class="text-red-500 text-xs mt-1"
+            *ngIf="form.get('date')?.invalid && form.get('date')?.touched"
+          >
+            Date obligatoire.
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Heure</label>
+          <input
+            type="time"
+            formControlName="heure"
+            class="w-full px-4 py-3 border rounded-lg bg-white"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2">Contenu</label>
+        <textarea
+          rows="6"
+          formControlName="description"
+          class="w-full px-4 py-3 border rounded-lg bg-white"
+          placeholder="Décrivez en détail le témoignage recueilli..."
+        ></textarea>
+        <div
+          class="text-red-500 text-xs mt-1"
+          *ngIf="
+            form.get('description')?.invalid && form.get('description')?.touched
+          "
+        >
+          Le contenu est obligatoire (min 10 caractères).
+        </div>
+      </div>
+
+      <!-- Radios état -->
+      <div class="flex flex-col space-y-2">
+        <label class="text-sm font-medium">État du témoignage</label>
+        <label class="inline-flex items-center">
+          <input
+            type="radio"
+            formControlName="etat"
+            value="00"
+            class="h-4 w-4"
+          />
+          <span class="ml-2 text-sm">En attente</span>
+        </label>
+
+        <label class="inline-flex items-center">
+          <input
+            type="radio"
+            formControlName="etat"
+            value="01"
+            class="h-4 w-4"
+          />
+          <span class="ml-2 text-sm">Validé</span>
+        </label>
+      </div>
+    </form>
+    <!-- Footer -->
+    <div class="p-6 border-t border-gray-200 flex justify-between items-center">
+      <!-- Zone d'erreur backend -->
+      <div *ngIf="backendError" class="text-red-600 text-sm">
+        {{ backendError }}
+      </div>
+
+      <div class="flex space-x-3">
+        <!-- Bouton Annuler -->
+        <button
+          (click)="onClose()"
+          type="button"
+          class="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg"
+          [disabled]="submitting"
+        >
+          Annuler
+        </button>
+
+        <!-- Bouton Enregistrement -->
+        <button
+          type="submit"
+          [disabled]="form.invalid || submitting"
+          (click)="onSave()"
+          [ngClass]="{
+            'bg-gradient-to-r from-primary-500 to-primary-600 text-white cursor-pointer':
+              form.valid && !submitting,
+            'bg-gray-300 text-gray-500 cursor-not-allowed':
+              form.invalid || submitting
+          }"
+          class="px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+        >
+          <span *ngIf="!submitting">
+            {{ autoSave ? getButtonText() : "Enregistrer" }}
+          </span>
+          <span *ngIf="submitting">En cours...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div
+  *ngIf="open"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+  (click)="onClose()"
+>
+  <div
+    class="bg-white rounded-2xl shadow-intense max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-zoom-in"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header avec gradient -->
+    <div class="relative bg-gradient-to-r from-primary-500 to-primary-600 p-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-2xl font-bold text-white mb-1">
+            {{getTitle()}}
+          </h3>
+          <p class="text-primary-50 text-sm">Enregistrement d'un témoignage</p>
+        </div>
+        <button
+          (click)="onClose()"
+          class="text-white/80 hover:text-white hover:bg-white/20 rounded-lg p-2 transition-all duration-200"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <!-- Decorative wave -->
+      <div class="absolute bottom-0 left-0 right-0 h-4 bg-white rounded-t-3xl"></div>
+    </div>
+
+    <!-- Body avec scroll -->
+    <div class="overflow-y-auto flex-1">
+      <form class="p-6 space-y-6" [formGroup]="form">
+        <!-- Nom du témoin -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-user text-primary-500 mr-2"></i>
+            Nom du témoin
+          </label>
+          <input
+            type="text"
+            formControlName="objet"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 outline-none"
+            placeholder="Ex: Moussa Diop - Agent d'entretien"
+          />
+          <div
+            class="text-red-500 text-xs mt-1 flex items-center"
+            *ngIf="form.get('objet')?.invalid && form.get('objet')?.touched"
+          >
+            <i class="fas fa-exclamation-circle mr-1"></i>
+            Nom requis (minimum 3 caractères)
+          </div>
+        </div>
+
+        <!-- Date et Heure -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">
+              <i class="fas fa-calendar text-primary-500 mr-2"></i>
+              Date
+            </label>
+            <input
+              type="date"
+              formControlName="date"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 outline-none"
+            />
+            <div
+              class="text-red-500 text-xs mt-1 flex items-center"
+              *ngIf="form.get('date')?.invalid && form.get('date')?.touched"
+            >
+              <i class="fas fa-exclamation-circle mr-1"></i>
+              Date obligatoire
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">
+              <i class="fas fa-clock text-primary-500 mr-2"></i>
+              Heure
+            </label>
+            <input
+              type="time"
+              formControlName="heure"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- Contenu -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-file-alt text-primary-500 mr-2"></i>
+            Contenu du témoignage
+          </label>
+          <textarea
+            rows="6"
+            formControlName="description"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 outline-none resize-none"
+            placeholder="Décrivez en détail le témoignage recueilli..."
+          ></textarea>
+          <div
+            class="text-red-500 text-xs mt-1 flex items-center"
+            *ngIf="form.get('description')?.invalid && form.get('description')?.touched"
+          >
+            <i class="fas fa-exclamation-circle mr-1"></i>
+            Le contenu est obligatoire (minimum 10 caractères)
+          </div>
+        </div>
+
+        <!-- État du témoignage -->
+        <div class="space-y-3">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-check-circle text-primary-500 mr-2"></i>
+            État du témoignage
+          </label>
+          <div class="flex gap-4">
+            <label class="flex-1 cursor-pointer">
+              <input
+                type="radio"
+                formControlName="etat"
+                value="00"
+                class="peer hidden"
+              />
+              <div class="flex items-center justify-center px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:shadow-soft transition-all duration-200">
+                <span class="text-sm font-medium text-gray-700 peer-checked:text-primary-700">
+                  <i class="fas fa-hourglass-half mr-2"></i>
+                  En attente
+                </span>
+              </div>
+            </label>
+
+            <label class="flex-1 cursor-pointer">
+              <input
+                type="radio"
+                formControlName="etat"
+                value="01"
+                class="peer hidden"
+              />
+              <div class="flex items-center justify-center px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:shadow-soft transition-all duration-200">
+                <span class="text-sm font-medium text-gray-700 peer-checked:text-green-700">
+                  <i class="fas fa-check-double mr-2"></i>
+                  Validé
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 border-t border-gray-200 bg-gray-50">
+      <!-- Erreur backend -->
+      <div
+        *ngIf="backendError"
+        class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center text-red-700 text-sm"
+      >
+        <i class="fas fa-exclamation-triangle mr-2"></i>
+        {{ backendError }}
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <!-- Bouton Annuler -->
+        <button
+          (click)="onClose()"
+          type="button"
+          class="px-6 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-xl font-medium hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+          [disabled]="submitting"
+        >
+          <i class="fas fa-times mr-2"></i>
+          Annuler
+        </button>
+
+        <!-- Bouton Enregistrement -->
+        <button
+          type="submit"
+          [disabled]="form.invalid || submitting"
+          (click)="onSave()"
+          [ngClass]="{
+            'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-soft hover:shadow-card-hover hover:scale-105':
+              form.valid && !submitting,
+            'bg-gray-300 text-gray-500 cursor-not-allowed':
+              form.invalid || submitting
+          }"
+          class="px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2"
+        >
+          <i *ngIf="!submitting" class="fas fa-save"></i>
+          <i *ngIf="submitting" class="fas fa-spinner fa-spin"></i>
+          <span *ngIf="!submitting">
+            {{ autoSave ? getButtonText() : "Enregistrer" }}
+          </span>
+          <span *ngIf="submitting">En cours...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

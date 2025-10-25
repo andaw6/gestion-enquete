@@ -1,0 +1,75 @@
+<div
+  class="overflow-y-auto scrollbar-thin"
+  style="max-height: calc(90vh - 180px)"
+>
+  <div class="p-6">
+    <!-- Bouton retour -->
+    <button
+      type="button"
+      (click)="back.emit()"
+      class="mb-4 text-primary hover:text-primary-700 font-medium flex items-center space-x-2 transition-colors"
+    >
+      <i class="fas fa-arrow-left"></i>
+      <span>Retour au choix</span>
+    </button>
+
+    <!-- Liste des sources existantes -->
+    <div class="space-y-3">
+      <div class="space-y-3"  *ngFor="let source of sources">
+        <app-list-source-card
+
+          [source]="source"
+          [isSelected]="selectedSourceId === source.id"
+          (sourceSelected)="onSourceSelect($event)"
+        ></app-list-source-card>
+      </div>
+
+      <div *ngIf="sources.length === 0" class="text-center py-12">
+        <i class="fas fa-inbox text-6xl text-dark-300 mb-4"></i>
+        <p class="text-dark-500">Aucune source disponible</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer pour confirmer la sélection -->
+  <div
+    class="bg-dark-50 px-6 py-4 flex items-center justify-between border-t border-dark-200"
+  >
+    <div class="text-sm text-dark-600">
+      <span *ngIf="selectedSourceId">Source sélectionnée</span>
+      <span *ngIf="!selectedSourceId">Sélectionnez une source</span>
+    </div>
+    <div class="flex space-x-3">
+      <button
+        type="button"
+        (click)="cancel.emit()"
+        class="px-5 py-2.5 border border-dark-300 text-dark-700 font-medium rounded-lg hover:bg-dark-100 transition-colors"
+      >
+        Annuler
+      </button>
+      <button
+        type="button"
+        (click)="confirm.emit(selectedSourceId!)"
+        [disabled]="!selectedSourceId"
+        [class.opacity-50]="!selectedSourceId"
+        [class.cursor-not-allowed]="!selectedSourceId"
+        class="px-5 py-2.5 bg-primary hover:bg-primary-600 text-white font-semibold rounded-lg shadow-card hover:shadow-intense transition-all duration-200 flex items-center space-x-2 disabled:hover:bg-primary"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          ></path>
+        </svg>
+        <span>Confirmer</span>
+      </button>
+    </div>
+  </div>
+</div>

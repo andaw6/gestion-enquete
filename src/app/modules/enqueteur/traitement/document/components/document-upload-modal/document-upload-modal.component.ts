@@ -1,16 +1,30 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TypeDocumentService} from "@modules/admin/parametrage/type-document/type-document.service";
-import {ApiResponse} from "@core/interfaces/api-response.interface";
-import {TypeDocument} from "@modules/admin/parametrage/type-document/type-document";
-import {Observable, of} from "rxjs";
-import {ResponseError} from "@core/interfaces/response-error.interface";
-import {NotificationAlertService} from "@core/services/notification-alert.service";
-import {DocumentUpload} from "@modules/enqueteur/traitement/document/document";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TypeDocumentService } from "@modules/admin/parametrage/type-document/type-document.service";
+import { ApiResponse } from "@core/interfaces/api-response.interface";
+import { TypeDocument } from "@modules/admin/parametrage/type-document/type-document";
+import { Observable, of } from "rxjs";
+import { ResponseError } from "@core/interfaces/response-error.interface";
+import { NotificationAlertService } from "@core/services/notification-alert.service";
+import { DocumentUpload } from "@modules/enqueteur/traitement/document/document";
+import { AsyncPipe, CommonModule, NgForOf, NgIf } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UtilisateurStateService } from '@store/utilisateur/utilisateur-state.service';
+import { UtilisateurModel } from '@core/model/utilisateur.model';
+
 
 @Component({
   selector: 'app-document-upload-modal',
   templateUrl: './document-upload-modal.component.html',
-  styleUrls: ['./document-upload-modal.component.css']
+  styleUrls: ['./document-upload-modal.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgForOf,
+    AsyncPipe
+  ]
 })
 export class DocumentUploadModalComponent implements OnInit {
 
@@ -27,6 +41,7 @@ export class DocumentUploadModalComponent implements OnInit {
   typeDocument$: Observable<TypeDocument[]> = of([]);
 
 
+
   constructor(
     private typeDocumentService: TypeDocumentService,
     private notificationService: NotificationAlertService,
@@ -34,7 +49,10 @@ export class DocumentUploadModalComponent implements OnInit {
   }
 
 
+
+
   ngOnInit() {
+
     this.loadTypeDocument();
   }
 
@@ -96,17 +114,10 @@ export class DocumentUploadModalComponent implements OnInit {
         documentName: this.documentName.trim(),
         documentDescription: this.documentDescription.trim()
       })
-
-      // this.selectedFile = null
-      // this.documentName = ""
-      // this.documentDescription = ""
-      // this.selectedInvestigation = "unclassified"
-      // this.selectedDocumentType = "other"
-      // this.close.emit()
     }
   }
 
-  reset(){
+  reset() {
     this.selectedFile = null
     this.documentName = ""
     this.documentDescription = ""

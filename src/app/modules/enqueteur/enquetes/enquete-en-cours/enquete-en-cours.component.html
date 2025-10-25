@@ -1,0 +1,44 @@
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+></app-page-header>
+
+<!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"> -->
+<!-- Vue liste -->
+<div *ngIf="currentView === 'list'">
+  <!-- En-tête avec statistiques -->
+  <div class="mb-8">
+    <!-- Statistiques rapides -->
+    <app-stats-cards [stats]="statCards()"></app-stats-cards>
+  </div>
+
+  <app-search-filter
+  [filters]="filterConfig"
+  (filtersChanged)="onFiltersChanged($event)"
+  (searchChanged)="onSearchChanged($event)"
+  (reset)="onResetFilters()"
+></app-search-filter>
+
+  <!-- Liste des enquêtes -->
+  <app-enquete-list
+    [enquetes]="enquetes()"
+    (enqueteClick)="showEnqueteDetails($event)"
+  >
+  </app-enquete-list>
+
+  <div *ngIf="!loading()" class="my-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+    <app-pagination [pagination]="pagination()"></app-pagination>
+  </div>
+</div>
+
+<!-- Vue détails -->
+<app-enquete-details
+  *ngIf="currentView === 'details'"
+  [enquete]="selectedEnquete"
+  (back)="hideEnqueteDetails()"
+>
+</app-enquete-details>
+<!-- </div> -->
+
+<!-- Notifications -->
+<app-notifications></app-notifications>

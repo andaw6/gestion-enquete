@@ -8,6 +8,7 @@ import {ResponseError} from "@core/interfaces/response-error.interface";
 import {ActivatedRoute, Router} from "@angular/router";
 import {IParams} from "@core/interfaces/http-options.interface";
 import {ViewMode} from "@core/types";
+import { SourceInfoModel } from '@core/model/source-info.model';
 
 @Component({
   selector: 'app-source-info',
@@ -16,7 +17,7 @@ import {ViewMode} from "@core/types";
 })
 export class SourceInfoComponent implements OnInit {
 
-  sourceInfo$: Observable<SourceInfo[]> = of([]);
+  sourceInfo$: Observable<SourceInfoModel[]> = of([]);
   loading: boolean = false;
   pagination: Pagination = {
     totalItem: 1,
@@ -78,7 +79,7 @@ export class SourceInfoComponent implements OnInit {
     })
   }
 
-  showSource(data: SourceInfo[]) {
+  showSource(data: SourceInfoModel[]) {
     // On déclenche le clignotement après réception des données
     if (this.highlightedId !== null) {
       const found = data.some(s => s.id === this.highlightedId);
@@ -106,11 +107,11 @@ export class SourceInfoComponent implements OnInit {
     this.loadData();
   }
 
-  actionClick($event: SourceInfo) {
+  actionClick($event: SourceInfoModel) {
     this.router.navigate(["/enqueteur/traitement/source-info", $event.id]).then(_ => _);
   }
 
-  updatedClick($event: SourceInfo): void {
+  updatedClick($event: SourceInfoModel): void {
     const {documents, utilisateur, ...rest} = $event;
     const data = {
       ...rest,

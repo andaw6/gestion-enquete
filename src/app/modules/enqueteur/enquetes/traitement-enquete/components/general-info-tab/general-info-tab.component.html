@@ -1,0 +1,188 @@
+<div id="informations" class="tab-content active animate-fade-in">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header avec titre et badges -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-secondary-800 mb-2">
+            Informations Générales
+          </h2>
+          <p class="text-gray-600">
+            Détails de l'enquête et de la demande associée
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+          >
+            En cours
+          </span>
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+          >
+            Priorité: Élevée
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <app-instructions
+      *ngIf="enquete.instruction"
+      [enquete]="enquete"
+    ></app-instructions>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div class="xl:col-span-2">
+        <app-content-left [enquete]="enquete" />
+      </div>
+      <app-content-right
+        [enquete]="enquete"
+        (view)="viewDocument.emit($event)"
+        (download)="downloadDocument.emit($event)"
+      />
+    </div>
+  </div>
+</div>
+
+<script>
+  // Animation au chargement
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".shadow-card");
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.add("animate-slide-up");
+      }, index * 100);
+    });
+  });
+
+  // Effet hover sur les cartes
+  document.querySelectorAll(".shadow-card").forEach((card) => {
+    card.addEventListener("mouseenter", function () {
+      this.classList.add("transform", "scale-105");
+    });
+
+    card.addEventListener("mouseleave", function () {
+      this.classList.remove("transform", "scale-105");
+    });
+  });
+
+  // Simulation de mise à jour de la progression
+  function updateProgress() {
+    const progressBar = document.querySelector(
+      ".bg-gradient-to-r.from-primary-500"
+    );
+    const currentWidth = parseInt(progressBar.style.width) || 75;
+
+    if (currentWidth < 100) {
+      const newWidth = Math.min(currentWidth + Math.random() * 5, 100);
+      progressBar.style.width = newWidth + "%";
+
+      // Mettre à jour les textes de progression
+      document.querySelectorAll("[data-progress]").forEach((el) => {
+        el.textContent = Math.round(newWidth) + "%";
+      });
+    }
+  }
+
+  // Mettre à jour la progression toutes les 30 secondes (simulation)
+  setInterval(updateProgress, 30000);
+
+  // Animation des badges de statut
+  function animateStatusBadges() {
+    const badges = document.querySelectorAll(".animate-pulse");
+    badges.forEach((badge) => {
+      badge.classList.add("animate-pulse");
+      setTimeout(() => {
+        badge.classList.remove("animate-pulse");
+      }, 2000);
+    });
+  }
+
+  // Animer les badges toutes les 10 secondes
+  setInterval(animateStatusBadges, 10000);
+
+  // Tooltip pour les éléments d'information
+  function addTooltips() {
+    const tooltipElements = [
+      {
+        selector: "[data-progress]",
+        text: "Progression basée sur les tâches complétées",
+      },
+      { selector: ".text-red-800", text: "Demande marquée comme urgente" },
+      { selector: ".text-green-800", text: "Enquête en cours de traitement" },
+    ];
+
+    tooltipElements.forEach(({ selector, text }) => {
+      document.querySelectorAll(selector).forEach((el) => {
+        el.setAttribute("title", text);
+      });
+    });
+  }
+
+  addTooltips();
+
+  // Gestion des actions rapides
+  document.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("click", function (e) {
+      e.preventDefault();
+      const action = this.textContent.trim();
+
+      // Animation de feedback
+      this.classList.add("transform", "scale-95");
+      setTimeout(() => {
+        this.classList.remove("transform", "scale-95");
+      }, 150);
+
+      // Simulation d'action
+      console.log(`Action "${action}" déclenchée`);
+
+      // Vous pouvez ajouter ici la logique spécifique pour chaque action
+      switch (action) {
+        case "Modifier":
+          // Logique de modification
+          break;
+        case "Dupliquer":
+          // Logique de duplication
+          break;
+        case "Valider":
+          // Logique de validation
+          break;
+        case "Annuler":
+          // Logique d'annulation
+          break;
+      }
+    });
+  });
+
+  // Animation des éléments de timeline
+  function animateTimeline() {
+    const timelineItems = document.querySelectorAll(
+      ".flex.items-start.space-x-3"
+    );
+    timelineItems.forEach((item, index) => {
+      setTimeout(() => {
+        item.style.opacity = "0";
+        item.style.transform = "translateX(-20px)";
+        item.style.transition = "all 0.3s ease-out";
+
+        setTimeout(() => {
+          item.style.opacity = "1";
+          item.style.transform = "translateX(0)";
+        }, 50);
+      }, index * 100);
+    });
+  }
+
+  // Observer pour déclencher les animations lors du scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("animate-fade-in");
+      }
+    });
+  });
+
+  document.querySelectorAll(".bg-white.rounded-xl").forEach((card) => {
+    observer.observe(card);
+  });
+</script>

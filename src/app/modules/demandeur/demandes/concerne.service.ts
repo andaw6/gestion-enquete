@@ -4,13 +4,13 @@ import {HttpClient} from "@angular/common/http";
 import {IParams} from "@core/interfaces/http-options.interface";
 import {Observable} from "rxjs";
 import {ApiResponse} from "@core/interfaces/api-response.interface";
-import { Concerne } from './model';
+import { ConcerneModel } from '@core/model/concerne.model';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConcerneService extends ApiCrudService<Concerne>{
+export class ConcerneService extends ApiCrudService<ConcerneModel>{
 
 constructor(http: HttpClient) {
     super(http);
@@ -18,21 +18,21 @@ constructor(http: HttpClient) {
   }
 
 
-  override getAll(params?: IParams): Observable<ApiResponse<Concerne>> {
-    return this.responseGetMany<Concerne>(params, "/all");
+  override getAll(params?: IParams): Observable<ApiResponse<ConcerneModel>> {
+    return this.responseGetMany<ConcerneModel>(params, "/all");
   }
 
-  override getOne(id: number): Observable<Concerne | null> {
-    return this.responseGetOne<Concerne>(`/${id}`);
+  override getOne(id: number): Observable<ConcerneModel | null> {
+    return this.responseGetOne<ConcerneModel>(`/${id}`);
   }
 
-  override create(data: any): Observable<Concerne> {
+  override create(data: any): Observable<ConcerneModel> {
     const formData = new FormData();
-    return this.responsePostOne<Concerne>(formData);
+    return this.responsePostOne<ConcerneModel>(formData);
   }
 
-  override update(id: number, data: any): Observable<Concerne> {
-    return this.responsePutOne<Concerne>(`/${id}`, data);
+  override update(id: number, data: any): Observable<ConcerneModel> {
+    return this.responsePutOne<ConcerneModel>(`/${id}`, data);
   }
 
   override deleteOne(id: number): Observable<boolean> {

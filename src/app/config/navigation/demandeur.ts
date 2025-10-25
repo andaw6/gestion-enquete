@@ -20,7 +20,7 @@ export const DEMANDEUR_NAVIGATION: NavigationSection[] = [
         route: "/demandeur/demandes/nouveau",
       },
       {
-        label: "Tous mes demandes",
+        label: "Toutes mes demandes",
         icon: "fas fa-list", // Liste de toutes les demandes
         route: "/demandeur/demandes/list",
       },
@@ -34,6 +34,11 @@ export const DEMANDEUR_NAVIGATION: NavigationSection[] = [
         icon: "fas fa-check-circle", // Demandes terminées
         route: "/demandeur/demandes/terminee",
       },
+      {
+        label: "Mes documents",
+        icon: "fas fa-file-alt",
+        route: "/demandeur/demandes/document",
+      }
     ],
 
   },

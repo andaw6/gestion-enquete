@@ -1,26 +1,57 @@
-import { Component, computed, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Option, OptionSelect } from '@core/interfaces/option.interface';
-import { Concerne, DemandeEnqueteData } from '../model';
-import { ConcerneService } from '../concerne.service';
 import { UtilService } from '@core/services/util.service';
-import { DemandeService } from '../demande.service';
-import { DemandeEnquete } from '@modules/demandeur/dashboard/dashboard';
 import { CustomValidators } from '@shared/validators/custom-validators';
 import { UtilisateurStateService } from 'src/app/store/utilisateur/utilisateur-state.service';
 import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { DemandeEnqueteData, DemandeEnqueteModel, DemandeEtatDemande } from '@core/model/demande-enquete.model';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { SelectSearchPaginateComponent } from '@shared/components/select-search-paginate/select-search-paginate.component';
+import { ConfirmationModalComponent } from '@shared/components/confirmation-modal/confirmation-modal.component';
+import { ConcerneModel } from '@core/model/concerne.model';
+import { DocumentService } from '@modules/enqueteur/traitement/document/document.service';
+import { DocumentModel } from '@core/model/document.model';
+import { Logger } from '@core/services/logger.service';
+import { forkJoin } from 'rxjs';
+import { ConcerneService } from '../concerne.service';
+import { DemandeService } from '../demande.service';
+
 
 @Component({
   selector: 'app-nouvelle-demande',
   templateUrl: './nouvelle-demande.component.html',
-  styleUrls: ['./nouvelle-demande.component.css']
+  styleUrls: ['./nouvelle-demande.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    PageHeaderComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgForOf,
+    SelectSearchPaginateComponent,
+    ConfirmationModalComponent
+  ],
 })
 export class NouvelleDemandeComponent {
+  // Injection des dépendances
+  private fb = inject(FormBuilder);
+  private concerneService = inject(ConcerneService);
+  private utilService = inject(UtilService);
+  private demandeService = inject(DemandeService);
+  private utilisateurState = inject(UtilisateurStateService);
+  private readonly documentService = inject(DocumentService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   // UI labels
-  pageTitle = "Nouvelle Demande d'Enquête";
-  pageSubTitle = "Créer une nouvelle demande d'enquête";
+  pageTitle = computed<string>(() => this.isEditMode() ? "Modifer une demande d'enquête" : "Nouvelle demande d'enquête");
+  pageSubTitle = computed<string>(() => this.isEditMode() ? "Modifier les informations de la demande d'enquête" : "Créer une nouvelle demande d'enquête");
+  pageButtonIcon = computed<string>(() => this.isEditMode() ? "fas fa-times" : "fas fa-long-arrow-alt-left");
+  pageButtonText = computed<string>(() => this.isEditMode() ? "Annulée" : "Retour");
 
   // Form and states
   demandeForm!: FormGroup;
@@ -29,6 +60,7 @@ export class NouvelleDemandeComponent {
   isActionLoading = false;
 
   // Modal
+  isSuccess = false;
   showConfirmModal = false;
   confirmationData = {
     title: "Réinitialiser le formulaire",
@@ -42,16 +74,23 @@ export class NouvelleDemandeComponent {
 
   // Concernés
   isLoadingConcerne = signal<boolean>(false);
-  concernes = signal<Concerne[]>([]);
+  concernes = signal<ConcerneModel[]>([]);
   selectedConcerne = signal<OptionSelect[]>([]);
-
+  defaultConcerne = signal<OptionSelect[]>([]);
   mesOptions = computed<OptionSelect[]>(() =>
     this.concernes().map(c => ({
       id: c.id,
-      label: `${c.type.toUpperCase()} - ${c.numero} - ${c.regionSocial}`,
+      label: `${c.type.toUpperCase()} - ${c.telephone} - ${c.regionSocial}`,
       value: `${c.id}`
     }))
   );
+
+  // Documents
+  selectedDocument = signal<OptionSelect[]>([]);
+  documentOptions = signal<OptionSelect[]>([]);
+  selectedFiles: File[] = []
+  documentNames: string[] = []
+  readonly documentIds = signal<number[]>([]);
 
   // Dropdown options
   prioriteOptions: Option[] = [
@@ -68,16 +107,14 @@ export class NouvelleDemandeComponent {
     { value: "travailleur", label: "Travailleur" }
   ];
 
+  // Utilisateur connecté
   user!: Utilisateur;
 
-  constructor(
-    private fb: FormBuilder,
-    private concerneService: ConcerneService,
-    private utilService: UtilService,
-    private demandeService: DemandeService,
-    private utilisateurState: UtilisateurStateService,
-    private router: Router
-  ) { }
+  // Demande
+  demandeCreer: DemandeEnqueteModel | null = null;
+  isEditMode = signal<boolean>(false);
+  demandeId = signal<number>(0);
+  demandeAModifier = signal<DemandeEnqueteModel | null>(null);
 
   ngOnInit(): void {
     this.utilisateurState.user$.subscribe(user => {
@@ -85,12 +122,24 @@ export class NouvelleDemandeComponent {
         this.user = user;
       }
     });
+
+    this.route.paramMap.subscribe(params => {
+      this.isEditMode.set(false);
+      this.demandeId.set(0);
+      const id = params.get('id');
+      if (!!id) {
+        this.isEditMode.set(true);
+        this.demandeId.set(Number(id!));
+        this.loadDemande();
+      }
+    });
+
     this.initializeForm();
-    this.loadConcerne();
+    this.loadData();
+
   }
 
   // ----------------- Initialisation -----------------
-
   private initializeForm(): void {
     this.demandeForm = this.fb.group({
       objet: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
@@ -108,16 +157,106 @@ export class NouvelleDemandeComponent {
     this.updateConcerneValidators();
   }
 
-  private loadConcerne(): void {
-    this.isLoadingConcerne.set(true);
-    this.concerneService.getAll({ sort: "createdAt,desc" }).subscribe({
-      next: res => this.concernes.set(res.data),
-      error: err => this.utilService.showNotification(err.message ?? "Erreur lors du chargement des concernés", "error"),
-      complete: () => this.isLoadingConcerne.set(false)
+  private patchForm(demande: DemandeEnqueteModel): void {
+    this.selectedDocument.set([]);
+    this.documentIds.set([]);
+    this.demandeForm.patchValue({
+      objet: demande.objet,
+      description: demande.description,
+      priorite: demande.priorite,
+      dateEcheance: demande.dateEcheance,
+      urgent: demande.urgent,
+      centreId: demande.centre?.code ?? "afrilins",
+      concerneId: demande.concerne?.id ?? "",
+      type: demande.concerne?.type ?? "",
+      numero: demande.concerne?.telephone ?? "",
+      regionSocial: demande.concerne?.regionSocial ?? ""
     });
+
+    // Mettre le mode concerne
+    if (demande.concerne) {
+      this.concerneMode = 'existing';
+      this.defaultConcerne.set([{
+        id: demande.concerne.id,
+        label: `${demande.concerne.type.toUpperCase()} - ${demande.concerne.telephone} - ${demande.concerne.regionSocial}`,
+        value: demande.concerne.id.toString()
+      }]);
+    } else {
+      this.concerneMode = 'new';
+    }
+
+    this.updateConcerneValidators();
+
+    // Documents déjà liés
+    if (demande.documents && demande.documents.length > 0) {
+      const docs = demande.documents.map(d => this.mapDocumentToOptionSelect(d));
+      this.documentOptions.set(docs);
+      this.selectedDocument.set(docs);
+      this.documentIds.set(docs.map(d => Number(d.id)));
+    }
   }
 
+
+
+
+  loadData() {
+    this.isLoadingConcerne.set(true);
+    forkJoin({
+      documents: this.documentService.getAll(),
+      concernes: this.concerneService.getAll({ sort: "createdAt,desc" })
+    }).subscribe({
+      next: ({ documents, concernes }) => {
+        this.isLoadingConcerne.set(false);
+        this.concernes.set(concernes.data);
+        this.documentOptions.set(
+          documents.data.map(this.mapDocumentToOptionSelect)
+        )
+      },
+      error: err => {
+        this.isLoadingConcerne.set(false);
+      }
+    })
+  }
+
+  loadDemande() {
+    if (this.demandeId()) {
+      this.demandeService.getOne(this.demandeId())
+        .subscribe({
+          next: response => {
+            this.demandeAModifier.set(response);
+            if (!!response) {
+              this.patchForm(response!);
+              this.demandeAModifier.update(last => ({
+                ...last!,
+                commentaireValidation: "En attente de validation par le responsable. Vérification des documents en cours."
+              }));
+            }
+            Logger.info({ message: "Demande à modifier", data: response }, "NouvelleDemandeComponent:loadDemande");
+          },
+          error: _ => {
+            this.utilService.showNotification("Erreur lors du chargement de la demande", "error");
+          }
+        })
+
+    }
+  }
+
+  reset() {
+    if (this.isEditMode()) {
+      if (!!this.demandeAModifier()) {
+        this.patchForm(this.demandeAModifier()!);
+      }
+    } else {
+      this.showConfirmModal = true;
+    }
+  }
+
+
   // ----------------- Form helpers -----------------
+
+  onSelectDocument(select: OptionSelect[]): void {
+    this.documentIds.set(select.map(s => Number(s.value)));
+  }
 
   onSelected(options: OptionSelect[]): void {
     this.selectedConcerne.set(options);
@@ -126,6 +265,8 @@ export class NouvelleDemandeComponent {
       this.demandeForm.get("concerneId")?.setValue(options[0].id);
     }
   }
+
+
 
   onConcerneModeChange(mode: 'existing' | 'new'): void {
     this.concerneMode = mode;
@@ -190,6 +331,7 @@ export class NouvelleDemandeComponent {
 
     this.isSubmitting = true;
     const form = this.demandeForm.value;
+    this.demandeCreer = null;
 
     const demande: DemandeEnqueteData = {
       objet: form.objet,
@@ -207,21 +349,46 @@ export class NouvelleDemandeComponent {
             numero: form.numero,
             regionSocial: form.regionSocial
           }
-        })
+        }),
+      documentIds: this.documentIds(),
     };
 
-    this.demandeService.create(demande).subscribe({
-      next: (data: DemandeEnquete) => {
-        console.log("Nouvelle demande créée", data);
-        this.utilService.showNotification("Demande d'enquête soumise avec succès");
-        this.resetForm();
-      },
-      error: err => {
-        this.utilService.showNotification(err.message ?? "Erreur lors de l'enregistrement", "error");
-        this.isSubmitting = false;
-      },
-      complete: () => this.isSubmitting = false
-    });
+    this.isSuccess = false;
+    const data = { documents: this.selectedFiles, demande };
+
+
+    (
+      this.isEditMode() ?
+        this.demandeService.updateWithDocument(this.demandeId(), data) :
+        this.demandeService.createWithDocument(data)
+    )
+      .subscribe({
+        next: (data: DemandeEnqueteModel) => {
+          this.demandeCreer = data;
+          this.utilService.showNotification(
+            this.isEditMode() ?
+              "Demande d'enquête mis à jour avec succès" :
+              "Demande d'enquête soumise avec succès"
+          );
+          this.isSuccess = true;
+          this.isSubmitting = false;
+        },
+        error: err => {
+          Logger.error({ message: "Erreur", data: err }, "NouvelleDemandeComponent");
+          this.utilService.showNotification("Erreur lors de l'enregistrement", "error");
+          this.isSubmitting = false;
+        },
+        complete: () => { }
+      });
+  }
+
+  nouveauDemande() {
+    if (this.isEditMode()) {
+      this.isEditMode.set(false);
+      this.demandeId.set(0)
+    }
+    this.resetForm();
+    this.isSuccess = false;
   }
 
 
@@ -235,10 +402,91 @@ export class NouvelleDemandeComponent {
     this.concerneMode = 'existing';
     this.updateConcerneValidators();
     this.selectedConcerne.set([]);
+    this.documentIds.set([]);
+    this.selectedDocument.set([]);
+    this.selectedFiles = [];
+    this.documentNames = [];
   }
 
   onGoBack(): void {
-    window.history.back();
+    history.back();
   }
 
+
+  showDetail() {
+    if (!!this.demandeCreer) {
+      this.router.navigate(["/demandeur/demandes/detail", this.demandeCreer.id])
+    }
+  }
+
+canUpdate(): boolean {
+  if (!this.isEditMode()) return false;
+
+  // si pas de demande → autorisé
+  if (!this.demandeId() || !this.demandeAModifier()) return true;
+
+  const code = this.demandeAModifier()!.etat.code;
+  return code === DemandeEtatDemande.EnAttente || code === DemandeEtatDemande.EnComplement;
+}
+
+
+
+
+  private fileKey(f: File): string {
+    return `${f.name}|${f.size}|${f.lastModified}`
+  }
+
+  private addFiles(files: FileList | File[]): void {
+    const incoming = Array.from(files)
+    const existingKeys = new Set(this.selectedFiles.map(this.fileKey))
+    const toAdd = incoming.filter(f => !existingKeys.has(this.fileKey(f)))
+
+    if (toAdd.length > 0) {
+      this.selectedFiles = [...this.selectedFiles, ...toAdd]
+      this.documentNames = this.selectedFiles.map(file => {
+        const dot = file.name.lastIndexOf('.')
+        return dot > 0 ? file.name.substring(0, dot) : file.name
+      })
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement
+    if (input.files && input.files.length > 0) {
+      this.addFiles(input.files)
+      // Important : permet de re-déclencher (change) si on re-sélectionne le même fichier
+      input.value = ''
+    }
+  }
+
+  removeFile(index: number): void {
+    this.selectedFiles.splice(index, 1)
+    this.documentNames.splice(index, 1)
+  }
+
+  removeAllFiles(): void {
+    this.selectedFiles = []
+    this.documentNames = []
+  }
+
+  /** (optionnel) support du glisser-déposer */
+  onDrop(event: DragEvent): void {
+    event.preventDefault()
+    if (event.dataTransfer?.files?.length) {
+      this.addFiles(event.dataTransfer.files)
+    }
+  }
+  onDragOver(event: DragEvent): void {
+    event.preventDefault()
+  }
+
+
+  private mapDocumentToOptionSelect(doc: DocumentModel): OptionSelect {
+    return {
+      id: doc.id.toString(),
+      label: `${doc.nom}.${doc.extension}`,
+      description: `Type: ${doc.type.libelle} - Description: ${doc.description}`,
+      value: doc.id.toString()
+    };
+  }
 }

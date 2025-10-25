@@ -1,0 +1,74 @@
+<div>
+  <div
+    (drop)="onFileDrop($event)"
+    (dragover)="onDragOver($event)"
+    class="border-2 border-dashed border-dark-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer bg-dark-50/50"
+  >
+    <svg
+      class="mx-auto h-12 w-12 text-dark-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+      ></path>
+    </svg>
+    <p class="mt-2 text-sm text-dark-600">
+      <label class="font-semibold text-primary cursor-pointer">
+        Cliquez pour télécharger
+        <input
+          type="file"
+          [multiple]="allowMultiple"
+          (change)="onFileSelect($event)"
+          [accept]="acceptedTypes"
+          class="hidden"
+        />
+      </label>
+      ou glissez-déposez
+    </p>
+    <p class="text-xs text-dark-500 mt-1">{{ acceptedTypesLabel }}</p>
+  </div>
+
+  <div *ngIf="showSelection && uploadedFiles.length > 0" class="mt-4 space-y-2">
+    <p class="text-sm font-medium text-dark-700">
+      Fichiers sélectionnés ({{ uploadedFiles.length }}):
+    </p>
+    <div
+      *ngFor="let uploadedFile of uploadedFiles; let i = index"
+      class="flex items-center justify-between bg-white border border-dark-200 px-4 py-3 rounded-lg hover:shadow-md transition-shadow"
+    >
+      <div class="flex items-center space-x-3 flex-1">
+        <div
+          [class]="utilService.getBgIcon(getExtension(uploadedFile))"
+          class="w-10 h-10 rounded-lg flex items-center justify-center"
+        >
+          <i
+            [class]="
+              utilService.getIcon(getExtension(uploadedFile), false) +
+              ' text-lg'
+            "
+          ></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-dark-800 truncate">
+            {{ uploadedFile.name }}
+          </p>
+          <p class="text-xs text-dark-500">
+            {{ utilService.formatFileSize(uploadedFile.size) }}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="removeFile.emit(i)"
+        class="ml-3 text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+      >
+        <i class="fas fa-trash text-sm"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,7 @@
               <i *ngFor="let star of getStars(source)"
                  [class]="star ? 'fas fa-star text-xs' : 'far fa-star text-xs'"></i>
             </div>
-            <span class="ml-1 text-xs text-gray-600">({{ source.niveauFiabilite }}/5)</span>
+            <span class="ml-1 text-xs text-gray-600">({{ source.fiabilite }}/5)</span>
             <span class="ml-3 text-xs text-gray-500">{{ source.dateMiseAJour | date: "dd/MM/yyyy" }}</span>
           </div>
         </div>
@@ -96,7 +96,7 @@
                     <i *ngFor="let star of getStars(source)"
                        [class]="star ? 'fas fa-star text-xs' : 'far fa-star text-xs'"></i>
                   </div>
-                  <span class="ml-1 text-xs text-gray-600">({{ source.niveauFiabilite }}/5)</span>
+                  <span class="ml-1 text-xs text-gray-600">({{ source.fiabilite }}/5)</span>
                 </div>
               </div>
             </div>

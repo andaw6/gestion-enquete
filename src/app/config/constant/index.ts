@@ -155,3 +155,54 @@ export const PRIORITE_LEVELS_LABEL: { [key: number]: string } = {
   4: "Faible",
   5: "Très faible"
 };
+
+export const TAB_TRAITEMENT_ENQUETE = [
+  {
+    id: "informations",
+    label: "Informations générales",
+    icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+  },
+  {
+    id: "temoignages",
+    label: "Témoignages",
+    icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
+  },
+  {
+    id: "documents",
+    label: "Documents",
+    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+  },
+  {
+    id: "sources",
+    label: "Sources d'information",
+    icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
+  },
+  {
+    id: "observations",
+    label: "Observations",
+    icon: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z",
+  },
+];
+
+
+export const APP_TYPE_DOCUMENT_AUTORISER:Record<string, string> = {
+  "application/pdf": "PDF",
+  "application/msword": "DOC",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "DOCX",
+  "application/vnd.ms-excel": "XLS",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "XLSX",
+  "application/vnd.ms-powerpoint": "PPT",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": "PPTX",
+  "text/plain": "TXT",
+  "text/html": "HTML",
+  "application/xml": "XML",
+  "image/svg+xml": "SVG",
+  "image/jpeg": "JPG",
+  "image/png": "PNG",
+  "image/gif": "GIF",
+  "video/mp4": "MP4",
+  "video/webm": "WEBM",
+  "video/ogg": "OGG",
+  "audio/mpeg": "MP3",
+  "audio/wav": "WAV",
+}

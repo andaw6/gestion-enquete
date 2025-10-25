@@ -1,10 +1,17 @@
+import { CommonModule, NgClass, NgForOf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivityItem } from '@modules/demandeur/dashboard/dashboard';
 
 @Component({
   selector: 'app-recent-activity',
   templateUrl: './recent-activity.component.html',
-  styleUrls: ['./recent-activity.component.css']
+  styleUrls: ['./recent-activity.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgForOf,
+    NgClass
+  ]
 })
 export class RecentActivityComponent {
   @Input() activities: ActivityItem[] = []

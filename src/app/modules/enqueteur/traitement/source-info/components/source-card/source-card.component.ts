@@ -1,11 +1,11 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { SourceInfoModel } from "@core/model/source-info.model"
 
 @Component({
   selector: 'app-source-card',
   standalone: true,
-  imports: [CommonModule, NgClass, NgIf],
+  imports: [CommonModule, NgClass],
   templateUrl: './source-card.component.html',
   styleUrls: ['./source-card.component.css']
 })

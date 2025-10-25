@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { UtilService } from '@core/services/util.service';
 
 
 @Component({
   selector: 'app-file-upload',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgForOf, NgIf],
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css']
 })

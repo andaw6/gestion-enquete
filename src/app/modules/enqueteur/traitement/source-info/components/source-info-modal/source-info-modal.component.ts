@@ -1,16 +1,17 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject } from "@angular/core"
-import { CommonModule, NgForOf, NgIf } from "@angular/common"
+import { CommonModule, NgForOf, NgClass,NgIf } from "@angular/common"
 import { SourceInfoModel } from "@core/model/source-info.model"
 import { UtilService } from "@core/services/util.service"
 import { UtilisateurModel } from "@core/model/utilisateur.model"
 import { animate, state, style, transition, trigger } from "@angular/animations"
 import { ModalWrapperComponent } from "@shared/components/modal-wrapper/modal-wrapper.component";
 import { DocumentModel } from "@core/model/document.model"
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-source-info-modal',
   standalone: true,
-  imports: [CommonModule, NgIf, NgForOf, ModalWrapperComponent],
+  imports: [CommonModule, NgIf, NgForOf, ModalWrapperComponent, NgClass],
   templateUrl: './source-info-modal.component.html',
   styleUrls: ['./source-info-modal.component.css'],
   animations: [
@@ -55,6 +56,7 @@ export class SourceInfoModalComponent implements OnInit, OnChanges {
   fiabiliteMin = 1;
 
   protected readonly utilService = inject(UtilService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     if (this.sourceInfo) {
@@ -154,4 +156,8 @@ export class SourceInfoModalComponent implements OnInit, OnChanges {
 
     return `${Math.min(Math.max(percentage, 0), 100)}%`; // clamp entre 0 et 100
   }
+
+  viewDetail(id: number) {
+    this.router.navigate(["/enqueteur/enquetes/en-cours", id])
+   }
 }

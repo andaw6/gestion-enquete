@@ -12,7 +12,7 @@ interface User {
 }
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-header-validateur',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
   imports: [FontAwesomeModule],

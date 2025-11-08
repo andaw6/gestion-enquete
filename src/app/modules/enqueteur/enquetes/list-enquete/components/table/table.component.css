@@ -1,0 +1,38 @@
+.table-row {
+  transition: all 0.2s ease;
+}
+.table-row:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(23, 171, 221, 0.03) 0%,
+    rgba(41, 63, 118, 0.03) 100%
+  );
+  border-left: 3px solid #17abdd;
+}
+.icon-button {
+  position: relative;
+  overflow: hidden;
+}
+.icon-button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(23, 171, 221, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+.icon-button:hover::after {
+  width: 120%;
+  height: 120%;
+}
+.gradient-primary {
+  background: linear-gradient(135deg, #17abdd 0%, #1399c5 100%);
+}
+.status-badge {
+  position: relative;
+  overflow: hidden;
+}

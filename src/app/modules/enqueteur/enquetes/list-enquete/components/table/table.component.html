@@ -1,0 +1,113 @@
+ <div class="bg-white rounded-2xl shadow-card border border-gray-100 overflow-hidden animate-fade-in">
+      <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-secondary-50 to-primary-50">
+        <h3 class="text-lg font-bold text-secondary-600 flex items-center gap-2">
+          <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+          </svg>
+          Liste des Enquêtes
+        </h3>
+      </div>
+      
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-primary-100">
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Référence</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Objet</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">État</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Progression</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Enquêteur</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Dates</th>
+              <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr *ngFor="let row of rows" class="table-row">
+              <td class="px-6 py-5">
+                <div class="flex items-center gap-2">
+                  <div [ngClass]="row.statusDot + ' w-2 h-2 rounded-full animate-pulse'"></div>
+                  <span class="font-bold text-secondary-600">{{ row.reference }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-5">
+                <p class="font-semibold text-gray-900 mb-0.5">{{ row.objet }}</p>
+                <p class="text-xs text-gray-500 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                  </svg>
+                  {{ row.demandeRef }}
+                </p>
+              </td>
+              <td class="px-6 py-5">
+                <span [ngClass]="getStateClass(row.etat.code)" class="status-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border">
+                  <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStateDotColor(row.etat.code)"></span>
+                  {{ row.etat.libelle }}
+                </span>
+              </td>
+              <td class="px-6 py-5">
+                <div class="flex items-center gap-3">
+                  <div class="flex-1">
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full gradient-primary rounded-full transition-all duration-500" [style.width.%]="row.progression"></div>
+                    </div>
+                  </div>
+                  <span class="text-sm font-bold text-secondary-600 w-10 text-right">{{ row.progression }}%</span>
+                </div>
+              </td>
+              <td class="px-6 py-5">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md">
+                    {{ row.enqueteur.initials }}
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-900">{{ row.enqueteur.nom }}</p>
+                    <p class="text-xs text-gray-500">{{ row.enqueteur.role }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-5">
+                <div class="space-y-1">
+                  <p class="text-xs text-gray-600 flex items-center gap-1">
+                    <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-medium">Début:</span> {{ row.dateDebut }}
+                  </p>
+                  <p class="text-xs text-gray-500 flex items-center gap-1">
+                    <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-medium">Fin:</span> {{ row.dateFin }}
+                  </p>
+                </div>
+              </td>
+              <td class="px-6 py-5">
+                <div class="flex items-center justify-end gap-2">
+                  <button (click)="onView(row)" class="icon-button p-2.5 hover:bg-primary-50 rounded-xl transition-all duration-200 group" title="Consulter">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-primary-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  </button>
+                  <button (click)="onEdit(row)" class="icon-button p-2.5 hover:bg-blue-50 rounded-xl transition-all duration-200 group" title="Éditer">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                  <button (click)="onDelete(row)" class="icon-button p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group" title="Supprimer">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+        <app-pagination [pagination]="pagination" (pageChanged)="pageChange.emit($event)" ></app-pagination>
+
+        </div>
+      </div>
+    </div>

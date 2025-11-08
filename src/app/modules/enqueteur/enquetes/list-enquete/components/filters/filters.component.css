@@ -1,0 +1,13 @@
+.filter-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}
+.gradient-primary {
+  background: linear-gradient(135deg, #17abdd 0%, #1399c5 100%);
+}
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.12);
+}

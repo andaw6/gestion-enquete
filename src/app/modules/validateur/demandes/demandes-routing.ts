@@ -6,6 +6,11 @@ export const VALIDATIONS_ROUTES: Route[] = [
     loadComponent: () =>
       import("@modules/validateur/demandes/list-demandes/list-demandes.component").then(c => c.ListDemandesComponent)
   },
+    {
+    path: "avalidees",
+    loadComponent: () =>
+      import("@modules/validateur/demandes/demande-avalidees/demande-avalidees.component").then(c => c.DemandeAvalideesComponent)
+  },
   // {
   //   path: "test",
   //   loadComponent: () =>
@@ -14,6 +19,6 @@ export const VALIDATIONS_ROUTES: Route[] = [
   // },
   {
     path: "**",
-    redirectTo: "list"
+    redirectTo: "avalidees"
   }
 ]

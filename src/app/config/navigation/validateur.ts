@@ -19,10 +19,15 @@ export const VALIDATEUR_NAVIGATION: NavigationSection[] = [
   {
     title: "Demandes d’enquête",
     items: [
+          {
+        label: "Tous les demandes",
+        icon: "fas fa-list",
+        route: "/validateur/demandes/list",
+      },
       {
         label: "Demandes à valider",
         icon: "fas fa-clipboard-check",
-        route: "/validateur/demandes/list",
+        route: "/validateur/demandes/avalidees",
       },
       {
         label: "Demandes validées",

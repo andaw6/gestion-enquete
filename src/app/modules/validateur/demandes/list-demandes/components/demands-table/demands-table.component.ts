@@ -17,8 +17,8 @@ export class DemandsTableComponent {
   @Input() demandes: DemandeEnqueteModel[] = []
   @Input() pagination!: Pagination;
   @Output() viewDetails = new EventEmitter<DemandeEnqueteModel>()
-  @Output() approve = new EventEmitter<DemandeEnqueteModel>()
-  @Output() reject = new EventEmitter<DemandeEnqueteModel>()
+  @Output() approve = new EventEmitter<{ demande: DemandeEnqueteModel, commentaire: string }>();
+  @Output() reject = new EventEmitter<{ demande: DemandeEnqueteModel, commentaire: string }>();
   @Output() pageChange = new EventEmitter<Pagination>()
 
   getUserInitials(name: string): string {
@@ -30,8 +30,8 @@ export class DemandsTableComponent {
       .slice(0, 2)
   }
 
-  canValidate(etat:CodeLibelle){
-    return etat.code ==  DemandeEtatDemande.EnAttente || etat.code == DemandeEtatDemande.EnComplement;
+  canValidate(etat: CodeLibelle) {
+    return etat.code == DemandeEtatDemande.EnAttente || etat.code == DemandeEtatDemande.EnComplement;
   }
 
   getConcerneLabel(type: string): string {
@@ -52,27 +52,35 @@ export class DemandsTableComponent {
     return classes[type] || ""
   }
 
-getStatusClass(code: string): string {
-  const classes: Record<string, string> = {
-    [DemandeEtatDemande.EnAttente]: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    [DemandeEtatDemande.Valider]: "bg-green-50 text-green-700 border-green-200",
-    [DemandeEtatDemande.Rejeter]: "bg-red-50 text-red-700 border-red-200",
-    [DemandeEtatDemande.EnComplement]: "bg-blue-50 text-blue-700 border-blue-200",
-    [DemandeEtatDemande.Annuler]: "bg-gray-100 text-gray-600 border-gray-300",
-  };
-  return classes[code] || "bg-gray-50 text-gray-700 border-gray-200";
-}
+  getStatusClass(code: string): string {
+    const classes: Record<string, string> = {
+      [DemandeEtatDemande.EnAttente]: "bg-yellow-50 text-yellow-700 border-yellow-200",
+      [DemandeEtatDemande.Valider]: "bg-green-50 text-green-700 border-green-200",
+      [DemandeEtatDemande.Rejeter]: "bg-red-50 text-red-700 border-red-200",
+      [DemandeEtatDemande.EnComplement]: "bg-blue-50 text-blue-700 border-blue-200",
+      [DemandeEtatDemande.Annuler]: "bg-gray-100 text-gray-600 border-gray-300",
+    };
+    return classes[code] || "bg-gray-50 text-gray-700 border-gray-200";
+  }
 
-getStatusIndicatorClass(code: string): string {
-  const classes: Record<string, string> = {
-    [DemandeEtatDemande.EnAttente]: "bg-yellow-500 animate-pulse",
-    [DemandeEtatDemande.Valider]: "bg-green-500",
-    [DemandeEtatDemande.Rejeter]: "bg-red-500",
-    [DemandeEtatDemande.EnComplement]: "bg-blue-500 animate-pulse",
-    [DemandeEtatDemande.Annuler]: "bg-gray-400",
-  };
-  return classes[code] || "bg-gray-300";
-}
+  getStatusIndicatorClass(code: string): string {
+    const classes: Record<string, string> = {
+      [DemandeEtatDemande.EnAttente]: "bg-yellow-500 animate-pulse",
+      [DemandeEtatDemande.Valider]: "bg-green-500",
+      [DemandeEtatDemande.Rejeter]: "bg-red-500",
+      [DemandeEtatDemande.EnComplement]: "bg-blue-500 animate-pulse",
+      [DemandeEtatDemande.Annuler]: "bg-gray-400",
+    };
+    return classes[code] || "bg-gray-300";
+  }
+
+  onApprove(demande: DemandeEnqueteModel) {
+    this.approve.emit({ demande, commentaire: "" });
+  }
+  onReject(demande: DemandeEnqueteModel) { 
+    this.reject.emit({ demande, commentaire: "" });
+
+  }
 
 
 }

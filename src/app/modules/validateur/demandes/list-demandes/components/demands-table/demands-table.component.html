@@ -261,7 +261,7 @@
                 </svg>
               </button>
               <button
-                (click)="approve.emit(demande)"
+                (click)="onApprove(demande)"
                 *ngIf="canValidate(demande.etat)"
                 class="p-2.5 text-green-600 hover:bg-green-50 rounded-xl transition-all shadow-sm hover:shadow-md"
                 title="Approuver"
@@ -281,7 +281,7 @@
                 </svg>
               </button>
               <button
-                (click)="reject.emit(demande)"
+                (click)="onReject(demande)"
                 *ngIf="canValidate(demande.etat)"
                 class="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all shadow-sm hover:shadow-md"
                 title="Rejeter"

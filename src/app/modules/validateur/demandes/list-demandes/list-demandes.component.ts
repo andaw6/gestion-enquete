@@ -5,6 +5,7 @@ import { Pagination } from '@core/interfaces/pagination.interface';
 import { StatsCardsComponent } from './components/stats-cards/stats-cards.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { DemandsTableComponent } from './components/demands-table/demands-table.component';
+import { DetailModalComponent} from "./components/detail-modal/detail-modal.component";
 import { DemandeService } from '@modules/demandeur/demandes/demande.service';
 import { ToastService } from '@core/services/toast.service';
 import { IParams } from '@core/interfaces/http-options.interface';
@@ -17,6 +18,7 @@ import { IParams } from '@core/interfaces/http-options.interface';
     StatsCardsComponent,
     FiltersComponent,
     DemandsTableComponent,
+    DetailModalComponent
   ],
   templateUrl: './list-demandes.component.html',
   styleUrls: ['./list-demandes.component.css']
@@ -62,6 +64,7 @@ export class ListDemandesComponent implements OnInit {
     this.demandeService.changeEtat(demande.id, etat).subscribe({
       next: (result: DemandeEnqueteModel) => {
         if (result) {
+          if(this.isModalOpen) this.closeModal();
           this.demandes = [... this.demandes.map(d => {
             if (d.id == result.id) {
               return result;
@@ -87,6 +90,7 @@ export class ListDemandesComponent implements OnInit {
 
   selectDemande(demande: DemandeEnqueteModel): void {
     // this.demandeService.selectDemande(demande)
+    this.selectedDemande = demande;
     this.isModalOpen = true
   }
 
@@ -94,16 +98,18 @@ export class ListDemandesComponent implements OnInit {
     this.isModalOpen = false
   }
 
-  approveDemande(demande: DemandeEnqueteModel): void {
-    console.log("tentative d'approuver une demande", demande)
-    this.selectedDemande = demande;
+  approveDemande(event:{ demande: DemandeEnqueteModel, commentaire: string }): void {
+    console.log("tentative d'approuver une demande", event.demande)
+    this.selectedDemande = event.demande;
     this.changeEtatDemande(DemandeEtatDemande.Valider, "Demande validée avec succès");
   }
 
-  rejectDemande(demande: DemandeEnqueteModel): void {
-    this.selectedDemande = demande;
+  rejectDemande(event:{ demande: DemandeEnqueteModel, commentaire: string }): void {
+    this.selectedDemande = event.demande;
     this.changeEtatDemande(DemandeEtatDemande.Rejeter, "Demande rejetée avec succès");
+    console.log('Rejeter demande:', event.demande.reference, 'Commentaire:', event.commentaire);
   }
+
 
   confirmApprove(data: { demande: DemandeEnqueteModel; comment: string }): void {
     // this.demandeService.approveDemande(data.demande.id, data.comment)

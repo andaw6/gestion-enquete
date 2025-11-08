@@ -8,7 +8,7 @@ import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
 @Component({
   selector: 'app-assign-modal',
   standalone: true,
-  imports: [CommonModule,FormsModule, NgIf, NgForOf],
+  imports: [CommonModule, FormsModule, NgIf, NgForOf],
   templateUrl: './assign-modal.component.html',
   styleUrls: ['./assign-modal.component.css']
 })
@@ -43,40 +43,54 @@ export class AssignModalComponent {
 
   onAssign() {
     if (!this.assignmentData.enqueteurId) {
-      alert("Veuillez sélectionner un enquêteur")
-      return
+      alert("Veuillez sélectionner un enquêteur");
+      return;
     }
 
-    this.assign.emit(this.assignmentData)
+    if (this.assignmentData.dateLimite) {
+      const dateStr = this.assignmentData.dateLimite;
+      const dateWithTime = new Date(dateStr);
+      if (dateWithTime.getHours() === 0 && dateWithTime.getMinutes() === 0) {
+        dateWithTime.setHours(23, 59, 59, 0);
+      }
+      // Convertir en ISO (ex: 2025-11-08T23:59:59.000Z)
+      this.assignmentData.dateLimite = dateWithTime.toISOString();
+    }
+
+    this.assign.emit(this.assignmentData);
   }
 
   getPrioriteClass(priorite: number): string {
     switch (priorite) {
+      case 5:
+        return "bg-red-200 text-red-900"; // Critique
       case 4:
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800"; // Urgente
       case 3:
-        return "bg-orange-100 text-orange-800"
+        return "bg-orange-100 text-orange-800"; // Haute
       case 2:
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800"; // Normale
       case 1:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800"; // Basse
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800"; // Non définie
     }
   }
 
   getPrioriteLabel(priorite: number): string {
     switch (priorite) {
+      case 5:
+        return "Critique";
       case 4:
-        return "Urgente"
+        return "Urgente";
       case 3:
-        return "Haute"
+        return "Haute";
       case 2:
-        return "Normale"
+        return "Normale";
       case 1:
-        return "Basse"
+        return "Basse";
       default:
-        return "Non définie"
+        return "Non définie";
     }
   }
 

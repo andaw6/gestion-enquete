@@ -6,6 +6,7 @@ import { IParams } from '@core/interfaces/http-options.interface';
 import { ApiResponse } from '@core/interfaces/api-response.interface';
 import { EnqueteEtatEnquete, EnqueteModel, EnqueteStatEtat } from '@core/model/enquete.model';
 import { DocumentModel } from '@core/model/document.model';
+import { AssignmentData } from '@modules/chef-enqueteur/enquetes/model';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,9 @@ export class EnqueteService extends ApiCrudService<EnqueteModel> {
     return this.responseGetOne<EnqueteStatEtat>("/stats/etat", { utilisateurId }).pipe(map(d => d!));
   }
 
+  assigneEnqueteur(id: number, data: AssignmentData): Observable<EnqueteModel> {
+    return this.responsePostOne<EnqueteModel>(data, `/assigner/${id}`);
+  }
 
   associeDocuments(id: number, docIds: number[], files: File[] = []): Observable<EnqueteModel> {
     const formData = new FormData();

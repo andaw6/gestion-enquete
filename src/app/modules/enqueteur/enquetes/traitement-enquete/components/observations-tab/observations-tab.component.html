@@ -6,14 +6,26 @@
         (click)="openModal = true"
         class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all shadow-soft flex items-center space-x-2"
       >
-        <i class="w-5 h-5 fas fa-plus" ></i>
+        <i class="w-5 h-5 fas fa-plus"></i>
         <span>Nouvelle observation</span>
       </button>
     </div>
 
+
+
+
+
+
     <!-- Timeline des observations -->
     <div class="space-y-6">
-      <div class="relative" *ngFor="let obs of observations; let i = index">
+      <div
+        class="relative"
+        *ngFor="
+          let obs of paginatedObservations();
+          let i = index;
+          trackBy: trackByObservationId
+        "
+      >
         <div
           *ngIf="i < observations.length - 1"
           class="absolute left-6 top-12 bottom-0 w-0.5 bg-gray-200"
@@ -32,15 +44,35 @@
 
           <!-- Carte -->
           <div
-            class="flex-1 bg-gradient-to-r from-white to-gray-50 rounded-xl p-6 border border-gray-200 shadow-card"
+            class="flex-1 bg-gradient-to-r from-white to-gray-50 rounded-xl p-6 border border-gray-200 shadow-card hover:shadow-lg transition-shadow duration-200"
           >
             <div class="flex justify-between items-start mb-3">
               <h4 class="font-semibold text-gray-900 text-lg">
                 {{ obs.objet }}
               </h4>
-              <span class="text-sm text-gray-500">
-                {{ obs.dateEnregistrement | date : "dd/MM/yyyy HH:mm" }}
-              </span>
+              <div class="flex items-center space-x-3">
+                <span class="text-sm text-gray-500">
+                  {{ obs.dateEnregistrement | date : "dd/MM/yyyy HH:mm" }}
+                </span>
+
+                <!-- Boutons d'action -->
+                <div class="flex items-center space-x-2">
+                  <button
+                    (click)="onEdit(obs)"
+                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-150"
+                    title="Modifier"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button
+                    (click)="onDelete(obs)"
+                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                    title="Supprimer"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <p class="text-gray-700 mb-4">
               {{ obs.description }}
@@ -49,13 +81,13 @@
               <div class="flex items-center space-x-4 text-sm text-gray-500">
                 <!-- Auteur -->
                 <span class="flex items-center">
-                  <i class="mr-1 fas fa-user" ></i>
+                  <i class="mr-1 fas fa-user"></i>
                   <!-- {{ obs.enquete?.agent?.nom || "Utilisateur inconnu" }} -->
                 </span>
 
                 <!-- Catégorie -->
                 <span class="flex items-center">
-                    <i class="mr-1 fas fa-folder" ></i>
+                  <i class="mr-1 fas fa-folder"></i>
                   {{ obs.categorie }}
                 </span>
               </div>
@@ -72,11 +104,19 @@
         </div>
       </div>
     </div>
+
+    <div>
+      <app-pagination
+        [pagination]="pagination()"
+        (pageChanged)="setPage($event)"
+      ></app-pagination>
+    </div>
   </div>
 </div>
 
 <app-observation-modal
   [open]="openModal"
   (close)="openModal = false"
+  [autoSave]="true"
   (save)="savedData($event)"
 ></app-observation-modal>

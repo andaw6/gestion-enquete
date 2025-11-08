@@ -20,6 +20,11 @@ import { forkJoin } from 'rxjs';
 import { RELIABILITY_LEVELS } from "@config/constant";
 import { DocumentModel } from "@core/model/document.model";
 import { SourceInfoModel } from '@core/model/source-info.model';
+import { EnqueteService } from '@modules/enqueteur/enquetes/enquete.service';
+import { UtilisateurStateService } from '@store/utilisateur/utilisateur-state.service';
+import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { EnqueteEtatEnquete } from '@core/model/enquete.model';
+import { EnqueteModel } from "@core/model/enquete.model"
 
 @Component({
   selector: 'app-form-source-info',
@@ -35,7 +40,9 @@ export class FormSourceInfoComponent implements OnInit {
   showSuccessModal: boolean = false;
   fileValidationErrors: string[] = [];
   selectedDocument: OptionSelect[] = [];
+  selectedEnquete: OptionSelect[] = [];
   option: OptionSelect[] = [];
+  enqueteOption: OptionSelect[] = [];
   loadingDocument: boolean = false;
   wasEditing: boolean = false;
   sourceId: number | null = null;
@@ -45,7 +52,8 @@ export class FormSourceInfoComponent implements OnInit {
   readonly reliabilityLevels: Option[] = RELIABILITY_LEVELS.map(d => d as Option);
   private readonly key = "sourceInfo.draft";
   private draft: any = undefined;
-
+  // Utilisateur connecté
+  user!: Utilisateur;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -53,12 +61,20 @@ export class FormSourceInfoComponent implements OnInit {
     private readonly typeSourceService: TypeSourceService,
     private readonly etatSourceService: EtatSourceService,
     private readonly sourceInfoService: SourceInfoService,
+    private utilisateurState: UtilisateurStateService,
     private readonly notificationService: NotificationAlertService,
+    private readonly enqueteService: EnqueteService,
     private readonly router: Router,
   ) {
   }
 
   ngOnInit(): void {
+    this.utilisateurState.user$.subscribe(user => {
+      if (user) {
+        this.user = user;
+      }
+    });
+
     this.wasEditing = false;
     this.initializeForm();
     this.restoreDraft();
@@ -94,6 +110,7 @@ export class FormSourceInfoComponent implements OnInit {
     this.loadingDocument = true;
 
     forkJoin({
+      enquetes: this.enqueteService.getAll({ utilisateurId: this.user.id, etatCode: EnqueteEtatEnquete.EnCours }),
       documents: this.documentService.getAll(),
       types: this.typeSourceService.getAll(),
       etats: this.etatSourceService.getAll()
@@ -101,8 +118,9 @@ export class FormSourceInfoComponent implements OnInit {
       complete(): void {
         console.log("complete");
       },
-      next: ({ documents, types, etats }) => {
+      next: ({ enquetes, documents, types, etats }) => {
         this.option = documents.data.map(this.mapDocumentToOptionSelect);
+        this.enqueteOption = enquetes.data.map(this.mapEnqueteToOptionSelect);
         this.sourceTypes = types.data;
         this.etatsDisponibles = etats.data;
         this.loadingDocument = false;
@@ -128,6 +146,15 @@ export class FormSourceInfoComponent implements OnInit {
       label: `${doc.nom}.${doc.extension}`,
       description: `Type: ${doc.type.libelle} - Description: ${doc.description}`,
       value: doc.id.toString()
+    };
+  }
+
+  private mapEnqueteToOptionSelect(enq: EnqueteModel): OptionSelect {
+    return {
+      id: enq.id.toString(),
+      label: `Enquête : ${enq.reference}`,
+      description: `Objet: ${enq.demande?.objet} - Concerne: ${enq.demande?.concerne.telephone} ${enq.demande?.concerne.type}`,
+      value: enq.id.toString()
     };
   }
 
@@ -157,6 +184,10 @@ export class FormSourceInfoComponent implements OnInit {
 
   onSelectDocument(select: OptionSelect[]): void {
     this.documentIds.set(select.map(s => Number(s.value)));
+  }
+
+  onSelectEnquete(select:OptionSelect[]){
+    
   }
 
   isFieldInvalid(fieldName: string): boolean {

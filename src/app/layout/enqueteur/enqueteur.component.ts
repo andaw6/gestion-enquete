@@ -27,7 +27,7 @@ export class EnqueteurComponent {
     this.utilisateurState.loadUserSuccess({
       id: 27,
       role: "Enqueteur",
-      username: "Aicha Diatta"
+      username: "Elhadji Ciss"
     });
   }
 

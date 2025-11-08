@@ -15,11 +15,8 @@
 
 <!-- Enquêtes Table -->
 <app-enquetes-table
-  [enquetes]="filteredEnquetes"
-  [currentPage]="currentPage"
-  [totalPages]="totalPages"
-  [totalItems]="filteredEnquetes.length"
-  [itemsPerPage]="itemsPerPage"
+  [enquetes]="enquetes"
+  [pagination]="pagination"
   (assignEnquete)="onAssignEnquete($event)"
   (viewDetails)="onViewDetails($event)"
   (pageChange)="onPageChange($event)"
@@ -35,3 +32,12 @@
   (assign)="onAssign($event)"
 >
 </app-assign-modal>
+
+<div *ngIf="!!selectedEnquete">
+  <app-modal-detail-demande
+    [open]="openDetailModal"
+    [demande]="selectedEnquete!"
+    (close)="openDetailModal = false; selectedEnquete = null"
+  >
+  </app-modal-detail-demande>
+</div>

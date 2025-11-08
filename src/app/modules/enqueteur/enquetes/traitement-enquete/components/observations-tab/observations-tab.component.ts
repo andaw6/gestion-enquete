@@ -63,7 +63,7 @@ export class ObservationsTabComponent implements OnInit, OnDestroy {
     { allowSignalWrites: true } // ✅ permet la mise à jour du signal dans l’effect
   );
 
-    // Configuration des filtres
+  // Configuration des filtres
   filters = {
     searchTerm: '',
     categorie: '',
@@ -76,7 +76,7 @@ export class ObservationsTabComponent implements OnInit, OnDestroy {
   // Données pour les filtres
   categories: string[] = [];
   etats: any[] = [];
-    filteredObservations: any[] = [];
+  filteredObservations: any[] = [];
 
 
 
@@ -122,6 +122,9 @@ export class ObservationsTabComponent implements OnInit, OnDestroy {
       this.enqueteState.addAutreInfo(model);
     } else {
       this.enqueteState.updateAutreInfo(model);
+    }
+    if (this.enquete && this.enquete.progression < 50) {
+      this.enqueteState.updateProgession(this.enquete.progression + 5);
     }
     // L'enquete$ du service émettra => subscription mettra à jour `observations`
   }

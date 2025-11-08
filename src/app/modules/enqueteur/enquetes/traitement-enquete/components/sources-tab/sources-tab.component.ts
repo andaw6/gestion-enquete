@@ -166,6 +166,9 @@ export class SourcesTabComponent implements OnInit {
             this.enqueteState.updateSourceInfo(source);
             this.openUpdateSourceModal = false;
           }
+          if (this.enquete.progression < 50) {
+            this.enqueteState.updateProgession(this.enquete.progression + 5);
+          }
           this.toastService.show(`La source d'information à bien été ${mode == "create" ? "créer" : "modifier"}`);
         },
         error: (err) => {
@@ -179,6 +182,9 @@ export class SourcesTabComponent implements OnInit {
         this.enqueteService.associeSources(this.enquete.id, [source.id]).subscribe({
           next: (response) => {
             this.enqueteState.addSourceInfo(source);
+            if (this.enquete.progression < 50) {
+              this.enqueteState.updateProgession(this.enquete.progression + 5);
+            }
             this.toastService.show(`La source ${source.id} à bien été ajouté à l'enquete`);
           },
           error: (err) => {

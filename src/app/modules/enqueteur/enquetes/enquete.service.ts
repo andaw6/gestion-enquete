@@ -39,6 +39,10 @@ export class EnqueteService extends ApiCrudService<EnqueteModel> {
     return this.responseGetOne<EnqueteModel>(`/${id}/all`);
   }
 
+  updateProgression(id: number,  progression: number): Observable<EnqueteModel> {
+    return this.responsePatchOne(`/${id}/progression`, null, { progression })
+  }
+
   changeEtat(id: number, code: EnqueteEtatEnquete): Observable<EnqueteModel> {
     return this.responsePatchOne<EnqueteModel>(`/${id}/etat`, null, { code });
   }

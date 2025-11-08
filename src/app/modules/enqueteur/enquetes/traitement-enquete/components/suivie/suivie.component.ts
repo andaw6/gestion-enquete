@@ -79,4 +79,8 @@ export class SuivieComponent implements OnInit {
     return this.enquete.autresInfos?.filter(aut => aut.categorie == "temoignage") ?? [];
   }
 
+  getObservations() {
+    return this.enquete.autresInfos?.filter(aut => aut.categorie.includes("observation-")) ?? [];
+  }
+
 }

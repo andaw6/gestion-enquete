@@ -181,6 +181,11 @@ export class TabsComponent implements OnInit {
     } else {
       this.enqueteState.updateAutreInfo(event.data);
     }
+    console.log(this.enquete, "nouveau témoignage");
+
+    if (this.enquete && this.enquete.progression < 50) {
+      this.enqueteState.updateProgession(this.enquete.progression + 5);
+    }
   }
 
   onPopupClose() {

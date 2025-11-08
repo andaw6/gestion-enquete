@@ -80,6 +80,10 @@ export class DocumentsTabComponent implements OnInit {
 
   handleUploadSuccess(documents: DocumentModel[]): void {
     documents.forEach((doc) => this.enqueteState.addDocument(doc))
+    console.log(this.enquete, "test")
+    if (this.enquete && this.enquete.progression < 50) {
+      this.enqueteState.updateProgession(this.enquete.progression + 5);
+    }
     this.utilService.showNotification(`${documents.length} document(s) ajouté(s) avec succès`, "success")
     this.closeUploadModal()
   }

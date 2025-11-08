@@ -67,7 +67,7 @@ export class DemandeAvalideesComponent implements OnInit {
   }
 
   loadDemande() {
-    this.demandeService.getAll({ etat: DemandeEtatDemande.EnAttente, ...this.pagination }).subscribe({
+    this.demandeService.getAll({ etat: DemandeEtatDemande.EnAttente, ...this.pagination, sort:"updatedAt,desc" }).subscribe({
       next: (response) => {
         this.pagination = response.pagination;
         this.demandes = response.data

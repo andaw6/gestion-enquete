@@ -23,6 +23,8 @@ import {
 import {PageHeaderComponent} from "@shared/components/page-header/page-header.component";
 import { SourceListComponent } from './source-info/components/source-list/source-list.component';
 import {LoaderComponent} from "@shared/components/loader/loader.component";
+import { FileUploadComponent } from "@shared/components/file-upload/file-upload.component";
+import { ExistingDocumentsSelectorComponent } from '../document/components/existing-documents-selector/existing-documents-selector.component';
 
 
 @NgModule({
@@ -50,6 +52,8 @@ import {LoaderComponent} from "@shared/components/loader/loader.component";
     PageHeaderComponent,
     RouterModule.forChild(SOURCE_INFO_ROUTE),
     LoaderComponent,
+    FileUploadComponent,
+    ExistingDocumentsSelectorComponent
   ]
 })
 export class SourceInfoModule {

@@ -5,7 +5,7 @@ import { Pagination } from '@core/interfaces/pagination.interface';
 import { StatsCardsComponent } from './components/stats-cards/stats-cards.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { DemandsTableComponent } from './components/demands-table/demands-table.component';
-import { DetailModalComponent} from "./components/detail-modal/detail-modal.component";
+import { DetailModalComponent } from "./components/detail-modal/detail-modal.component";
 import { DemandeService } from '@modules/demandeur/demandes/demande.service';
 import { ToastService } from '@core/services/toast.service';
 import { IParams } from '@core/interfaces/http-options.interface';
@@ -48,7 +48,7 @@ export class ListDemandesComponent implements OnInit {
   }
 
   loadDemande(filter: IParams = {}) {
-    this.demandeService.getAll({ ...filter, ...this.pagination }).subscribe({
+    this.demandeService.getAll({ ...filter, ...this.pagination, sort: "updatedAt,desc" }).subscribe({
       next: (response) => {
         this.pagination = response.pagination;
         this.demandes = response.data
@@ -64,7 +64,7 @@ export class ListDemandesComponent implements OnInit {
     this.demandeService.changeEtat(demande.id, etat).subscribe({
       next: (result: DemandeEnqueteModel) => {
         if (result) {
-          if(this.isModalOpen) this.closeModal();
+          if (this.isModalOpen) this.closeModal();
           this.demandes = [... this.demandes.map(d => {
             if (d.id == result.id) {
               return result;
@@ -98,13 +98,13 @@ export class ListDemandesComponent implements OnInit {
     this.isModalOpen = false
   }
 
-  approveDemande(event:{ demande: DemandeEnqueteModel, commentaire: string }): void {
+  approveDemande(event: { demande: DemandeEnqueteModel, commentaire: string }): void {
     console.log("tentative d'approuver une demande", event.demande)
     this.selectedDemande = event.demande;
     this.changeEtatDemande(DemandeEtatDemande.Valider, "Demande validée avec succès");
   }
 
-  rejectDemande(event:{ demande: DemandeEnqueteModel, commentaire: string }): void {
+  rejectDemande(event: { demande: DemandeEnqueteModel, commentaire: string }): void {
     this.selectedDemande = event.demande;
     this.changeEtatDemande(DemandeEtatDemande.Rejeter, "Demande rejetée avec succès");
     console.log('Rejeter demande:', event.demande.reference, 'Commentaire:', event.commentaire);

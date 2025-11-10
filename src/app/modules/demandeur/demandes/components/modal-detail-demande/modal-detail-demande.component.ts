@@ -3,6 +3,7 @@ import { CommonModule, NgIf, NgForOf, TitleCasePipe, DatePipe, NgClass } from '@
 import { DemandeEnqueteModel } from '@core/model/demande-enquete.model';
 import { UtilService } from "@core/services/util.service";
 import { DocumentModel } from '@core/model/document.model';
+import { EnqueteEtatEnquete } from '@core/model/enquete.model';
 
 @Component({
   selector: 'app-modal-detail-demande',
@@ -13,7 +14,7 @@ import { DocumentModel } from '@core/model/document.model';
 })
 export class ModalDetailDemandeComponent implements OnInit {
   @Input() open: boolean = false;
-  @Input({ required: true }) demande!: DemandeEnqueteModel;
+  @Input() demande!: DemandeEnqueteModel;
   @Input() autoClose: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() download = new EventEmitter<DocumentModel>();
@@ -44,8 +45,29 @@ export class ModalDetailDemandeComponent implements OnInit {
     this.close.emit();
   }
 
-  onDownload(doc:DocumentModel){
+  onDownload(doc: DocumentModel) {
     this.download.emit(doc);
   }
-  
+
+  getEnqueteEtatClass(etat: string | null |undefined): string {
+    switch (etat) {
+      case EnqueteEtatEnquete.EnCours: // "01"
+        return "bg-blue-100 text-blue-800";
+      case EnqueteEtatEnquete.Terminee: // "02"
+        return "bg-green-100 text-green-800";
+      case EnqueteEtatEnquete.EnAttente: // "00"
+        return "bg-yellow-100 text-yellow-800";
+      case EnqueteEtatEnquete.Annulee: // "06"
+        return "bg-red-100 text-red-800";
+      case EnqueteEtatEnquete.EnValidation: // "03"
+        return "bg-purple-100 text-purple-800";
+      case EnqueteEtatEnquete.Validee: // "04"
+        return "bg-emerald-100 text-emerald-800";
+      case EnqueteEtatEnquete.EnRevision: // "05"
+        return "bg-orange-100 text-orange-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+
+  }
 }

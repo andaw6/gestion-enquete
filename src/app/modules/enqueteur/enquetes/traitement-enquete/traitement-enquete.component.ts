@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnDestroy, signal, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { NotificationComponent } from './components/notification/notification.component';
 import { ProgressStepperComponent } from './components/progress-stepper/progress-stepper.component';
@@ -31,7 +31,7 @@ import { EnqueteStateService } from '@store/enquete/enquete-state.service';
   templateUrl: './traitement-enquete.component.html',
   styleUrls: ['./traitement-enquete.component.css']
 })
-export class TraitementEnqueteComponent implements OnDestroy {
+export class TraitementEnqueteComponent implements OnDestroy, OnInit {
   private surveyService = inject(SurveyService)
   private notificationService = inject(NotificationService)
   enquete = signal<EnqueteModel | null>(null);
@@ -75,6 +75,13 @@ export class TraitementEnqueteComponent implements OnDestroy {
   ngOnInit() {
     // Charger le brouillon s'il existe
     this.surveyService.loadDraft()
+
+    this.enqueteState.enquete$.subscribe(enquete => {
+      if (enquete) {
+        Logger.info({message:"Changement détecter sur l'enquête en cours", data:enquete}, "TraitementEnqueteComponent");
+        this.enquete.set(enquete);
+      }
+    })
 
     // Raccourcis clavier
     document.addEventListener("keydown", (e) => {

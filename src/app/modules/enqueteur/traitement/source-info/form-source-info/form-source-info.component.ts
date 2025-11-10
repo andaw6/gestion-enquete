@@ -19,12 +19,18 @@ import { NotificationAlertService } from "@core/services/notification-alert.serv
 import { forkJoin } from 'rxjs';
 import { RELIABILITY_LEVELS } from "@config/constant";
 import { DocumentModel } from "@core/model/document.model";
-import { SourceInfoModel } from '@core/model/source-info.model';
+import { SourceInfoModel, SourceInfoRequestData } from '@core/model/source-info.model';
+import { EnqueteService } from '@modules/enqueteur/enquetes/enquete.service';
+import { UtilisateurStateService } from '@store/utilisateur/utilisateur-state.service';
+import { Utilisateur } from '@core/interfaces/utilisateur.interface';
+import { EnqueteEtatEnquete } from '@core/model/enquete.model';
+import { EnqueteModel } from "@core/model/enquete.model"
+import { Logger } from '@core/services/logger.service';
 
 @Component({
   selector: 'app-form-source-info',
   templateUrl: './form-source-info.component.html',
-  styleUrls: ['./form-source-info.component.css']
+  styleUrls: ['./form-source-info.component.css'],
 })
 export class FormSourceInfoComponent implements OnInit {
   sourceForm!: FormGroup;
@@ -35,17 +41,25 @@ export class FormSourceInfoComponent implements OnInit {
   showSuccessModal: boolean = false;
   fileValidationErrors: string[] = [];
   selectedDocument: OptionSelect[] = [];
+  selectedEnquete: OptionSelect[] = [];
   option: OptionSelect[] = [];
+  enqueteOption: OptionSelect[] = [];
+  existingDocuments: DocumentModel[] = [];
   loadingDocument: boolean = false;
   wasEditing: boolean = false;
   sourceId: number | null = null;
+  documentMode: 'upload' | 'existing' = 'upload';
+  uploadedFiles: File[] = [];
+  selectedExistingDocs: number[] = [];
 
 
   readonly documentIds = signal<number[]>([]);
+  readonly enqueteIds = signal<number[]>([]);
   readonly reliabilityLevels: Option[] = RELIABILITY_LEVELS.map(d => d as Option);
   private readonly key = "sourceInfo.draft";
   private draft: any = undefined;
-
+  // Utilisateur connecté
+  user!: Utilisateur;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -53,12 +67,20 @@ export class FormSourceInfoComponent implements OnInit {
     private readonly typeSourceService: TypeSourceService,
     private readonly etatSourceService: EtatSourceService,
     private readonly sourceInfoService: SourceInfoService,
+    private utilisateurState: UtilisateurStateService,
     private readonly notificationService: NotificationAlertService,
+    private readonly enqueteService: EnqueteService,
     private readonly router: Router,
   ) {
   }
 
   ngOnInit(): void {
+    this.utilisateurState.user$.subscribe(user => {
+      if (user) {
+        this.user = user;
+      }
+    });
+
     this.wasEditing = false;
     this.initializeForm();
     this.restoreDraft();
@@ -69,14 +91,14 @@ export class FormSourceInfoComponent implements OnInit {
     const today = new Date().toISOString().split("T")[0];
     this.sourceForm = this.fb.group({
       nom: ["", [Validators.required, Validators.minLength(3)]],
-      type: ["", Validators.required],
+      codeType: ["", Validators.required],
       description: ["", [Validators.required, Validators.minLength(10)]],
-      niveauFiabilite: ["", Validators.required],
-      etat: [""],
+      fiabilite: ["", Validators.required],
+      codeEtat: [""],
       dateObtention: [today, [this.noFutureDateValidator()]],
       dateMiseAJour: ["", [this.noFutureDateValidator()]],
       commentaires: [""],
-      enqueteAssociee: [""],
+      // enqueteAssociee: [""],
       ajouterAuxFavoris: [false],
     });
   }
@@ -94,6 +116,7 @@ export class FormSourceInfoComponent implements OnInit {
     this.loadingDocument = true;
 
     forkJoin({
+      enquetes: this.enqueteService.getAll({ utilisateurId: this.user.id, etatCode: EnqueteEtatEnquete.EnCours }),
       documents: this.documentService.getAll(),
       types: this.typeSourceService.getAll(),
       etats: this.etatSourceService.getAll()
@@ -101,8 +124,10 @@ export class FormSourceInfoComponent implements OnInit {
       complete(): void {
         console.log("complete");
       },
-      next: ({ documents, types, etats }) => {
+      next: ({ enquetes, documents, types, etats }) => {
+        this.existingDocuments = documents.data;
         this.option = documents.data.map(this.mapDocumentToOptionSelect);
+        this.enqueteOption = enquetes.data.map(this.mapEnqueteToOptionSelect);
         this.sourceTypes = types.data;
         this.etatsDisponibles = etats.data;
         this.loadingDocument = false;
@@ -113,6 +138,12 @@ export class FormSourceInfoComponent implements OnInit {
             .filter(d => idSet.has(d.id))
             .map(this.mapDocumentToOptionSelect);
         }
+        if (this.draft?.enqueteIds) {
+          const idSet = new Set(this.draft.enqueteIds);
+          this.selectedEnquete = enquetes.data
+            .filter(d => idSet.has(d.id))
+            .map(this.mapEnqueteToOptionSelect);
+        }
       },
       error: err => {
         this.loadingDocument = false;
@@ -120,6 +151,28 @@ export class FormSourceInfoComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  onFilesAdded(files: File[]): void {
+    files.forEach((file) => {
+      this.uploadedFiles.push(file);
+    });
+  }
+
+  onRemoveFile(index: number): void {
+    this.uploadedFiles.splice(index, 1);
+  }
+
+  setDocumentMode(mode: 'upload' | 'existing'): void {
+    this.documentMode = mode;
+  }
+
+  onDocumentToggle(event: { docId: number; checked: boolean }): void {
+    if (event.checked) {
+      this.selectedExistingDocs.push(event.docId);
+    } else {
+      this.selectedExistingDocs = this.selectedExistingDocs.filter((id) => id !== event.docId);
+    }
   }
 
   private mapDocumentToOptionSelect(doc: DocumentModel): OptionSelect {
@@ -131,12 +184,23 @@ export class FormSourceInfoComponent implements OnInit {
     };
   }
 
+  private mapEnqueteToOptionSelect(enq: EnqueteModel): OptionSelect {
+    return {
+      id: enq.id.toString(),
+      label: `Enquête : ${enq.reference}`,
+      description: `Objet: ${enq.demande?.objet} - Concerne: ${enq.demande?.concerne.telephone} ${enq.demande?.concerne.type}`,
+      value: enq.id.toString()
+    };
+  }
+
   restoreDraft(): void {
     try {
       const raw = localStorage.getItem(this.key);
       if (!raw) return;
 
       this.draft = JSON.parse(raw);
+
+      Logger.info({ message: "Data in the draft", data: this.draft }, "FormSourceInfoComponent:restoreDraft")
       if (this.draft && typeof this.draft === 'object') {
         if (this.draft.dateObtention && !isNaN(Date.parse(this.draft.dateObtention))) {
           this.draft.dateObtention = this.toDateInputValue(this.draft.dateObtention);
@@ -147,6 +211,12 @@ export class FormSourceInfoComponent implements OnInit {
         this.sourceForm.patchValue(this.draft);
         if (Array.isArray(this.draft.documentIds)) {
           this.documentIds.set(this.draft.documentIds);
+          this.selectedExistingDocs = this.draft.documentIds;
+        }
+        if (Array.isArray(this.draft.enqueteIds)) {
+          this.selectedEnquete = this.enqueteOption.filter(enq =>
+            this.draft.enqueteIds.includes(Number(enq.value))
+          );
         }
         this.wasEditing = true;
       }
@@ -157,6 +227,10 @@ export class FormSourceInfoComponent implements OnInit {
 
   onSelectDocument(select: OptionSelect[]): void {
     this.documentIds.set(select.map(s => Number(s.value)));
+  }
+
+  onSelectEnquete(select: OptionSelect[]) {
+    this.enqueteIds.set(select.map(s => Number(s.value)));
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -180,7 +254,8 @@ export class FormSourceInfoComponent implements OnInit {
       ...formValue,
       dateMiseAJour: formValue.dateMiseAJour ? new Date(formValue.dateMiseAJour) : null,
       dateObtention: formValue.dateObtention ? new Date(formValue.dateObtention) : null,
-      documentIds: this.documentIds(),
+      documentIds: this.selectedExistingDocs,
+      enqueteIds: this.enqueteIds(),
       utilisateurId: 1
     };
   }
@@ -193,26 +268,34 @@ export class FormSourceInfoComponent implements OnInit {
 
     this.isSubmitting = true;
     const payload = this.getFormData();
-    // const request$ = this.isEditingMode()
-    //   ? this.sourceInfoService.update(Number(this.draft.id), payload)
-    //   : this.sourceInfoService.create();
+
+    Logger.info({ message: "Source d'info", data: payload })
+
+    const data = { source: payload as SourceInfoRequestData, files: this.uploadedFiles }
 
 
-    // this.sourceId = null;
-    // request$.subscribe({
-    //   next: (data: SourceInfoModel) => {
-    //     this.showSuccessModal = true;
-    //     this.isSubmitting = false;
-    //     localStorage.removeItem(this.key);
-    //     this.draft = undefined;
-    //     this.sourceId = data.id;
-    //   },
-    //   error: err => {
-    //     this.isSubmitting = false;
-    //     this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
-    //     console.error(err);
-    //   }
-    // });
+    console.log(data);
+    // console.log(payload)
+    const request$ = this.isEditingMode()
+      ? this.sourceInfoService.update(Number(this.draft.id), data)
+      : this.sourceInfoService.create(data);
+
+
+    this.sourceId = null;
+    request$.subscribe({
+      next: (data: SourceInfoModel) => {
+        this.showSuccessModal = true;
+        this.isSubmitting = false;
+        localStorage.removeItem(this.key);
+        this.draft = undefined;
+        this.sourceId = data.id;
+      },
+      error: err => {
+        this.isSubmitting = false;
+        this.notificationService.showNotification(err.message || "Erreur lors de l'envoi des données", "error");
+        console.error(err);
+      }
+    });
   }
 
   isEditingMode(): boolean {

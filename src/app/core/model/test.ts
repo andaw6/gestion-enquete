@@ -103,3 +103,21 @@ interface DocumentModel {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export enum DemandeEtatDemande {
+  EnAttente = "00",
+  Valider = "01",
+  Rejeter = "02",
+  EnComplement = "03",
+  Annuler = "04",
+}
+
+export enum EnqueteEtatEnquete {
+  EnAttente = "00",
+  EnCours = "01",
+  Terminee = "02",
+  EnValidation = "03",
+  Validee = "04",
+  EnRevision = "05",
+  Annulee = "06",
+}

@@ -1,0 +1,23 @@
+<app-page-header
+  [title]="pageTitle"
+  [subtitle]="pageSubTitle"
+></app-page-header>
+<!-- Table Section -->
+<app-demands-table
+  [demandes]="demandes"
+  [pagination]="pagination"
+  (pageChange)="setPagination($event)"
+  (viewDetails)="selectDemande($event)"
+  (approve)="approveDemande($event)"
+  (reject)="rejectDemande($event)"
+>
+</app-demands-table>
+
+<app-detail-modal
+  [isOpen]="isModalOpen"
+  [demande]="selectedDemande"
+  (closeModal)="closeModal()"
+  (approve)="approveDemande($event)"
+  (reject)="rejectDemande($event)"
+>
+</app-detail-modal>

@@ -71,7 +71,7 @@ export class ObervationModalComponent implements OnInit, OnChanges {
   private buildForm(): FormGroup {
     const [date, heure] = this.getCurrentDateTime();
     return this.fb.group({
-      title: ['', Validators.required, Validators.minLength(3)],
+      title: ['', [Validators.required, Validators.minLength(3)]],
       category: ['', Validators.required],
       priority: [2, Validators.required],
       date: [date, Validators.required],
@@ -108,9 +108,16 @@ export class ObervationModalComponent implements OnInit, OnChanges {
         etat: this.observation.etat?.code ?? '01',
       });
     }
+
+    if (changes["open"]) {
+
+      const isOpen = changes["open"].currentValue;
+      if (isOpen != undefined && !isOpen) {
+        Logger.log({ message: "Réinitialisation du formulaire observation", data: isOpen }, "ObervationModalComponent")
+        this.form = this.buildForm();
+      }
+    }
   }
-
-
 
 
 

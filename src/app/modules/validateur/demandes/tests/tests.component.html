@@ -1,0 +1,26 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <app-stats-cards [stats]="stats"></app-stats-cards>
+        
+        <app-filters (filterChange)="onFilterChange($event)"></app-filters>
+        
+        <app-demandes-table
+          [demandes]="filteredDemandes"
+          [currentPage]="currentPage"
+          [pageSize]="pageSize"
+          [totalItems]="totalItems"
+          (viewDemande)="onViewDemande($event)"
+          (approveDemande)="onApproveDemande($event)"
+          (rejectDemande)="onRejectDemande($event)"
+          (exportData)="onExportData()"
+          (pageChange)="onPageChange($event)">
+        </app-demandes-table>
+      </div>
+
+      <app-detail-modal
+        [isOpen]="isModalOpen"
+        [demande]="selectedDemande"
+        (closeModal)="closeModal()"
+        (approve)="approuveDemande($event)"
+        (reject)="rejectDemandeWithComment($event)">
+      </app-detail-modal>
+    </div>

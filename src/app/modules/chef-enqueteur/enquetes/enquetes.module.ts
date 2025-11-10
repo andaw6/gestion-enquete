@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { ENQUETES_ROUTES } from './enquete-routing';
 import { PageHeaderComponent } from "@shared/components/page-header/page-header.component";
 import { PaginationComponent } from '@shared/components/pagination/pagination.component';
+import { ModalDetailDemandeComponent } from "@modules/demandeur/demandes/components/modal-detail-demande/modal-detail-demande.component";
 
 
 
@@ -28,7 +29,8 @@ import { PaginationComponent } from '@shared/components/pagination/pagination.co
     StatsCardComponent,
     PageHeaderComponent,
     PaginationComponent,
-    RouterModule.forChild(ENQUETES_ROUTES)
-  ]
+    RouterModule.forChild(ENQUETES_ROUTES),
+    ModalDetailDemandeComponent
+]
 })
 export class EnquetesModule { }

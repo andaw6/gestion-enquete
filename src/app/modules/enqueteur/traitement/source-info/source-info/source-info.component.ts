@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {SourceFiltersOption, SourceInfo} from "@modules/enqueteur/traitement/source-info/source-info"
-import {Observable, of} from "rxjs";
-import {SourceInfoService} from "@modules/enqueteur/traitement/source-info/source-info.service";
-import {Pagination} from "@core/interfaces/pagination.interface";
-import {NotificationAlertService} from "@core/services/notification-alert.service";
-import {ResponseError} from "@core/interfaces/response-error.interface";
-import {ActivatedRoute, Router} from "@angular/router";
-import {IParams} from "@core/interfaces/http-options.interface";
-import {ViewMode} from "@core/types";
+import { Component, OnInit } from '@angular/core';
+import { SourceFiltersOption, SourceInfo } from "@modules/enqueteur/traitement/source-info/source-info"
+import { Observable, of } from "rxjs";
+import { SourceInfoService } from "@modules/enqueteur/traitement/source-info/source-info.service";
+import { Pagination } from "@core/interfaces/pagination.interface";
+import { NotificationAlertService } from "@core/services/notification-alert.service";
+import { ResponseError } from "@core/interfaces/response-error.interface";
+import { ActivatedRoute, Router } from "@angular/router";
+import { IParams } from "@core/interfaces/http-options.interface";
+import { ViewMode } from "@core/types";
 import { SourceInfoModel } from '@core/model/source-info.model';
 
 @Component({
@@ -62,9 +62,9 @@ export class SourceInfoComponent implements OnInit {
     this.applyFilter();
   }
 
-  loadData(filter: IParams = {sort: 'updatedAt,desc'}) {
+  loadData(filter: IParams = { sort: 'updatedAt,desc' }) {
     this.loading = true;
-    this.sourceInfoService.getAll({...this.pagination, ...filter}).subscribe({
+    this.sourceInfoService.getAll({ ...this.pagination, ...filter }).subscribe({
       next: response => {
         this.loading = false;
         this.pagination = response.pagination;
@@ -112,12 +112,13 @@ export class SourceInfoComponent implements OnInit {
   }
 
   updatedClick($event: SourceInfoModel): void {
-    const {documents, utilisateur, ...rest} = $event;
+    const { documents, utilisateur, enquetes, type, etat, ...rest} = $event;
     const data = {
       ...rest,
-      type: $event.type.code,
-      etat: $event.etat.code,
+      codeType: type.code,
+      codeEtat: etat.code,
       documentIds: documents.map(d => d.id),
+      enqueteIds: enquetes.map(d => d.id)
     };
     const previousDraft = localStorage.getItem("sourceInfo.draft");
     if (previousDraft) {

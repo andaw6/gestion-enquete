@@ -31,6 +31,162 @@
       <!-- Modal Body -->
       <div class="overflow-y-auto max-h-[calc(90vh-80px)] custom-scrollbar">
         <div class="p-6 space-y-6">
+          <!-- Enquête associée -->
+          <div *ngIf="demande.enquete" class="bg-indigo-50 rounded-xl p-6">
+            <div class="flex items-center mb-4">
+              <div class="bg-indigo-500 text-white p-2 rounded-lg mr-3">
+                <i class="fas fa-search"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-dark-800">
+                Enquête associée
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Référence enquête</label
+                >
+                <p class="text-dark-900 font-semibold">
+                  {{ demande.enquete.reference }}
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >État enquête</label
+                >
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="getEnqueteEtatClass(demande.enquete.etat.code)"
+                >
+                  <i class="fas fa-circle mr-1 text-xs"></i>
+                  {{ demande.enquete.etat.libelle }}
+                </span>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Progression</label
+                >
+                <div class="flex items-center space-x-3">
+                  <div class="flex-1 bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-indigo-500 h-2 rounded-full transition-all duration-300"
+                      [style.width.%]="demande.enquete.progression"
+                    ></div>
+                  </div>
+                  <span class="text-sm font-medium text-dark-600"
+                    >{{ demande.enquete.progression }}%</span
+                  >
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Date de début</label
+                >
+                <p class="text-dark-900 flex items-center">
+                  <i class="fas fa-calendar-check text-indigo-500 mr-2"></i>
+                  {{
+                    (demande.enquete.dateDebut | date : "dd MMMM YYYY") ??
+                      "Pas encore débuté"
+                  }}
+                </p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Est assignée</label
+                >
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="
+                    demande.enquete.dateAssignation
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-800'
+                  "
+                >
+                  <i
+                    [class]="
+                      demande.enquete.dateAssignation
+                        ? 'fas fa-check-circle mr-1'
+                        : 'fas fa-times-circle mr-1'
+                    "
+                  ></i>
+                  {{ demande.enquete.dateAssignation ? "Oui" : "Non" }}
+                </span>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Date d'assignation</label
+                >
+                <p class="text-dark-900 flex items-center">
+                  <i class="fas fa-calendar-check text-indigo-500 mr-2"></i>
+                  {{
+                    demande.enquete.dateAssignation
+                      ? (demande.enquete.dateAssignation
+                        | date : "dd MMMM YYYY")
+                      : "Pas encore assignée"
+                  }}
+                </p>
+              </div>
+              <div *ngIf="demande.enquete.dateLimite">
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Date limite</label
+                >
+                <p class="text-dark-900 flex items-center">
+                  <i class="fas fa-calendar-times text-indigo-500 mr-2"></i>
+                  {{ demande.enquete.dateLimite | date : "dd MMMM YYYY" }}
+                </p>
+              </div>
+
+              <div *ngIf="demande.enquete.dateFin">
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Date de fin</label
+                >
+                <p class="text-dark-900 flex items-center">
+                  <i class="fas fa-calendar-check text-indigo-500 mr-2"></i>
+                  {{ demande.enquete.dateFin | date : "dd MMMM YYYY" }}
+                </p>
+              </div>
+
+              <div *ngIf="demande.enquete.enqueteur" class="md:col-span-2">
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Enquêteur assigné</label
+                >
+                <div
+                  class="flex items-center space-x-3 bg-white p-3 rounded-lg border border-indigo-200"
+                >
+                  <div
+                    class="w-10 h-10 bg-indigo-500 text-white rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user-secret"></i>
+                  </div>
+                  <div>
+                    <p class="text-dark-900 font-semibold">
+                      {{ demande.enquete.enqueteur.username }}
+                    </p>
+                    <p class="text-dark-600 text-sm">
+                      {{ demande.enquete.enqueteur.fonction }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="demande.enquete.instruction" class="md:col-span-2">
+                <label class="block text-sm font-medium text-dark-600 mb-1"
+                  >Instructions</label
+                >
+                <p
+                  class="text-dark-700 bg-white p-3 rounded-lg border border-indigo-200"
+                >
+                  {{ demande.enquete.instruction }}
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Informations générales -->
           <div class="bg-gray-50 rounded-xl p-6">
             <div class="flex items-center mb-4">
@@ -226,7 +382,9 @@
                 <p class="text-dark-900 font-semibold">
                   {{ demande.validateur.username }}
                 </p>
-                <p class="text-dark-600 text-sm">{{demande.validateur.fonction}}</p>
+                <p class="text-dark-600 text-sm">
+                  {{ demande.validateur.fonction }}
+                </p>
               </div>
             </div>
           </div>
@@ -272,7 +430,8 @@
                     </p>
                   </div>
                 </div>
-                <button (click)="onDownload(document)"
+                <button
+                  (click)="onDownload(document)"
                   class="text-primary hover:text-primary-600 p-2 rounded-lg hover:bg-primary-50 transition-colors duration-200"
                 >
                   <i class="fas fa-download"></i>

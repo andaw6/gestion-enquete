@@ -1,0 +1,789 @@
+{
+  "content": [
+    {
+      "id": 241,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-1108-72QEW",
+      "progression": 15,
+      "instruction": null,
+      "dateDebut": "2025-11-08T14:26:02.845807",
+      "dateLimite": "2025-11-27T23:59:59",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-11-08T14:25:43.275855",
+      "createdAt": "2025-11-08T14:24:44.89744",
+      "updatedAt": "2025-11-08T15:22:22.468689",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 141,
+        "objet": "Test nouveau demande",
+        "description": "Ceci est un test",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 2,
+        "reference": "DEM-2025-1108-71KON",
+        "dateEcheance": "2025-11-28T14:23:00",
+        "dateValidation": "2025-11-08T14:24:44.825382",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 81,
+          "type": "employeur",
+          "telephone": "761234567",
+          "regionSocial": "Déni Malick Gueye"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-11-08T14:23:50.822832",
+        "updatedAt": "2025-11-08T14:24:44.91595",
+        "documents": [
+          {
+            "id": 3,
+            "nom": "Document Test 3",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/a3672e67-47ca-4521-8e18-e5c04e201e3e.mp4",
+            "extension": "mp4",
+            "taille": 49865147,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-25T17:02:28.444618"
+          },
+          {
+            "id": 204,
+            "nom": "Screenshot_20241028_125300.jpg",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/e5dd61c2-3d21-4273-9cae-a353ece4d5e8.jpg",
+            "extension": "jpg",
+            "taille": 282013,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-11-08T14:23:50.85042"
+          }
+        ]
+      }
+    },
+    {
+      "id": 62,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0825-LICOG",
+      "progression": 0,
+      "instruction": null,
+      "dateDebut": "2025-11-08T14:18:07.704876",
+      "dateLimite": "2025-11-21T23:59:59",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-11-08T09:00:51.356231",
+      "createdAt": "2025-08-25T15:35:28.197797",
+      "updatedAt": "2025-11-08T14:18:07.744721",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 1,
+        "objet": "Enquête sécurité et conditions de travail – site Dakar",
+        "description": "Vérifier les conditions de travail et la sécurité des installations (éclairage, ventilation, issues de secours) sur le site principal à Dakar. Mesurer le respect des EPI, l’effectivité des formations récentes et documenter les écarts pour un plan d’action en 6 semaines.",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 2,
+        "reference": "DEM-2025-0825-KAK9F",
+        "dateEcheance": "2025-09-25T14:51:00",
+        "dateValidation": "2025-08-25T15:35:28.167795",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 81,
+          "type": "employeur",
+          "telephone": "761234567",
+          "regionSocial": "Déni Malick Gueye"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-25T15:01:25.161099",
+        "updatedAt": "2025-08-25T15:35:28.202625",
+        "documents": []
+      }
+    },
+    {
+      "id": 122,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0829-11L956",
+      "progression": 0,
+      "instruction": "Dans le cadre de votre mission, vous devez utiliser le questionnaire fourni pour interroger les participants. Veuillez vous assurer que chaque question est posée de manière claire et que vous prenez le temps d'expliquer le but de l'enquête. En outre, il est crucial de vérifier la qualité des réponses en demandant des éclaircissements lorsque cela est nécessaire. À la fin de chaque journée, compilez vos résultats et envoyez un rapport préliminaire pour évaluation. La date limite pour la soumission de votre rapport final est indiquée ci-dessous.",
+      "dateDebut": "2025-11-04T11:12:21.932656",
+      "dateLimite": null,
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-09-09T15:24:21",
+      "createdAt": "2025-08-29T10:25:37.491855",
+      "updatedAt": "2025-11-04T11:12:21.939527",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 83,
+        "objet": "Maintenances préventives",
+        "description": "Auditer l’état des équipements critiques et le respect du plan de maintenance préventive. Vérifier la traçabilité des pièces de rechange et le délai moyen de réparation. Proposer 5 actions correctives et un tableau de bord de suivi.",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 3,
+        "reference": "DEM-2025-0828-1G9TA8",
+        "dateEcheance": "2025-09-26T13:29:00",
+        "dateValidation": "2025-08-29T10:25:37.370827",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 101,
+          "type": "employeur",
+          "telephone": "778344546",
+          "regionSocial": "Dakar, Sénégal"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-28T13:29:57.901896",
+        "updatedAt": "2025-08-29T10:25:37.514311",
+        "documents": [
+          {
+            "id": 27,
+            "nom": "Accusamus praesentiu",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/78b79abb-8cf5-453a-b128-f784dc1b7875.pdf",
+            "extension": "pdf",
+            "taille": 43993,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:25:37.061703"
+          },
+          {
+            "id": 27,
+            "nom": "Accusamus praesentiu",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/78b79abb-8cf5-453a-b128-f784dc1b7875.pdf",
+            "extension": "pdf",
+            "taille": 43993,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:25:37.061703"
+          },
+          {
+            "id": 5,
+            "nom": "Test Document Enquete",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/edfc4f55-6049-4971-b7f8-0734d339b030.jpg",
+            "extension": "jpg",
+            "taille": 48147,
+            "version": 1,
+            "type": {
+              "id": 181,
+              "code": "AT00",
+              "libelle": "Attestation de travail"
+            },
+            "createdAt": "2025-08-25T17:07:32.093672"
+          }
+        ]
+      }
+    },
+    {
+      "id": 201,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-1104-W5RSV",
+      "progression": 0,
+      "instruction": null,
+      "dateDebut": "2025-11-04T11:11:45.246888",
+      "dateLimite": null,
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-11-04T11:11:05.126143",
+      "createdAt": "2025-11-04T11:00:17.079499",
+      "updatedAt": "2025-11-04T11:11:45.259053",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 121,
+        "objet": "Test",
+        "description": "ceci est un test",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 3,
+        "reference": "DEM-2025-1104-VZBNT",
+        "dateEcheance": "2025-11-27T10:53:00",
+        "dateValidation": "2025-11-04T11:00:16.970154",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 101,
+          "type": "employeur",
+          "telephone": "778344546",
+          "regionSocial": "Dakar, Sénégal"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-11-04T10:55:16.641088",
+        "updatedAt": "2025-11-04T11:00:17.109328",
+        "documents": [
+          {
+            "id": 181,
+            "nom": "diagramme.png",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/dfc22c46-b841-4801-9a2f-ad2fdc5f9de8.png",
+            "extension": "png",
+            "taille": 147698,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-11-04T10:55:16.792855"
+          },
+          {
+            "id": 3,
+            "nom": "Document Test 3",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/a3672e67-47ca-4521-8e18-e5c04e201e3e.mp4",
+            "extension": "mp4",
+            "taille": 49865147,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-25T17:02:28.444618"
+          }
+        ]
+      }
+    },
+    {
+      "id": 181,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0912-15NIJT",
+      "progression": 25,
+      "instruction": "Votre rôle consiste à envoyer des rappels aux participants trois jours avant la date limite de soumission des réponses. Veuillez rédiger ces rappels de manière professionnelle, en réitérant l'importance de leur contribution à l'étude et en fournissant des instructions claires sur la manière de soumettre leurs réponses. Assurez-vous également d'être disponible pour répondre à toute question ou préoccupation qu'ils pourraient avoir. Un rapport sur l'efficacité de vos rappels et sur les réponses obtenues devra être soumis d'ici la date limite.",
+      "dateDebut": "2025-09-12T09:47:51.758653",
+      "dateLimite": "2025-11-12T09:41:03.84",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-09-12T09:41:37.525496",
+      "createdAt": "2025-09-12T09:39:21.414432",
+      "updatedAt": "2025-09-15T12:34:59.263773",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 48,
+        "objet": " Enquête sécurité et conditions de travail",
+        "description": " Vérifier les conditions de travail et la sécurité des installations (éclairage, ventilation, issues de secours) sur le site principal à Dakar. Mesurer le respect des EPI, l’effectivité des formations récentes et documenter les écarts pour un plan d’action en 6 semaines.",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 3,
+        "reference": "DEM-2025-0827-1M2K11",
+        "dateEcheance": "2025-09-30T12:24:00",
+        "dateValidation": "2025-09-12T09:39:21.373492",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 62,
+          "type": "travailleur",
+          "telephone": "771325266",
+          "regionSocial": "Dakar"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-27T12:25:37.041131",
+        "updatedAt": "2025-09-12T09:39:21.425102",
+        "documents": [
+          {
+            "id": 28,
+            "nom": "image_ehac",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/2e3e6ea9-5634-459d-bfc6-3b381fab50a3.png",
+            "extension": "png",
+            "taille": 2695300,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:25:37.064453"
+          },
+          {
+            "id": 29,
+            "nom": "ChatGPT Image ",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/0a76decf-5d42-4c8f-b1b5-893a87bf0a83.png",
+            "extension": "png",
+            "taille": 2643870,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:25:37.065985"
+          },
+          {
+            "id": 5,
+            "nom": "Test Document Enquete",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/edfc4f55-6049-4971-b7f8-0734d339b030.jpg",
+            "extension": "jpg",
+            "taille": 48147,
+            "version": 1,
+            "type": {
+              "id": 181,
+              "code": "AT00",
+              "libelle": "Attestation de travail"
+            },
+            "createdAt": "2025-08-25T17:07:32.093672"
+          },
+          {
+            "id": 27,
+            "nom": "Accusamus praesentiu",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/78b79abb-8cf5-453a-b128-f784dc1b7875.pdf",
+            "extension": "pdf",
+            "taille": 43993,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:25:37.061703"
+          }
+        ]
+      }
+    },
+    {
+      "id": 161,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0911-4B2GG",
+      "progression": 0,
+      "instruction": "En tant qu'enquêteur assigné à ce projet, vous êtes chargé de conduire des entretiens avec les participants sélectionnés. Il est impératif que vous suiviez le protocole d'enquête établi, qui inclut la présentation claire des objectifs de l'étude et l'assurance que toutes les informations recueillies resteront confidentielles. Vous devez également être attentif aux préoccupations des participants et répondre à leurs questions de manière professionnelle. Veuillez soumettre un rapport détaillé de vos interactions et des réponses obtenues d'ici la date limite.",
+      "dateDebut": "2025-09-12T09:35:42.69985",
+      "dateLimite": "2025-10-15T16:16:48.443",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-09-11T16:17:05.43254",
+      "createdAt": "2025-09-11T16:13:54.966996",
+      "updatedAt": "2025-09-12T09:35:42.725186",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 84,
+        "objet": "Santé au travail et gestion des absences",
+        "description": "Analyser l’accès aux services de santé au travail, les procédures d’absences et le suivi des cas médicaux. Identifier les goulets d’étranglement et recommander 2 mesures d’optimisation avec indicateurs (Taux d’absence, délai de traitement).",
+        "urgent": true,
+        "commentaireValidation": null,
+        "priorite": 1,
+        "reference": "DEM-2025-0828-1GB31D",
+        "dateEcheance": "2025-09-18T13:30:00",
+        "dateValidation": "2025-09-11T16:13:54.752636",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 101,
+          "type": "employeur",
+          "telephone": "778344546",
+          "regionSocial": "Dakar, Sénégal"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-28T13:30:57.199989",
+        "updatedAt": "2025-09-11T16:13:55.005127",
+        "documents": [
+          {
+            "id": 26,
+            "nom": "bg-front",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/2cff73c3-919e-435d-a768-a13a42010302.png",
+            "extension": "png",
+            "taille": 2343358,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:03:31.733349"
+          }
+        ]
+      }
+    },
+    {
+      "id": 121,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0829-10HRA2",
+      "progression": 85,
+      "instruction": "Veuillez contacter les participants et recueillir leurs réponses d'ici la date limite.",
+      "dateDebut": "2025-09-11T09:33:43.611331",
+      "dateLimite": "2025-11-02T10:41:15.53342",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-09-10T15:24:21.378991",
+      "createdAt": "2025-08-29T09:54:54.703681",
+      "updatedAt": "2025-09-11T15:30:32.922771",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 85,
+        "objet": "test",
+        "description": "test description ",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 3,
+        "reference": "DEM-2025-0828-A2HM",
+        "dateEcheance": "2025-09-06T17:00:00",
+        "dateValidation": "2025-08-29T09:54:54.665787",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 101,
+          "type": "employeur",
+          "telephone": "778344546",
+          "regionSocial": "Dakar, Sénégal"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-28T17:01:09.833252",
+        "updatedAt": "2025-08-29T09:54:54.709821",
+        "documents": [
+          {
+            "id": 5,
+            "nom": "Test Document Enquete",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/edfc4f55-6049-4971-b7f8-0734d339b030.jpg",
+            "extension": "jpg",
+            "taille": 48147,
+            "version": 1,
+            "type": {
+              "id": 181,
+              "code": "AT00",
+              "libelle": "Attestation de travail"
+            },
+            "createdAt": "2025-08-25T17:07:32.093672"
+          },
+          {
+            "id": 5,
+            "nom": "Test Document Enquete",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/edfc4f55-6049-4971-b7f8-0734d339b030.jpg",
+            "extension": "jpg",
+            "taille": 48147,
+            "version": 1,
+            "type": {
+              "id": 181,
+              "code": "AT00",
+              "libelle": "Attestation de travail"
+            },
+            "createdAt": "2025-08-25T17:07:32.093672"
+          },
+          {
+            "id": 41,
+            "nom": "moussa",
+            "description": "Pièce jointe demande enquête",
+            "chemin": "/document/d8d36091-0e0e-491c-a3c4-9508cea58a8d.jpg",
+            "extension": "jpg",
+            "taille": 45711,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-29T09:54:35.247833"
+          }
+        ]
+      }
+    },
+    {
+      "id": 81,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0827-1M9MWO",
+      "progression": 25,
+      "instruction": "Je veux que vous démarrer vite l'enquête. Et vous avez peut de temps pour le terminé, juste un mois",
+      "dateDebut": "2025-09-02T15:42:08.533635",
+      "dateLimite": "2025-10-02T11:47:20.089728",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-09-02T15:14:17.584789",
+      "createdAt": "2025-08-27T12:31:07.351934",
+      "updatedAt": "2025-09-11T15:29:32.161993",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 47,
+        "objet": " Enquête sécurité et conditions de travail",
+        "description": " Vérifier les conditions de travail et la sécurité des installations (éclairage, ventilation, issues de secours) sur le site principal à Dakar. Mesurer le respect des EPI, l’effectivité des formations récentes et documenter les écarts pour un plan d’action en 6 semaines.",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 3,
+        "reference": "DEM-2025-0827-1LA5EA",
+        "dateEcheance": "2025-08-27T11:03:31.279",
+        "dateValidation": "2025-08-27T12:31:07.27113",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 2,
+          "type": "employeur",
+          "telephone": "771232425",
+          "regionSocial": "Dakar"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-27T12:03:31.723129",
+        "updatedAt": "2025-08-27T12:31:07.368524",
+        "documents": [
+          {
+            "id": 1,
+            "nom": "Document Test 1",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/5c5a528e-b992-4b0d-9d79-62ac71a5c39e.pdf",
+            "extension": "pdf",
+            "taille": 45249,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-25T16:58:40.048295"
+          },
+          {
+            "id": 26,
+            "nom": "bg-front",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/2cff73c3-919e-435d-a768-a13a42010302.png",
+            "extension": "png",
+            "taille": 2343358,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-27T12:03:31.733349"
+          },
+          {
+            "id": 3,
+            "nom": "Document Test 3",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/a3672e67-47ca-4521-8e18-e5c04e201e3e.mp4",
+            "extension": "mp4",
+            "taille": 49865147,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-25T17:02:28.444618"
+          }
+        ]
+      }
+    },
+    {
+      "id": 141,
+      "etat": {
+        "code": "01",
+        "libelle": "En cours"
+      },
+      "reference": "ENQ-2025-0902-5RDMQ",
+      "progression": 50,
+      "instruction": "Veuillez contacter les participants et recueillir leurs réponses d'ici la date limite.",
+      "dateDebut": "2025-09-11T09:29:22.450173",
+      "dateLimite": "2025-11-02T10:41:15.53342",
+      "dateFin": null,
+      "dateValidation": null,
+      "dateAnnulation": null,
+      "dateAssignation": "2025-09-10T09:03:20.903798",
+      "createdAt": "2025-09-02T10:41:15.53342",
+      "updatedAt": "2025-09-11T15:27:59.065755",
+      "enqueteur": {
+        "id": 27,
+        "username": "Ehac Enqueteur"
+      },
+      "demande": {
+        "id": 101,
+        "objet": "Test 1",
+        "description": "  Une intrusion non autorisée a été détectée à l'entrée                   principale du bâtiment A sur le site Alpha. L'individu a                   contourné le système de sécurité en utilisant un badge d'accès                   volé. Une enquête approfondie est nécessaire pour comprendre                   les failles de sécurité et prévenir de futurs incidents.",
+        "urgent": false,
+        "commentaireValidation": null,
+        "priorite": 2,
+        "reference": "DEM-2025-0829-11NF81",
+        "dateEcheance": "2025-08-31T10:26:00",
+        "dateValidation": "2025-09-02T10:41:15.385397",
+        "dateAnnulation": null,
+        "etat": {
+          "code": "01",
+          "libelle": "Valider"
+        },
+        "concerne": {
+          "id": 121,
+          "type": "beneficiaire",
+          "telephone": "772341323",
+          "regionSocial": "Diamniadio"
+        },
+        "utilisateur": {
+          "id": 1,
+          "username": "Marie Ciss"
+        },
+        "createdAt": "2025-08-29T10:27:18.709586",
+        "updatedAt": "2025-09-02T10:41:15.576923",
+        "documents": [
+          {
+            "id": 4,
+            "nom": "Document Test 4",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/54d0275b-15a2-4307-9dc1-b57a4ed700a4.png",
+            "extension": "png",
+            "taille": 1554101,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-25T17:03:03.423649"
+          },
+          {
+            "id": 41,
+            "nom": "moussa",
+            "description": "Pièce jointe demande enquête",
+            "chemin": "/document/d8d36091-0e0e-491c-a3c4-9508cea58a8d.jpg",
+            "extension": "jpg",
+            "taille": 45711,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-29T09:54:35.247833"
+          },
+          {
+            "id": 42,
+            "nom": "invocation",
+            "description": "Pièce joint demande enquête",
+            "chemin": "/document/2b899851-c54a-4332-b746-4929a0dfe49e.pdf",
+            "extension": "pdf",
+            "taille": 101837,
+            "version": 1,
+            "type": {
+              "id": 1,
+              "code": "PJ00",
+              "libelle": "Piéce joint demande enquête"
+            },
+            "createdAt": "2025-08-29T10:27:18.728437"
+          }
+        ]
+      }
+    }
+  ]
+}
+
+
+

@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EnqueteStateService } from '@store/enquete/enquete-state.service';
 import { EnqueteModel } from '@core/model/enquete.model';
+import { Logger } from '@core/services/logger.service';
 
 @Component({
   selector: 'app-progress-stepper',

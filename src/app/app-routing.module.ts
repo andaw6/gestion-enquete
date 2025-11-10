@@ -4,6 +4,7 @@ import { AdminComponent as AdminLayoutComponent } from '@layout/admin/admin.comp
 import { EnqueteurComponent as EnqueteurLayoutComponent } from "@layout/enqueteur/enqueteur.component";
 import { DemandeurComponent as DemandeurLayoutComponent } from "@layout/demandeur/demandeur.component";
 import { ChefEnqueteurComponent as ChefEnqueteurLayoutComponent } from "@layout/chef-enqueteur/chef-enqueteur.component";
+import { ValidateurComponent as ValidateurLayoutComponent } from "@layout/validateur/validateur.component";
 
 
 const routes: Routes = [
@@ -97,6 +98,22 @@ const routes: Routes = [
       {
         path: '**',
         redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: "validateur",
+    component: ValidateurLayoutComponent,
+    children: [
+      {
+        path: "demandes",
+        loadChildren: () =>
+          import("@modules/validateur/demandes/demandes.module").then(m => m.DemandesModule)
+      },
+      {
+        path: '**',
+        redirectTo: 'demandes',
         pathMatch: 'full'
       }
     ]

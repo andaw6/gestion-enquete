@@ -2,3 +2,21 @@
   [title]="pageTitle"
   [subtitle]="pageSubTitle"
 ></app-page-header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <app-stats-cards [statCards]="statCards"></app-stats-cards>
+  <app-filters
+    (filtersChanged)="onFiltersChanged($event)"
+    (resetFilters)="onResetFilters()"
+  ></app-filters>
+
+
+  <app-table
+    [enquetes]="enquetes"
+    [pagination]="pagination"
+    (viewAction)="onViewEnquete($event)"
+    (editAction)="onEditEnquete($event)"
+    (deleteAction)="onDeleteEnquete($event)"
+    (pageChange)="setPage($event)"
+  ></app-table>
+</main>

@@ -1,0 +1,27 @@
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Stats Section -->
+  <app-stats-cards [stats]="stats"></app-stats-cards>
+
+  <!-- Filters Section -->
+  <app-filters (filtersChanged)="onFiltersChanged($event)"></app-filters>
+
+  <!-- Table Section -->
+  <app-demands-table
+    [demandes]="demandes"
+    [pagination]="pagination"
+    (pageChange)="setPagination($event)"
+    (viewDetails)="selectDemande($event)"
+    (approve)="approveDemande($event)"
+    (reject)="rejectDemande($event)"
+  >
+  </app-demands-table>
+</main>
+
+<app-detail-modal
+  [isOpen]="isModalOpen"
+  [demande]="selectedDemande"
+  (closeModal)="closeModal()"
+  (approve)="approveDemande($event)"
+  (reject)="rejectDemande($event)"
+>
+</app-detail-modal>

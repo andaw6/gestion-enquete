@@ -7,7 +7,7 @@ import { formatInitial } from '@core/util/function/initial-formatter.util';
 
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-header-demandeur',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
   imports: [FontAwesomeModule],

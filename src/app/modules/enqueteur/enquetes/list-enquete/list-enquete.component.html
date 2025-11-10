@@ -4,12 +4,12 @@
 ></app-page-header>
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <app-stats-cards [statCards]="statCards"></app-stats-cards>
   <app-filters
     (filtersChanged)="onFiltersChanged($event)"
     (resetFilters)="onResetFilters()"
   ></app-filters>
 
-  <app-stats-cards [statCards]="statCards"></app-stats-cards>
 
   <app-table
     [enquetes]="enquetes"

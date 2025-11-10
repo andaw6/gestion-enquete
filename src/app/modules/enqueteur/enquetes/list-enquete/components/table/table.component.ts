@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { CodeLibelle } from '@core/model/code-libelle.model';
 import { PaginationComponent } from "@shared/components/pagination/pagination.component";
 import { Pagination } from '@core/interfaces/pagination.interface';
-import { EnqueteModel } from '@core/model/enquete.model';
+import { EnqueteEtatEnquete, EnqueteModel } from '@core/model/enquete.model';
 
 interface EnqueteRow {
   id: number;
@@ -21,7 +21,7 @@ interface EnqueteRow {
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, PaginationComponent],
+  imports: [CommonModule, PaginationComponent, NgIf],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
@@ -44,6 +44,23 @@ export class TableComponent implements OnChanges, OnInit {
     if (changes['enquetes'] && !changes['enquetes'].firstChange) {
       this.updateRows();
     }
+  }
+
+  canView(etat: CodeLibelle) {
+    switch (etat.code) {
+      case EnqueteEtatEnquete.EnCours: return false;
+      default: return true;
+    }
+  }
+  canEdit(etat: CodeLibelle) {
+    switch (etat.code) {
+      case EnqueteEtatEnquete.EnCours: return true;
+      case EnqueteEtatEnquete.EnAttente: return false;
+      default: return true;
+    }
+  }
+  canDelete(etat: CodeLibelle) {
+    return false;
   }
 
   // --- MAPPING ---
@@ -106,17 +123,17 @@ export class TableComponent implements OnChanges, OnInit {
 
   // --- ACTIONS ---
   onView(row: EnqueteRow) {
-    const enquete = this.enquetes.find(e=>e.id == row.id);
+    const enquete = this.enquetes.find(e => e.id == row.id);
     this.viewAction.emit(enquete);
   }
 
   onEdit(row: EnqueteRow) {
-    const enquete = this.enquetes.find(e=>e.id == row.id);
+    const enquete = this.enquetes.find(e => e.id == row.id);
     this.editAction.emit(enquete);
   }
 
   onDelete(row: EnqueteRow) {
-    const enquete = this.enquetes.find(e=>e.id == row.id);
+    const enquete = this.enquetes.find(e => e.id == row.id);
     this.deleteAction.emit(enquete);
   }
 

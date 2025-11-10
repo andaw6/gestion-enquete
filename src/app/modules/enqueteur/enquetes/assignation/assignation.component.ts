@@ -148,7 +148,7 @@ export class AssignationComponent implements OnInit {
         this.pagination.set(enquetes.pagination);
         this.loading.set(false);
       },
-      error: _ => {
+      error: err => {
         this.toast.show("Erreur lors du chargement des données", "error");
         this.loading.set(false);
       }
@@ -167,8 +167,9 @@ export class AssignationComponent implements OnInit {
         }));
         this.pagination.update(e => ({ ...e, totalItem: e.totalItem - 1 }));
       },
-      error: _ => {
-        this.toast.show("Erreur lors du démarrage de l'enquête", "error")
+      error: err => {
+        let msg = err.message ?? "Erreur lors du démarrage de l'enquête";
+        this.toast.show(msg, "error")
       }
     })
   }
